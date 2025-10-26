@@ -6,6 +6,11 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>FlowState</h1>
+       <div class="input-wrapper">
+        <input type="text" class="input" />
+        <button class="button">+</button>
+      </div>
+
       </header>
     </div>
   );

@@ -36,3 +36,35 @@
     transform: rotate(360deg);
   }
 }
+
+.input-wrapper {
+  position: relative;
+  width: 500px;
+}
+
+.input {
+  width: 500px;
+  height: 50px;
+  font-size: 20px;
+  border-radius: 15px;
+  background-color: #35383e;
+  border: solid #e3f3f8 2px;
+  color: aliceblue;
+  padding-right: 5px; /* Makes space for the button */
+}
+
+.button {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 45px;
+  font-size: 22px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+
+
