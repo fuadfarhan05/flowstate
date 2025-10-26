@@ -1,8 +1,21 @@
 import './App.css';
+import { useState, useRef } from 'react';
 import { FaArrowUp } from "react-icons/fa";
 import LiquidEther from './background';
 
 function App() {
+  const [upload, setUpload] = useState(null);
+  const fileInputRef = useRef(null);
+
+  function handleUpload(event) {
+    const file = event.target.files[0];
+    setUpload(file);
+  };
+
+  function triggerUpload() {
+    fileInputRef.current.click(); 
+  }
+
   return (
     <div className="App">
       {/* LiquidEther background */}
@@ -33,7 +46,14 @@ function App() {
         <div className="wrapper">
           <input type="text" className="input" placeholder="Type here..." />
           <button className="button"><FaArrowUp /></button>
-          <button className="secondary-button">+</button>
+          <button className="secondary-button" onClick={triggerUpload}>+</button>
+          {upload && <p className="upload-name">🔗 {upload.name}</p>}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleUpload}
+            style={{ display: 'none' }}
+          />
         </div>
       </header>
     </div>
