@@ -16,6 +16,30 @@ function App() {
     fileInputRef.current.click(); 
   }
 
+  const handleSubmit = async () => {
+    if(!upload) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("upload", upload);
+
+    try {
+      const response = await fetch(`http://localhost:3500//api/v1/endpoint1/Resume`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      console.log("upload working",data);
+
+    } catch(error) {
+      console.log('failed to upload resume')
+
+    }
+
+  }
+
   return (
     <div className="App">
       {/* LiquidEther background */}
@@ -45,7 +69,7 @@ function App() {
 
         <div className="wrapper">
           <input type="text" className="input" placeholder="Type here..." />
-          <button className="button"><FaArrowUp /></button>
+          <button className="button" onClick={handleSubmit}><FaArrowUp /></button>
           <button className="secondary-button" onClick={triggerUpload}>+</button>
           {upload && <p className="upload-name">🔗 {upload.name}</p>}
           <input
