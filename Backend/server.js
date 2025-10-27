@@ -3,6 +3,10 @@
 const express = require('express'); 
 const app = express(); 
 
+
+//Importing routes here as such 
+const ResumeRoute = require('./routes/resumeRoute.js'); 
+
 //basic middleware 
 app.use(express.json());  
 
@@ -12,7 +16,10 @@ app.get('/', (req, res) => {
     res.send({ 
         BackendRunning: true
     }); 
-}); 
+});  
+
+//calling the routes here as such 
+app.use('/api/v1/endpoint1/', ResumeRoute); 
 
 app.listen(PORT, () => { 
     console.log(`Server running on http://localhost:${PORT}`); 
