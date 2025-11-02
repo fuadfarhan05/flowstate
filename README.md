@@ -1,0 +1,3 @@
+Flow State 🌊 is an AI-powered career preparation platform designed to help users enter their optimal “flow state” while preparing for interviews. By uploading your resume, Flow State generates personalized interview questions tailored to your experience, skills, and career goals, giving you a highly focused and realistic practice environment.
+
+Beyond interview prep, Flow State streamlines professional networking📈 by intelligently connecting users to relevant engineers, recruiters, or professionals in their target companies via LinkedIn, eliminating the tedious manual search process. With Flow State, you can practice, learn, and build meaningful connections—all in one seamless platform.
