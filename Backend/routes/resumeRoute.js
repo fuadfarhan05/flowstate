@@ -8,7 +8,7 @@ const multer = require('multer');
 
 // handle the uploads here 
 const upload = multer({ 
-    dest: 'uploads/' // right now this is local memory so it just creates a folder called uploads holding all folders we can transfer this to our database later. 
+    dest: 'uploads/' // right now this is local disk so it just creates a folder called uploads holding all folders we can transfer this to our database later. 
 }); 
 
 resumeRoute.post('/Resumeparse', upload.single('ResumeFile'), async (req, res) => { 
@@ -19,7 +19,7 @@ resumeRoute.post('/Resumeparse', upload.single('ResumeFile'), async (req, res) =
     try {  
         // if statement to check for the ResumeFile here as such 
         if (!ResumeFile){ 
-            res.status(404).json({ 
+            return res.status(404).json({ 
                 message: 'Error reading the file that was uploaded'
             }); 
         } 
@@ -33,12 +33,13 @@ resumeRoute.post('/Resumeparse', upload.single('ResumeFile'), async (req, res) =
         res.json({ 
             message: 'File upload was successful', 
             Filename: ResumeFile.originalname, 
-            storedpathLocation: ResuleFile.path
+            storedpathLocation: ResumeFile.path,
+            filedata: data
         }); 
     } catch (error) { 
         res.status(500).json({ 
             errorMessage: 'Error accessing and uploading file', 
-            check: 'Double check the code'
+            details: error.message
         }); 
     } 
 }); 

@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });  
 
 //calling the routes here as such 
-app.use('/api/v1/endpoint1/', ResumeRoute); 
+app.use('/api/v1/', ResumeRoute); 
 
 app.listen(PORT, () => { 
     console.log(`Server running on http://localhost:${PORT}`); 
