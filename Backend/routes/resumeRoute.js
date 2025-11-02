@@ -36,8 +36,11 @@ resumeRoute.post('/Resumeparse', upload.single('ResumeFile'), async (req, res) =
             storedpathLocation: ResuleFile.path
         }); 
     } catch (error) { 
-
-    }
+        res.status(500).json({ 
+            errorMessage: 'Error accessing and uploading file', 
+            check: 'Double check the code'
+        }); 
+    } 
 }); 
 
 module.exports = resumeRoute; 
