@@ -2,15 +2,8 @@ import '../App.css'
 
 function AnalysisPreview() {
   return (
-    <div className="App">
-      <div>
-        <h2 style={{ color: 'white' }}>Let's dive in!</h2>
-        <div class="page">
-          <div class="page-content">
-            <h2>Content</h2>
-          </div>
-        </div>
-      </div>
+    <div>
+      <h2>Let's dive into your resume:</h2>
     </div>
   );
 }
