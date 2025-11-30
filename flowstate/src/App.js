@@ -1,9 +1,12 @@
 import './App.css';
 import { useState, useRef } from 'react';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import { FaArrowUp } from "react-icons/fa";
 import Particles from './backgrounds/particles';
+import AnalysisPreview from './pages/analysishome';
 
 function App() {
+  const navigate = useNavigate();
   const [upload, setUpload] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -38,17 +41,20 @@ function App() {
 
     }
 
+    navigate('/analysis');
+
   }
 
   return (
     <div className="App">
-
-  
+      <Routes>
+      <Route path="/analysis" element={<AnalysisPreview />} />
+    </Routes>
 
       <header className="App-header">
         
 
-                        <div
+            <div
                 style={{
                   position: 'fixed',
                   top: 0,
