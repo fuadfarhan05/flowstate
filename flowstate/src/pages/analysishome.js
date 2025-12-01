@@ -2,8 +2,10 @@ import '../App.css'
 
 function AnalysisPreview() {
   return (
-    <div>
-      <h2>Let's dive into your resume:</h2>
+    <div className="App">
+      <div>
+        <h2 style={{ color: 'white' }}>Let's dive in!</h2>
+      </div>
     </div>
   );
 }
