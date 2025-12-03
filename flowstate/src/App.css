@@ -140,3 +140,16 @@ h1 {
   margin-top: -20px;
   margin-left: 90px;
 }
+
+.page {
+  background-color: #ffffff;
+  border:solid gray 2px;
+  width: 800px;
+  height: 1000px;
+  margin-left: 335px;
+
+}
+
+.page-content {
+  border: solid rgb(155, 217, 242) 2px;
+}
