@@ -1,3 +1,4 @@
+# FlowState
 FlowState is an AI-powered career preparation platform designed to help users enter their optimal “flow state” while preparing for interviews. By uploading your resume, FlowState provides users with talking points that allow users to easily be able to talk about themselves, professionally, proficiently, and confidently in their interview.
 
 We are facing a big problem of our resumes not being properly seen because of ATS scans. This results in job seekers trying to add as much keywords that will fit with the ATS scans criteria but job seekers soon realize that they might not feel proficient with what is on their resume. 
