@@ -7,7 +7,7 @@ function AnalysisPreview() {
         <h2 style={{ color: 'white' }}>Let's dive in!</h2>
         <div class="page">
           <div class="page-content">
-            <h2>Content</h2>
+            <h2>Resume Content</h2>
           </div>
         </div>
       </div>
