@@ -12,6 +12,9 @@
   z-index: 1; /* ✅ app stays on top */
 }
 
+
+
+
 .particles-container {
   position: fixed; /* ✅ full-screen background */
   top: 0;
@@ -150,6 +153,14 @@ h1 {
 
 }
 
+html, body, #root {
+  background: black !important;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 .page-content {
   border: solid rgb(155, 217, 242) 2px;
 }
+
