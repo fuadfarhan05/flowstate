@@ -8,14 +8,14 @@ function AnalysisPreview() {
   return (
     <div className="App">
       <div>
-        <h2 style={{ color: 'white' }}>Let's dive in!</h2>
+        <h2 style={{ color: 'white' }}>FlowState</h2>
         <div class="page">
           <div class="page-content">
             {pdf ? (
               <iframe 
                 src={URL.createObjectURL(pdf)} 
                 width="100%" 
-                height="1100px"
+                height="990px"
                 style={{ border: 'none' }}
               ></iframe>
             ) : (
