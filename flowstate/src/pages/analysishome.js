@@ -1,13 +1,26 @@
 import '../App.css'
+import { useLocation } from 'react-router-dom';
+
 
 function AnalysisPreview() {
+  const location = useLocation();
+  const pdf = location.state?.pdf;
   return (
     <div className="App">
       <div>
         <h2 style={{ color: 'white' }}>Let's dive in!</h2>
         <div class="page">
           <div class="page-content">
-            <h2>Resume Content</h2>
+            {pdf ? (
+              <iframe 
+                src={URL.createObjectURL(pdf)} 
+                width="100%" 
+                height="1100px"
+                style={{ border: 'none' }}
+              ></iframe>
+            ) : (
+              <p style={{ color: 'black' }}>No PDF uploaded.</p>
+            )}
           </div>
         </div>
       </div>

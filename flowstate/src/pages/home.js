@@ -37,7 +37,7 @@ function Home() {
       console.log('failed to upload resume');
     }
 
-    navigate('/analysis');
+    navigate('/analysis', { state: { pdf:upload }});
   };
 
   return (
