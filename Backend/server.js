@@ -1,7 +1,13 @@
 //Instantiate an Express App for backend.
 // this will be the main server file here as such
 const express = require("express");
+const cors = require('cors');
+
 const app = express();
+
+app.use(cors({ 
+  origin: 'http://localhost:3000'  
+}));
 
 //Importing routes here as such
 const ResumeRoute = require("./routes/resumeRoute.js");
