@@ -23,9 +23,11 @@ function Home() {
 
     const formData = new FormData();
     formData.append("upload", upload);
+    
 
+    //potential issue, {missing content-type, 
     try {
-      const response = await fetch(`http://localhost:3500/api/v1/endpoint1/Resume`, {
+      const response = await fetch(`http://localhost:3500/api/v1/Resumeparse`, {
         method: "POST",
         body: formData,
       });
