@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path"); 
-// const multer = require("multer");
+// need to install the actual parsing called pdf-parsing 
 
 const resumeparsing = async (req, res) => { 
     //TODO: 
