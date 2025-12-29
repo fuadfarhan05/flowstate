@@ -1,8 +1,12 @@
 const express = require("express");
-const multer = require("multer");
 const resumeRoute = express.Router();
-const resumeparsing = require("../controllers/resumeparselogic.js");  
 
+// for the backend route need to install multer and use FS and Path
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
+
+// handle the uploads here
 const upload = multer({
   dest: "uploads/", // right now this is local disk so it just creates a folder called uploads holding all folders we can transfer this to our database later.
 });
