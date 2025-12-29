@@ -79,6 +79,7 @@ function Home() {
 
           <input
             type="file"
+            //name="ResumeFile"
             ref={fileInputRef}
             onChange={handleUpload}
             style={{ display: 'none' }}
