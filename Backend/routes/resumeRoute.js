@@ -13,7 +13,7 @@ const upload = multer({
 
 resumeRoute.post(
   "/Resumeparse",
-  upload.single("ResumeFile"),
+  upload.single("upload"), 
   async (req, res) => {
     // we need to set up the body request of the user file here as such
     const ResumeFile = req.file;
