@@ -15,7 +15,7 @@ const ResumeRoute = require("./routes/resumeRoute.js");
 //basic middleware
 app.use(express.json());
 
-const PORT = process.env.PORT || 4000; 
+const PORT = 3500 || 6500;
 
 app.get("/", (req, res) => {
   res.json({
