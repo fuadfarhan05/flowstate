@@ -10,6 +10,7 @@ const multer = require("multer");
 const upload = multer({
   dest: "uploads/", // right now this is local disk so it just creates a folder called uploads holding all folders we can transfer this to our database later.
 });
+//same dest
 
 resumeRoute.post(
   "/Resumeparse",
