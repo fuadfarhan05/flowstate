@@ -27,7 +27,7 @@ function Home() {
 
     //potential issue, {missing content-type, 
     try {
-      const response = await fetch(`http://localhost:3500/api/v1/Resumeparse`, {
+      const response = await fetch(`http://localhost:3500/api/v1/endpoint1/Resume`, {
         method: "POST",
         body: formData,
       });
@@ -36,7 +36,7 @@ function Home() {
       console.log("upload working", data);
 
     } catch (error) {
-      console.log('failed to upload resume');
+      console.log('failed to upload resume', error); 
     }
 
     navigate('/analysis', { state: { pdf:upload }});

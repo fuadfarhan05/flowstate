@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path"); 
-// need to install the actual parsing called pdf-parsing 
+// need to install the actual parsing called pdf-parsing  
 
 const resumeparsing = async (req, res) => { 
-    //TODO: 
+
     const ResumeFile = req.file; 
     //implement try and catch case 
     try {
