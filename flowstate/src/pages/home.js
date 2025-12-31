@@ -23,9 +23,11 @@ function Home() {
 
     const formData = new FormData();
     formData.append("upload", upload);
+    
 
+    //potential issue, {missing content-type, 
     try {
-      const response = await fetch(`http://localhost:5434/api/v1/Resumeparse`, {
+      const response = await fetch(`http://localhost:3500/api/v1/endpoint1/Resume`, {
         method: "POST",
         body: formData,
       });
@@ -77,6 +79,7 @@ function Home() {
 
           <input
             type="file"
+            //name="ResumeFile"
             ref={fileInputRef}
             onChange={handleUpload}
             style={{ display: 'none' }}
