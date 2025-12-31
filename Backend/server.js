@@ -1,30 +1,9 @@
-//Instantiate an Express App for backend.
-// this will be the main server file here as such
-const express = require("express");
-const cors = require('cors');
+require('dotenv').config(); 
+//call db connection later on in the server.js file JUST the connection   
 
-const app = express();
+const app = require("./app.js"); 
+const PORT = process.env.PORT || 6000; 
 
-app.use(cors({ 
-  origin: 'http://localhost:3000'  
-}));
-
-//Importing routes here as such
-const ResumeRoute = require("./routes/resumeRoute.js");
-
-//basic middleware
-app.use(express.json());
-
-const PORT = 3500 || 6500;
-
-app.get("/", (req, res) => {
-  res.json({
-    BackendServer: 'Running Successfully',
-  });
-});
-
-//calling the routes here as such
-app.use("/api/v1/", ResumeRoute);
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

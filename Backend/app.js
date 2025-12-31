@@ -9,7 +9,13 @@ app.use(cors({
 }));
 
 //Importing routes here as such
-const ResumeRoute = require("./routes/resumeRoute.js");
+const ResumeRoute = require("./routes/resumeRoute.js"); 
+
+app.get('/', (req, res) => { 
+  res.json({ 
+    Server: "Successfully running"
+  }); 
+}); 
 
 //Initialize the routes to be called. 
 app.use("/api/v1/", ResumeRoute);   
