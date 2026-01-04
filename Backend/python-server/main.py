@@ -28,6 +28,39 @@ SECTION_HEADERS = [
     "activities"
 ]
 
+date_words = [
+    "present",
+    "january", "jan",
+    "february", "feb",
+    "march", "mar",
+    "april", "apr",
+    "may",
+    "june", "jun",
+    "july", "jul",
+    "august", "aug",
+    "september", "sep", "sept",
+    "october", "oct",
+    "november", "nov",
+    "december", "dec",
+    "01",
+    "02", 
+    "03",
+    "04", 
+    "05", 
+    "06", 
+    "07",
+    "08", 
+    "09", 
+    "10",
+    "11",
+    "12"
+]
+
+
+bulletpoints = []
+header = []
+
+
 # ----------------------------
 # Clean resume text
 # ----------------------------
@@ -68,20 +101,54 @@ def extract_sections(text: str) -> dict:
 
     return sections
 
-## I want to separate the descriptions possible into an array 
-def separate_description(text: str) -> dict:
-    newExperience = '/n'
-    bulletpoint = "/n-"
 
-    experiences=[]
 
-    for word in text:
+
+
+def split(line):
+    word_split = line.split()
+    for i in word_split:
+        if i.lower() in date_words:
+            return True
+    return False
+
+
         
+def get_header_array(experience_string):
+    l = 0
+
+    while l < len(experience_string):
+        r = l
+        while r < len(experience_string) and experience_string[r] != "\n":
+            r += 1
+
+        line = experience_string[l:r]
+        if split(line):
+            header.append(line)
+        
+        l = r + 1
+        
+    return header
 
 
-
-
+def get_bulletpoints(experience_string):
+    i = 0
     
+    while i < len(experience_string) and experience_string[i] != "-":
+        i += 1
+    
+    l = i
+
+    while l < len(experience_string):
+        r = l
+        while r < len(experience_string) and experience_string[r] != "-":
+            r += 1
+            
+        bulletpoints.append(experience_string[l:r]);
+
+        l = r + 1
+    
+    return bulletpoints
 
 
 
@@ -105,14 +172,23 @@ async def parse_resume(file: UploadFile = File(...)):
 
     cleaned_text = clean_resume_text(raw_text)
     sections = extract_sections(cleaned_text)
+    
 
     experience_text = None
     for key in sections:
         if key in EXPERIENCE_HEADERS:
             experience_text = sections[key]
             break
+    
+    experience_names = get_header_array(experience_text)
+    bulletpoints = get_bulletpoints(experience_text)
+
+
 
     return {
-        "experience": experience_text,
-        "sections_found": list(sections.keys())
+        #"experience": experience_text,
+        #"sections_found": list(sections.keys())
+        "headers": experience_names,
+        "bulletpoints": bulletpoints
+        
     }
