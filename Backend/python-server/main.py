@@ -114,7 +114,19 @@ def split(line):
 
 
         
-def get_header_array(experience_string):
+
+header = []
+
+def split(line):
+    word_split = line.split()
+    for i in word_split:
+        if i.lower() in date_words:
+            return True
+    return False
+
+
+        
+def make_headers(experience_string):
     l = 0
 
     while l < len(experience_string):
@@ -128,27 +140,37 @@ def get_header_array(experience_string):
         
         l = r + 1
         
-    return header
+    
 
 
-def get_bulletpoints(experience_string):
+
+def organize_experience(experience_str):
+    lines = experience_str.split("\n")
+    organized_map = {}
+
     i = 0
-    
-    while i < len(experience_string) and experience_string[i] != "-":
-        i += 1
-    
-    l = i
+    while i < len(lines):
+        line = lines[i]
 
-    while l < len(experience_string):
-        r = l
-        while r < len(experience_string) and experience_string[r] != "-":
-            r += 1
-            
-        bulletpoints.append(experience_string[l:r]);
+        # check if this line is a header
+        if line in header:
+            current_header = line
+            organized_map[current_header] = []
 
-        l = r + 1
-    
-    return bulletpoints
+            j = i + 1
+            while j < len(lines) and lines[j] not in header:
+                if lines[j].startswith("-"):
+                    organized_map[current_header].append(lines[j])
+                j += 1
+
+            i = j  # jump to next section
+        else:
+            i += 1
+
+    return organized_map
+
+
+
 
 
 
@@ -180,15 +202,14 @@ async def parse_resume(file: UploadFile = File(...)):
             experience_text = sections[key]
             break
     
-    experience_names = get_header_array(experience_text)
-    bulletpoints = get_bulletpoints(experience_text)
+    make_headers(experience_text)
+    
 
 
 
     return {
         #"experience": experience_text,
         #"sections_found": list(sections.keys())
-        "headers": experience_names,
-        "bulletpoints": bulletpoints
+        "experiences": organize_experience(experience_text)
         
     }
