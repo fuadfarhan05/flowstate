@@ -159,8 +159,7 @@ def organize_experience(experience_str):
 
             j = i + 1
             while j < len(lines) and lines[j] not in header:
-                if lines[j].startswith("-"):
-                    organized_map[current_header].append(lines[j])
+                organized_map[current_header].append(lines[j])
                 j += 1
 
             i = j  # jump to next section
