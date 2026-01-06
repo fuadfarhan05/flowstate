@@ -25,9 +25,10 @@ function Home() {
     formData.append("upload", upload);
     
 
-    //potential issue, {missing content-type, 
+    //potential issue, {missing content-type,
+    //http://localhost:3500/api/v1/endpoint1/Resume 
     try {
-      const response = await fetch(`http://localhost:3500/api/v1/endpoint1/Resume`, {
+      const response = await fetch(`http://localhost:8000/parse-resume`, {
         method: "POST",
         body: formData,
       });
