@@ -1,0 +1,1 @@
+// Skeleton route for AI implementation. 
