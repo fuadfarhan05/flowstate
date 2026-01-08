@@ -1,8 +1,18 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, UploadFile, File, HTTPException
 import pdfplumber
 import re
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 EXPERIENCE_HEADERS = [
     "experience",
@@ -169,21 +179,16 @@ def organize_experience(experience_str):
     return organized_map
 
 
-
-
-
-
-
 ##route
 @app.post("/parse-resume")
-async def parse_resume(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith(".pdf"):
+async def parse_resume(upload: UploadFile = File(...)):
+    if not upload.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="File must be a PDF")
 
     raw_text = ""
 
     try:
-        with pdfplumber.open(file.file) as pdf:
+        with pdfplumber.open(upload.file) as pdf:
             for page in pdf.pages:
                 page_text = page.extract_text()
                 if page_text:
@@ -193,22 +198,16 @@ async def parse_resume(file: UploadFile = File(...)):
 
     cleaned_text = clean_resume_text(raw_text)
     sections = extract_sections(cleaned_text)
-    
 
     experience_text = None
     for key in sections:
         if key in EXPERIENCE_HEADERS:
             experience_text = sections[key]
             break
-    
+
     make_headers(experience_text)
-    
-
-
 
     return {
-        #"experience": experience_text,
-        #"sections_found": list(sections.keys())
         "experiences": organize_experience(experience_text)
-        
     }
+
