@@ -1,7 +1,7 @@
 const express = require("express");
 const resumeRoute = express.Router();
 const multer = require("multer"); 
-const resumeparsing = require("../controllers/resumeparselogic.js"); 
+const resumeparsing = require("../controllers/resumeparselogic.controller.js"); 
 
 // handle the uploads here
 const upload = multer({
