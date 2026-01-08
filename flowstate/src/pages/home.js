@@ -19,29 +19,32 @@ function Home() {
   }
 
   const handleSubmit = async () => {
-    if (!upload) return;
+  if (!upload) return;
 
-    const formData = new FormData();
-    formData.append("upload", upload);
-    
+  const formData = new FormData();
+  formData.append("upload", upload);
 
-    //potential issue, {missing content-type,
-    //http://localhost:3500/api/v1/endpoint1/Resume 
-    try {
-      const response = await fetch(`http://localhost:8000/parse-resume`, {
-        method: "POST",
-        body: formData,
-      });
+  try {
+    const response = await fetch("http://localhost:8000/parse-resume", {
+      method: "POST",
+      body: formData,
+    });
 
-      const data = await response.json();
-      console.log("upload working", data);
+    const data = await response.json();
+    console.log("upload working", data);
 
-    } catch (error) {
-      console.log('failed to upload resume', error); 
-    }
+    navigate('/analysis', {
+      state: {
+        pdf: upload,
+        experiences: data.experiences
+      }
+    });
 
-    navigate('/analysis', { state: { pdf:upload }});
-  };
+  } catch (error) {
+    console.log('failed to upload resume', error);
+  }
+};
+
 
   return (
     <div className="App">
