@@ -64,6 +64,21 @@ function AnalysisPreview() {
 /* ---------------- CARD COMPONENT ---------------- */
 
 const ExperienceCard = ({ title, bullets }) => {
+  const generateScript = async () => {
+    try {
+      const res = await fetch("http://localhost:5434/api/v1/generate-script", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, bullets }),
+      });
+
+      const data = await res.json();
+      console.log(data.script); 
+    } catch (error) {
+      console.error("Failed to generate script", error);
+    }
+  };
+
   return (
     <div class="card"
       style={{
@@ -100,7 +115,7 @@ const ExperienceCard = ({ title, bullets }) => {
           </li>
         ))}
       </ul>
-     <button class="go-btn"><FaArrowUp /></button>
+     <button class="go-btn" onClick={generateScript}><FaArrowUp /></button>
     </div>
   );
 };
