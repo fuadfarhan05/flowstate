@@ -9,7 +9,8 @@ app.use(cors({
 }));
 
 //Importing routes here as such
-const ResumeRoute = require("./routes/resumeRoute.js"); 
+const ResumeRoute = require("./routes/resumeRoute.js");  
+const Airoute = require('./routes/AIroute.js'); 
 
 app.get('/', (req, res) => { 
   res.json({ 
@@ -18,6 +19,8 @@ app.get('/', (req, res) => {
 }); 
 
 //Initialize the routes to be called. 
-app.use("/api/v1/", ResumeRoute);   
+app.use("/api/v1/", ResumeRoute);    
+app.use("/api/v1/", Airoute);  
+
  
 module.exports = app; 
