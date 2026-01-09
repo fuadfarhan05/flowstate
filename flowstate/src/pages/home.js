@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowUp } from "react-icons/fa";
-import Particles from '../backgrounds/particles';
+//import Particles from '../backgrounds/particles';
+import Aurora from '../backgrounds/auroura';
+  
 import "../App.css"
 
 function Home() {
@@ -60,15 +62,11 @@ function Home() {
             pointerEvents: 'none'
           }}
         >
-          <Particles
-            particleColors={['#c861fcff', '#c383f4ff']}
-            particleCount={800}
-            particleSpread={15}
-            speed={0.2}
-            particleBaseSize={450}
-            moveParticlesOnHover={true}
-            alphaParticles={false}
-            disableRotation={false}
+          <Aurora
+            color1="#5a90e7"
+            color2="#a3c4f0"
+            color3="#1190df"
+            blend={0.53}
           />
         </div>
 

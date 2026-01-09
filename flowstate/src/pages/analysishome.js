@@ -23,7 +23,9 @@ function AnalysisPreview() {
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
-            minWidth: '500px'
+            minWidth: '500px',
+            marginTop: '30px',
+            marginLeft: '20px'
           }}
         >
           {experienceEntries.map(([title, bullets], index) => (
@@ -43,11 +45,9 @@ function AnalysisPreview() {
               style={{
                 width: '90%',
                 height: '100%',
-                borderColor: '#73e3ff',
-                borderWidth: '10px',
-                borderRadius:'40px',
-                 boxShadow:
-    'inset 5px 5px 15px rgba(0, 0, 0, 0.3), inset -5px -5px 15px rgba(255, 255, 255, 0.2);' 
+                borderColor: '#a3e7ffff',
+                borderWidth: '5px',
+                borderRadius:'10px'
               }}
             />
           ) : (
@@ -93,7 +93,7 @@ const ExperienceCard = ({ title, bullets }) => {
         {title}
       </h3>
 
-      <ul style={{ textAlign: 'left', marginTop: '10px', paddingLeft: '18px', opacity: 0.9 , fontWeight: '700', color: "white"  }}>
+      <ul style={{ textAlign: 'left', marginTop: '10px', paddingLeft: '18px', opacity: 0.9, color: "white"  }}>
         {bullets.map((bullet, i) => (
           <li key={i} style={{ fontSize: '17px' }}>
             {bullet.replace(/^-\s*/, '')}
