@@ -1,5 +1,5 @@
 import '../App.css'
-import { FaArrowUp } from "react-icons/fa";
+import { BsStars } from "react-icons/bs";
 import { useState } from "react";
 import { useLocation } from 'react-router-dom';
 
@@ -134,8 +134,8 @@ const ExperienceCard = ({ title, bullets }) => {
       </ul>
 
       <button className="go-btn" onClick={generateScript}>
-        <FaArrowUp />
-      </button>
+        Generate Script <BsStars/>
+      </button> 
     </div>
   );
 };
