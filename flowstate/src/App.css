@@ -210,9 +210,51 @@ html, body, #root {
   transform: translateY(20px);
 }
 
+.go-btn:hover {
+  background: #ddf8ff;
+  
+}
+
 .card:hover .go-btn {
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 0.1s ease, transform 0.1s ease;
+  transition: opacity 0.9s ease, transform 0.1s ease;
   transform: translateY(0);
 }
+
+
+.generate-text {
+  font-weight: bold;
+  color: #73e3ff;
+  font-size: 22px;
+  margin-right: 10px;
+  
+}
+
+@keyframes blink-and-bounce {
+  0% {
+    background-color: rgb(164, 226, 254);
+    transform: scale(1);
+  }
+  25% {
+    background-color: #b3f5ffc4;
+    transform: scale(1.02);
+  }
+  50% {
+    background-color: rgb(164, 226, 254);
+    transform: scale(1);
+  }
+  75% {
+    background-color: #b3f5ffc4;
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: rgb(164, 226, 254);
+    transform: scale(1);
+  }
+}
+
+.card.loading {
+  animation: blink-and-bounce 3s infinite ease-in-out;
+}
+

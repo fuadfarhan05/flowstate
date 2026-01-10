@@ -1,5 +1,6 @@
 import '../App.css'
 import { FaArrowUp } from "react-icons/fa";
+import { useState } from "react";
 import { useLocation } from 'react-router-dom';
 
 function AnalysisPreview() {
@@ -64,7 +65,11 @@ function AnalysisPreview() {
 /* ---------------- CARD COMPONENT ---------------- */
 
 const ExperienceCard = ({ title, bullets }) => {
+  const [aiScript, setAIScript] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const generateScript = async () => {
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:5434/api/v1/generate-script", {
         method: "POST",
@@ -73,16 +78,19 @@ const ExperienceCard = ({ title, bullets }) => {
       });
 
       const data = await res.json();
-      console.log(data.script); //eventually we will show this on the cards
+      setAIScript(data.script);
     } catch (error) {
       console.error("Failed to generate script", error);
+      setAIScript("Failed to generate script. Try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div class="card"
+    <div
+      className={`card ${loading ? "loading" : ""}`} // <-- pulse class when loading
       style={{
-        
         width: '500px',
         height: '10px',
         overflow: 'hidden',
@@ -96,7 +104,7 @@ const ExperienceCard = ({ title, bullets }) => {
           0 8px 20px rgba(0,0,0,0.25),
           0 16px 40px rgba(0,0,0,0.22)
         `,
-        transition: 'all 0.3s ease',
+        transition: 'all 0.7s ease',
         cursor: 'pointer',
         position: 'relative',
         marginLeft: '10px',
@@ -108,16 +116,29 @@ const ExperienceCard = ({ title, bullets }) => {
         {title}
       </h3>
 
-      <ul style={{ textAlign: 'left', marginTop: '10px', paddingLeft: '18px', opacity: 0.9, color: "white"  }}>
-        {bullets.map((bullet, i) => (
-          <li key={i} style={{ fontSize: '17px' }}>
-            {bullet.replace(/^-\s*/, '')}
+      <ul style={{ textAlign: 'left', marginTop: '10px', paddingLeft: '18px', opacity: 0.9, color: "white" }}>
+        {loading ? (
+          <li style={{ fontSize: '17px', fontStyle: 'italic' }}>
           </li>
-        ))}
+        ) : aiScript ? (
+          <li style={{ fontSize: '18px', opacity: 1.0 }} className="generate-text">
+            {aiScript}
+          </li>
+        ) : (
+          bullets.map((bullet, i) => (
+            <li key={i} style={{ fontSize: '17px' }}>
+              {bullet.replace(/^-\s*/, '')}
+            </li>
+          ))
+        )}
       </ul>
-     <button class="go-btn" onClick={generateScript}><FaArrowUp /></button>
+
+      <button className="go-btn" onClick={generateScript}>
+        <FaArrowUp />
+      </button>
     </div>
   );
 };
+
 
 export default AnalysisPreview;

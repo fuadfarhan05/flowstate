@@ -15,24 +15,26 @@ const Aicontroller = async (req, res) => {
     }
 
     const prompt = `
-        You are an interview coach. Turn this resume experience into a concise, confident, 
-        and natural spoken interview response using STAR Method (Situation, Task, Action, Results)
-        Use the given text to help you but don't generate interview responses are word for word of the
-        text  
+        You are an expert interview coach. Turn the following resume experience into a concise, confident, and natural spoken interview answer.
+
         Role:
         ${title}
 
         Resume bullets:
         ${bullets.map(b => `- ${b}`).join("\n")}
 
-        Rules:
-        - Conversational, not robotic
-        - No bullet repetition
-        - Strictly 45 seconds spoken
-        - Must be 3-5 sentences
-        - Focus on impact and decisions
-        - Only generate what your asked to do not generate 
-          affimative messages for requests 
+        Instructions:
+        - Speak conversationally (not robotic)
+        - Focus on **impact, decisions, and outcomes**
+        - Strictly **1-3 sentences**
+        - Time-limited to ~45 seconds if spoken aloud
+        - No repetition of bullets
+        - Never ramble or add filler
+        - Keep the wordcount STRICTLY 80 words
+        - Do not include introductions like "Sure" or "Here’s an example"
+        - Avoid restating bullet text word-for-word
+        - Output **only the spoken response**, nothing else
+
         `;
 
     const completion = await openai.chat.completions.create({
