@@ -73,7 +73,7 @@ const ExperienceCard = ({ title, bullets }) => {
       });
 
       const data = await res.json();
-      console.log(data.script); 
+      console.log(data.script); //eventually we will show this on the cards
     } catch (error) {
       console.error("Failed to generate script", error);
     }
