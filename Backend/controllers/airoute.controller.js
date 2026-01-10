@@ -28,7 +28,7 @@ const Aicontroller = async (req, res) => {
         Rules:
         - Conversational, not robotic
         - No bullet repetition
-        - 30–60 seconds spoken
+        - Strictly 45 seconds spoken
         - Must be 3-5 sentences
         - Focus on impact and decisions
         - Only generate what your asked to do not generate 
