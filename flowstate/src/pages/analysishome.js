@@ -109,16 +109,16 @@ const ExperienceCard = ({ title, bullets }) => {
         position: 'relative',
         marginLeft: '10px',
       }}
-      onMouseEnter={e => e.currentTarget.style.height = '350px'}
+      onMouseEnter={e => e.currentTarget.style.height = '450px'}
       onMouseLeave={e => e.currentTarget.style.height = '12px'}
     >
       <h3 style={{ margin: 0, fontSize: '25px', fontWeight: '700', color: "white" }}>
         {title}
       </h3>
 
-      <ul style={{ textAlign: 'left', marginTop: '10px', paddingLeft: '18px', opacity: 0.9, color: "white" }}>
+      <ul style={{ textAlign: 'left', marginTop: '10px', marginBottom: '100px', paddingLeft: '18px', opacity: 0.9, color: "white" }}>
         {loading ? (
-          <li style={{ fontSize: '17px', fontStyle: 'italic' }}>
+          <li style={{ fontSize: '17px', fontStyle: 'italic'}}>
           </li>
           ) : aiScript ? (
         <>
@@ -134,7 +134,7 @@ const ExperienceCard = ({ title, bullets }) => {
           {aiScript.tasks.map((task, i) => (
             <li
               key={i}
-              style={{ fontSize: '15px', opacity: 0.95, color: 'white' }}
+              style={{ fontSize: '16px', opacity: 0.95, color: 'white' }}
               className="generate-text"
               
             >
@@ -145,7 +145,7 @@ const ExperienceCard = ({ title, bullets }) => {
           {/* Impact */}
           <li
             style={{
-              fontSize: '15px',
+              fontSize: '16px',
               fontStyle: 'italic',
               marginTop: '6px',
             }}
