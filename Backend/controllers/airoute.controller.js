@@ -15,27 +15,27 @@ const Aicontroller = async (req, res) => {
     }
 
     const prompt = `
-        You are an expert interview coach. Turn the following resume experience into a concise, confident, and natural spoken interview answer.
+You are an expert interview coach.
 
-        Role:
-        ${title}
+Return ONLY valid JSON in this exact shape:
 
-        Resume bullets:
-        ${bullets.map(b => `- ${b}`).join("\n")}
+{
+  "openingLine": "",
+  "tasks": [],
+  "impact": ""
+}
 
-        Instructions:
-        - Speak conversationally (not robotic)
-        - Focus on **impact, decisions, and outcomes**
-        - Strictly **1-3 sentences**
-        - Time-limited to ~45 seconds if spoken aloud
-        - No repetition of bullets
-        - Never ramble or add filler
-        - Keep the wordcount STRICTLY 80 words
-        - Do not include introductions like "Sure" or "Here’s an example"
-        - Avoid restating bullet text word-for-word
-        - Output **only the spoken response**, nothing else
+Rules:
+- openingLine: 1 sentence
+- tasks: ONLY 3 bullet items, simple but specific
+- impact: 1 concrete outcome
 
-        `;
+Role:
+${title}
+
+Resume bullets:
+${bullets.map(b => `- ${b}`).join("\n")}
+`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -49,9 +49,26 @@ const Aicontroller = async (req, res) => {
       temperature: 0.6,
     });
 
+    // 🔹 1. Get raw text
+    const rawOutput = completion.choices[0].message.content;
+
+    // 🔹 2. Parse JSON safely
+    let parsedScript;
+    try {
+      parsedScript = JSON.parse(rawOutput);
+    } catch (parseError) {
+      console.error("JSON Parse Error:", rawOutput);
+
+      return res.status(500).json({
+        errorMessage: "AI returned invalid JSON",
+        rawOutput,
+      });
+    }
+
+    // 🔹 3. Return structured data
     res.json({
       message: "AI script generated successfully",
-      script: completion.choices[0].message.content,
+      script: parsedScript,
     });
 
   } catch (error) {

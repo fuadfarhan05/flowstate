@@ -120,11 +120,42 @@ const ExperienceCard = ({ title, bullets }) => {
         {loading ? (
           <li style={{ fontSize: '17px', fontStyle: 'italic' }}>
           </li>
-        ) : aiScript ? (
-          <li style={{ fontSize: '18px', opacity: 1.0 }} className="generate-text">
-            {aiScript}
+          ) : aiScript ? (
+        <>
+          {/* Opening Line */}
+          <li
+            style={{ fontSize: '16px', fontWeight: 700, marginBottom: '10px'}}
+            className="generate-text"
+          >
+            {aiScript.openingLine}
           </li>
-        ) : (
+
+          {/* Tasks */}
+          {aiScript.tasks.map((task, i) => (
+            <li
+              key={i}
+              style={{ fontSize: '15px', opacity: 0.95, color: 'white' }}
+              className="generate-text"
+              
+            >
+              {task}
+            </li>
+          ))}
+
+          {/* Impact */}
+          <li
+            style={{
+              fontSize: '15px',
+              fontStyle: 'italic',
+              marginTop: '6px',
+            }}
+            className="generate-text"
+          >
+            Impact: {aiScript.impact}
+          </li>
+        </>
+      ) : (
+
           bullets.map((bullet, i) => (
             <li key={i} style={{ fontSize: '17px' }}>
               {bullet.replace(/^-\s*/, '')}
