@@ -1,6 +1,9 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowUp } from "react-icons/fa";
+import { FaSheetPlastic } from "react-icons/fa6";
+
+
 //import Particles from '../backgrounds/particles';
 import Aurora from '../backgrounds/auroura';
   
@@ -70,10 +73,12 @@ function Home() {
           />
         </div>
 
-        <h1>FlowState</h1>
+        <h1 style={{marginBottom:'-5px'}}>FlowState</h1>
+        <p style={{color:'#c0c0c0'}}>The Proper Training You Need Before The Interview</p>
 
         <div className="wrapper">
-          <input type="text" className="input" placeholder="Type here..." />
+          <p style={{fontSize: '18px', color: 'white'}}>Upload Your Resume</p>
+          <p style={{color:'#b5b5b5', fontSize:'80px'}}><FaSheetPlastic /></p>
           <button className="button" onClick={handleSubmit}><FaArrowUp /></button>
           <button className="secondary-button" onClick={triggerUpload}>+</button>
 

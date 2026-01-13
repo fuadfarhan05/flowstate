@@ -31,20 +31,6 @@ function CameraPreview() {
 
   return (
     <div>
-       <div
-        style={{
-            display: "flex",
-            alignItems: "center",
-            position: "relative",
-            top: "-60px",   // 👈 move down
-            left: "30px",  // 👈 move right
-        }}
-        >
-        <h3 style={{ color: "white", fontSize: "25px", margin: 0 }}>FlowState</h3>
-        <h3 style={{ color: "#80e1f9", fontSize: "25px", marginLeft: "6px" }}>
-            Interviews
-        </h3>
-        </div>
 
       <div>
         <video
@@ -56,20 +42,19 @@ function CameraPreview() {
             width: "800px",
             height: "500px",
             borderRadius: "50px",
-            border: "5px solid #76e4ff",
+            border: "5px solid #ffffff",
             objectFit: "cover",
             boxShadow: `
                 0 0 15px rgba(44, 155, 183, 0.6),
                 0 0 40px rgba(44, 155, 183, 0.4)
                 `,
-            marginTop: '-50px',
+            marginTop: '0px',
         }}
         />
     </div> 
     
 
 
-     <h2 style={{color: 'white', fontSize: '35px'}}>Tell us about your experience at FlowState</h2>
     </div>
   );
 }
