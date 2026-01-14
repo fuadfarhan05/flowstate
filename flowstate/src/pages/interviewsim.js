@@ -14,8 +14,11 @@ function InterviewSimulation() {
       }
     ]
   };
-
-  fetch("http://localhost:8000/grade-answers", {
+ 
+  // route set up in the backend check backend -> 
+  // incorrect backend port and instantiation  
+  // recommendation suggested on PR check 
+  fetch("http://localhost:5434/api/v1/grade-answers", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(question_and_answers)
