@@ -1,7 +1,12 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowUp } from "react-icons/fa";
-import Particles from '../backgrounds/particles';
+import { FaSheetPlastic } from "react-icons/fa6";
+
+
+//import Particles from '../backgrounds/particles';
+import Aurora from '../backgrounds/auroura';
+  
 import "../App.css"
 
 function Home() {
@@ -60,22 +65,20 @@ function Home() {
             pointerEvents: 'none'
           }}
         >
-          <Particles
-            particleColors={['#c861fcff', '#c383f4ff']}
-            particleCount={800}
-            particleSpread={15}
-            speed={0.2}
-            particleBaseSize={450}
-            moveParticlesOnHover={true}
-            alphaParticles={false}
-            disableRotation={false}
+          <Aurora
+            color1="#5a90e7"
+            color2="#a3c4f0"
+            color3="#1190df"
+            blend={0.53}
           />
         </div>
 
-        <h1>FlowState</h1>
+        <h1 style={{marginBottom:'-5px'}}>FlowState</h1>
+        <p style={{color:'#c0c0c0'}}>The Proper Training You Need Before The Interview</p>
 
         <div className="wrapper">
-          <input type="text" className="input" placeholder="Type here..." />
+          <p style={{fontSize: '18px', color: 'white'}}>Upload Your Resume</p>
+          <p style={{color:'#b5b5b5', fontSize:'80px'}}><FaSheetPlastic /></p>
           <button className="button" onClick={handleSubmit}><FaArrowUp /></button>
           <button className="secondary-button" onClick={triggerUpload}>+</button>
 
