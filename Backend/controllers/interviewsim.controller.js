@@ -7,19 +7,18 @@ const interviewController = async (req, res) => {
         const {question_and_answers} = req.body;  
         if (!question_and_answers){ 
             return res.status(400).json({ 
-                Error: 'No Array - object data recieved in the backend through this POST request'
+                error: 'No Q&A data received in the backend through this POST request'
             }); 
         }  
-        return res.status(200),json({ 
-            backendRecieved: question_and_answers
-        }); 
-        // for now I will just output the data that is sent from the frontend here as such 
-        console.log(question_and_answers); 
+        return res.status(200).json({ 
+            message: 'Data received successfully',
+            data: question_and_answers
+        });
     } catch(error) { 
-        console.log('Error retrieving data', error); 
-        res.status(500).json({ 
-            Message: 'No data recieved in backend server', 
-            DetailedError: error
+        console.error('Error retrieving data:', error); 
+        return res.status(500).json({ 
+            error: 'Server error processing data', 
+            details: error.message
         }); 
     }
 } 
