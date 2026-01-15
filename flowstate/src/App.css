@@ -27,8 +27,8 @@
 
 .aurora-container {
   width: 100%;
-  height: 100%;
-  z-index: -2;
+  height:100%;
+  z-index: -1px;
 }
 
 
@@ -140,11 +140,31 @@ h1 {
   transform: scale(1.05);
 }
 
+.next-button {
+  margin-top: 20px;
+  width: 300px;
+  height: 45px;
+  background-color: rgb(245, 245, 245);
+  box-shadow:
+  inset 3px 3px 6px rgba(0, 0, 0, 0.25),
+  inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+
+  border-radius: 25px;
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+
+
+}
+
+.next-button:hover {
+  background-color: #c6fcff;
+}
+
 /* Uploaded File Bubble */
 .upload-name {
   font-size: 18px;
   color: rgb(255, 255, 255);
-  width: 200px;
+  width: 150px;
   height: 100px;
   display: flex;
   align-items: center;
@@ -200,7 +220,6 @@ html, body, #root {
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  font-weight:bold;
   color: #000;
 
   /* inset shadows make it look pressed in */
@@ -217,6 +236,23 @@ html, body, #root {
 .go-btn:hover {
   color: #2c9bb7;
   
+}
+
+.test-button {
+  margin-top: 10px;
+  width: 200px;
+  height: 35px;
+  background: #f1f5f6;
+  border: none;
+  font-size: 20px;
+  border-radius: 30px;
+  color: #000000;
+
+  /* inset shadows make it look pressed in */
+  box-shadow:
+    inset 3px 3px 6px rgba(0,0,0,0.3),  /* dark shadow bottom-right */
+    inset -3px -3px 6px rgba(255,255,255,0.6); /* highlight top-left */
+
 }
 
 .card:hover .go-btn {

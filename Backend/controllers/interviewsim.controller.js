@@ -4,15 +4,16 @@ const interviewController = async (req, res) => {
     // get the frontend data here as such first i implement try and catch case since that is best practice 
     //goal of this controller is to just have it where it just recieves the data from the frontend.  
     try { 
-        const {question_and_answers} = req.body;  
-        if (!question_and_answers){ 
-            return res.status(400).json({ 
-                error: 'No Q&A data received in the backend through this POST request'
-            }); 
+        const { qa_pairs } = req.body;
+
+        if (!qa_pairs || !Array.isArray(qa_pairs) || qa_pairs.length === 0) {
+            return res.status(400).json({
+                error: "No Q&A pairs received"
+            });
         }  
         return res.status(200).json({ 
             message: 'Data received successfully',
-            data: question_and_answers
+            data: qa_pairs
         });
     } catch(error) { 
         console.error('Error retrieving data:', error); 
@@ -22,5 +23,4 @@ const interviewController = async (req, res) => {
         }); 
     }
 } 
-
 module.exports = interviewController; 

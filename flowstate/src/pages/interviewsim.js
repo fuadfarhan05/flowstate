@@ -1,32 +1,66 @@
 import CameraPreview from "../components/CameraMic";
 import useContinuousSpeech from "../components/speechtotext";
+import {useState} from 'react'
 import Aurora from "../backgrounds/auroura";
+import { useLocation } from "react-router-dom";
 
 function InterviewSimulation() {
-  const question = "Tell us about your experience at FlowState";
+
+  const location = useLocation();
+  const experienceTitle = location.state?.experienceTitle;
+  
+  const [count, setCount] = useState(0);
+  const questionList = [
+  `Tell me about your experience at ${experienceTitle}`,
+  "What challenges did you face during this experience?",
+  "What impactful contributions did you make in this experience?"
+];
+
+  
   const { transcript } = useContinuousSpeech();
 
-  const question_and_answers = {
-    qa_pairs: [
-      {
-        question: question,
-        answer: transcript
-      }
-    ]
-  };
- 
-  // route set up in the backend check backend -> 
-  // incorrect backend port and instantiation  
-  // recommendation suggested on PR check 
-  fetch("http://localhost:5434/api/v1/grade-answers", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(question_and_answers)
-  })
-  .then(res => res.json())
-  .then(result => console.log(result))
-  .catch(err => console.error(err));
+  const questionrender =
+  count < questionList.length
+    ? questionList[count]
+    : "You're Done";
 
+  function nextQuestion() {
+    if (count < questionList.length) {
+      gradeAnswer(count);
+      setCount(prev => prev + 1);
+    }
+  }
+
+
+  const gradeAnswer = async () => {
+      const question_and_answers = {
+      qa_pairs: [
+        {
+          question: questionList[count],
+          answer: transcript
+        }
+      ]
+    };
+      try {
+        const res = await fetch("http://localhost:5434/api/v1/grade-answers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(question_and_answers)
+
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const result = await res.json();
+      console.log(result);
+
+
+      } catch(error) {
+        console.log("failed to retrieve your answer", error);
+      }
+  }
 
   return (
     <div
@@ -63,21 +97,23 @@ function InterviewSimulation() {
             Interviews
           </h3>
         </div>
-
-        <CameraPreview />
-
         <h2
           style={{
             color: "white",
             fontSize: "30px",
-            marginBottom: "10px",
             textAlign: "center",
+            marginTop: "-15px",
           }}
         >
-          {question}
+          Q: {questionrender}
         </h2>
+
+        <CameraPreview />
+        
+        <p style={{color:'white'}}>{transcript}</p>
+        <button className="next-button" onClick={nextQuestion}>Next Question</button>
       </div>
-      <Aurora />
+      
     </div>
   );
 }

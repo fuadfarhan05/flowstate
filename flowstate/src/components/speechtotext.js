@@ -18,13 +18,21 @@ export default function useContinuousSpeech() {
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
+    //changed so text appends at the end
     recognition.onresult = (event) => {
       let finalTranscript = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        finalTranscript += event.results[i][0].transcript;
+        const result = event.results[i];
+        if (result.isFinal) {
+          finalTranscript += result[0].transcript + " ";
+        }
       }
-      setTranscript((prev) => prev + " " + finalTranscript);
+
+      if (finalTranscript) {
+        setTranscript((prev) => prev + finalTranscript);
+      }
     };
+
 
     recognition.onend = () => {
       if (listeningRef.current) recognition.start(); // auto-restart

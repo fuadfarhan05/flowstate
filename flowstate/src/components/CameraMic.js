@@ -49,6 +49,7 @@ function CameraPreview() {
                 0 0 40px rgba(44, 155, 183, 0.4)
                 `,
             marginTop: '0px',
+            marginBottom: '0px',
         }}
         />
     </div> 
