@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useLocation } from "react-router-dom";
+import ElevenLabs from '../components/elevenlabcomp';
 
 function InterviewSimulation() {
 
@@ -49,7 +50,7 @@ function InterviewSimulation() {
           Q:
         </h2>
 
-  
+        <ElevenLabs/>
         <button className="next-button">Next Question</button>
       </div>
       
