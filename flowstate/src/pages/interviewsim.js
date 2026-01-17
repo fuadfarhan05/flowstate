@@ -51,7 +51,6 @@ function InterviewSimulation() {
         </h2>
 
         <ElevenLabs/>
-        <button className="next-button">Next Question</button>
       </div>
       
     </div>
