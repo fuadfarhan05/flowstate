@@ -1,32 +1,8 @@
-import CameraPreview from "../components/CameraMic";
-import useContinuousSpeech from "../components/speechtotext";
-import Aurora from "../backgrounds/auroura";
+import { useState } from 'react'
+import { useLocation } from "react-router-dom";
+import ElevenLabs from '../components/elevenlabcomp';
 
 function InterviewSimulation() {
-  const question = "Tell us about your experience at FlowState";
-  const { transcript } = useContinuousSpeech();
-
-  const question_and_answers = {
-    qa_pairs: [
-      {
-        question: question,
-        answer: transcript
-      }
-    ]
-  };
- 
-  // route set up in the backend check backend -> 
-  // incorrect backend port and instantiation  
-  // recommendation suggested on PR check 
-  fetch("http://localhost:5434/api/v1/grade-answers", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(question_and_answers)
-  })
-  .then(res => res.json())
-  .then(result => console.log(result))
-  .catch(err => console.error(err));
-
 
   return (
     <div
@@ -63,21 +39,21 @@ function InterviewSimulation() {
             Interviews
           </h3>
         </div>
-
-        <CameraPreview />
-
         <h2
           style={{
             color: "white",
             fontSize: "30px",
-            marginBottom: "10px",
             textAlign: "center",
+            marginTop: "-15px",
           }}
         >
-          {question}
+          Q:
         </h2>
+
+        <ElevenLabs/>
+        <button className="next-button">Next Question</button>
       </div>
-      <Aurora />
+      
     </div>
   );
 }

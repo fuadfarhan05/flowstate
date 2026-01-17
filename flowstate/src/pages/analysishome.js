@@ -1,7 +1,10 @@
 import '../App.css'
 import { BsStars } from "react-icons/bs";
 import { useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { FaArrowRightLong } from "react-icons/fa6";
+
+import { useLocation,useNavigate } from 'react-router-dom';
+
 
 function AnalysisPreview() {
   const location = useLocation();
@@ -10,6 +13,7 @@ function AnalysisPreview() {
   const pdf = location.state?.pdf;
 
   const experienceEntries = Object.entries(experiences);
+  
 
   return (
     <div className="App">
@@ -48,7 +52,7 @@ function AnalysisPreview() {
                 height: '100%',
                 borderColor: '#a3e7ffff',
                 borderWidth: '5px',
-                borderRadius:'10px'
+                borderRadius:'10px',
               }}
             />
           ) : (
@@ -67,6 +71,9 @@ function AnalysisPreview() {
 const ExperienceCard = ({ title, bullets }) => {
   const [aiScript, setAIScript] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
 
   const generateScript = async () => {
     setLoading(true);
@@ -110,7 +117,7 @@ const ExperienceCard = ({ title, bullets }) => {
         marginLeft: '10px',
       }}
       onMouseEnter={e => e.currentTarget.style.height = '450px'}
-      onMouseLeave={e => e.currentTarget.style.height = '12px'}
+      onMouseLeave={e => e.currentTarget.style.height = '20px'}
     >
       <h3 style={{ margin: 0, fontSize: '25px', fontWeight: '700', color: "white" }}>
         {title}
@@ -140,6 +147,8 @@ const ExperienceCard = ({ title, bullets }) => {
             >
               {task}
             </li>
+
+            
           ))}
 
           {/* Impact */}
@@ -153,7 +162,18 @@ const ExperienceCard = ({ title, bullets }) => {
           >
             Impact: {aiScript.impact}
           </li>
+
+           <button className="test-button"
+        onClick={() =>
+          navigate("/interview", {
+            state: {experienceTitle: title}
+          })
+        }
+        > 
+          Test Me
+        </button>
         </>
+        
       ) : (
 
           bullets.map((bullet, i) => (
@@ -163,10 +183,12 @@ const ExperienceCard = ({ title, bullets }) => {
           ))
         )}
       </ul>
+    <div>
+        <button className="go-btn" onClick={generateScript}>
+          Generate Script <BsStars />
+        </button>
 
-      <button className="go-btn" onClick={generateScript}>
-        Generate Script <BsStars/>
-      </button> 
+    </div>
     </div>
   );
 };
