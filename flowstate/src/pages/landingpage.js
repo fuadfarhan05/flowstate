@@ -86,15 +86,15 @@ function Landing() {
             <div className="testimonial-grid">
                 <div className="testimonial-card">
                 <p>
-                    The idea of FlowState originated when I didn't find any easy way to learn how to speak confidentally. I also didn't know how to prepare for an interview without having to ask another person test me. My priority for FlowState was to make sure it can help users with both being prepared and confident. - Fuad <strong>(Founder of FlowState)</strong>
+                    The idea of FlowState originated when I didn't find any easy way to learn how to speak confidentally. I also didn't know how to prepare for an interview without having to ask another person test me. My priority for FlowState was to make sure it can help users with both being prepared and confident.<br></br><br></br>  - Fuad <strong>(Founder of FlowState)</strong>
                 </p>
                 </div>
 
                 <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
                 <p>
-                    The real-time feedback completely changed how I prepare. I finally
-                    know what interviewers are listening for.
+                    FlowState was never just a project for Fuad and I, it was personal. We both experienced how unpredictable the job market can be, where even landing an internship feels uncertain. We’d quiz each other, run mock interviews, and review resumes, but it never matched the pressure of the real thing. We knew there had to be a better way. That’s why we built FlowState.
+<br></br><br></br> - Rayat <strong>(Co-Founder of FlowState)</strong>
+
                 </p>
                 </div>
 
