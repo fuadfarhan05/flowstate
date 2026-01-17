@@ -6,11 +6,9 @@ export default function ElevenLabs() {
   const isSpeakingRef = useRef(false);
   const currentAnswerRef = useRef("");
 
-  const SILENCE_DURATION = 4000; // ms
+  const SILENCE_DURATION = 5000; // ms
 
   
-
-  /* -------------------- SILENCE HANDLING -------------------- */
 
   const clearSilenceTimer = () => {
     if (silenceTimeoutRef.current) {
@@ -30,7 +28,6 @@ export default function ElevenLabs() {
     const finalAnswer = currentAnswerRef.current.trim();
     if (!finalAnswer) return;
 
-    // ✅ save answer (or send to backend)
 
     // reset buffer
     currentAnswerRef.current = "";
@@ -40,8 +37,6 @@ export default function ElevenLabs() {
     clearSilenceTimer();
     silenceTimeoutRef.current = setTimeout(handleSilence, SILENCE_DURATION);
   };
-
-  /* -------------------- SCRIBE -------------------- */
 
   const scribe = useScribe({
     modelId: "scribe_v2_realtime",
