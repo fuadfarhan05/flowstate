@@ -170,7 +170,7 @@ const ExperienceCard = ({ title, bullets }) => {
           })
         }
         > 
-          Test Me
+          Practice AI Interview
         </button>
         </>
         
