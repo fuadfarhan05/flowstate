@@ -5,8 +5,4 @@ We are facing a problem of our resumes not being properly seen because of ATS sc
 
 If you feel that you aren't proficient at a particular things on your resume, FlowState will help you confidently speak about it. 
 
-
-Beyond interview prep, FlowState streamlines professional networking by intelligently connecting users to relevant engineers, recruiters, or professionals in their target companies via LinkedIn, eliminating the tedious manual search process. With FlowState, you can practice, learn, and build meaningful connections—all in one seamless platform.
-
-
 <img width="1463" height="755" alt="flowstatenew" src="https://github.com/user-attachments/assets/1c52bdeb-39ca-479d-bf78-a0a8da9d70bb" />
