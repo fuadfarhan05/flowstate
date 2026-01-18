@@ -7,6 +7,6 @@ const openai = new OpenAI({
 
 const generateQuestions = async (req, res) => {
 
+}; 
 
-
-};
+module.exports = generateQuestions; 
