@@ -1,7 +1,9 @@
 import { useScribe } from "@elevenlabs/react";
 import { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ElevenLabs() {
+  const navigate = useNavigate();
   const silenceTimeoutRef = useRef(null);
   const isSpeakingRef = useRef(false);
   const currentAnswerRef = useRef("");
@@ -56,7 +58,6 @@ export default function ElevenLabs() {
     },
   });
 
-  /* -------------------- CONNECTION -------------------- */
 
   async function fetchTokenFromServer() {
     const res = await fetch("http://localhost:5434/api/v1/scribe-token");
@@ -65,7 +66,7 @@ export default function ElevenLabs() {
   }
 
   const handleStart = async () => {
-    if (scribe.isConnected) return;
+    
 
     const token = await fetchTokenFromServer();
 
@@ -80,7 +81,29 @@ export default function ElevenLabs() {
     console.log("🎙️ Continuous listening started");
   };
 
+  const handleSaveAnswer = async (answerText) => {
+    if(!answerText) return;
+    try {
+      const response = await fetch("http://localhost:5434/api/v1/grade-answers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          answer: answerText,
+      }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.log("Failed to send to server", error);
+    }
+
+  };
+
   useEffect(() => {
+    handleStart();
     return () => {
       clearSilenceTimer();
       if (scribe.isConnected) {
@@ -89,7 +112,7 @@ export default function ElevenLabs() {
     };
   }, []);
 
-  handleStart();
+ 
 
   return (
     <div style={{ padding: 20 }}>
@@ -104,6 +127,7 @@ export default function ElevenLabs() {
       onClick={() => {
         clearSilenceTimer();
         scribe.disconnect();
+        handleSaveAnswer(scribe.partialTranscript);
         handleStart();
       }}
     >
@@ -111,14 +135,12 @@ export default function ElevenLabs() {
     </button>
 
     <button onClick={async () => {
-      await scribe.disconnect();
+      scribe.disconnect();
+      navigate("/home");
+
     }}>
       End
     </button>
-
-
-
-
     </div>
   );
 }
