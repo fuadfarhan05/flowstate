@@ -39,16 +39,6 @@ function InterviewSimulation() {
             Interviews
           </h3>
         </div>
-        <h2
-          style={{
-            color: "white",
-            fontSize: "30px",
-            textAlign: "center",
-            marginTop: "-15px",
-          }}
-        >
-          Q:
-        </h2>
 
         <ElevenLabs/>
       </div>

@@ -1,9 +1,9 @@
 const express = require('express'); 
-const genQuestions = express.Router();  
+const GenQuestionsRoute = express.Router();  
 
-const generateQuestions = require('../controllers/interviewsim.controller.js'); 
+const GenerateQuestions = require('../controllers/generatequestion.controller.js'); 
 
 
-genQuestions.post('/grade-answers', generateQuestions); 
+GenQuestionsRoute.post('/generate-questions', GenerateQuestions); 
 
-module.exports = genQuestions;
+module.exports = GenQuestionsRoute;
