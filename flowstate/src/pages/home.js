@@ -5,9 +5,9 @@ import { FaSheetPlastic } from "react-icons/fa6";
 
 
 //import Particles from '../backgrounds/particles';
-import Aurora from '../backgrounds/auroura';
+import Aurora from '../backgrounds/Aurura.js';
   
-import "../App.css"
+import "../styles/App.css"
 
 function Home() {
   const navigate = useNavigate();
