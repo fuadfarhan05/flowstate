@@ -115,10 +115,6 @@ export default function ElevenLabs() {
     }}>
       End
     </button>
-
-
-
-
     </div>
   );
 }
