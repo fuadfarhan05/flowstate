@@ -11,8 +11,8 @@ app.use(cors({
 //Importing routes here as such
 const Airoute = require('./routes/AI.route.js');  
 const interviewsimRoute = require('./routes/interviewsim.route.js'); 
-const ElevenLabsRoute = require('./routes/scribeToken.js');
-const GenQuestionsRoute = require('./routes/genquestions.js');
+const ElevenLabsRoute = require('./routes/scribeToken.route.js');
+const GenQuestionsRoute = require('./routes/genquestions.route.js');
 
 app.get('/', (req, res) => { 
   res.json({ 
