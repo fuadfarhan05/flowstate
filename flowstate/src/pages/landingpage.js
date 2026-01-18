@@ -99,10 +99,8 @@ function Landing() {
                 </div>
 
                 <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
                 <p>
-                    Behavioral interviews used to feel random. Flowstate gave me structure
-                    and confidence in every answer.
+                    Using flowstate helped me understand my resume more and gave me scripts to improve on real interviews. <br></br><br></br> - Kyle <strong>- Engineer @ FlowState</strong>
                 </p>
                 </div>
             </div>
