@@ -20,15 +20,16 @@ app.get('/', (req, res) => {
   }); 
 }); 
 
-console.log("ResumeRoute:", ResumeRoute);
-console.log("Airoute:", Airoute);
-console.log("interviewsimRoute:", interviewsimRoute);
-console.log("ElevenLabsRoute:", ElevenLabsRoute);
+//console.log("ResumeRoute:", ResumeRoute);
+//console.log("Airoute:", Airoute);
+//console.log("interviewsimRoute:", interviewsimRoute);
+//console.log("ElevenLabsRoute:", ElevenLabsRoute);
 
 //Initialize the routes to be called. 
 app.use("/api/v1/", ResumeRoute);    
 app.use("/api/v1/", Airoute);  
 app.use("/api/v1/", interviewsimRoute); 
 app.use("/api/v1/", ElevenLabsRoute);
+app.use("api/v1/");
  
 module.exports = app; 
