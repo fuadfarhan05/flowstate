@@ -1,4 +1,4 @@
-import '../App.css';
+import '../styles/landing.css'
 import UploadImg from '../images/flowstateuploadimg.png'
 import grade from '../images/grade.png'
 
