@@ -1,10 +1,10 @@
-import '../App.css'
+
 import { BsStars } from "react-icons/bs";
 import { useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
-
 import { useLocation,useNavigate } from 'react-router-dom';
 
+import '../styles/App.css'; 
 
 function AnalysisPreview() {
   const location = useLocation();
