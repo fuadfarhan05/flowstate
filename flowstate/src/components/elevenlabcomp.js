@@ -1,5 +1,5 @@
 import { useScribe } from "@elevenlabs/react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ElevenLabs() {
@@ -7,8 +7,9 @@ export default function ElevenLabs() {
   const silenceTimeoutRef = useRef(null);
   const isSpeakingRef = useRef(false);
   const currentAnswerRef = useRef("");
+  const [currentQuestion, setCurrentQuestion] = useState("");
 
-  const SILENCE_DURATION = 5000; // ms
+  const SILENCE_DURATION = 5000; 
 
   
 
@@ -81,10 +82,11 @@ export default function ElevenLabs() {
     console.log("🎙️ Continuous listening started");
   };
 
+
   const handleSaveAnswer = async (answerText) => {
     if(!answerText) return;
     try {
-      const response = await fetch("http://localhost:5434/api/v1/grade-answers", {
+      const res = await fetch("http://localhost:5434/api/v1/generate-questions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,8 +96,9 @@ export default function ElevenLabs() {
       }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
       console.log(data);
+      setCurrentQuestion(data.question);
     } catch (error) {
       console.log("Failed to send to server", error);
     }
@@ -103,6 +106,7 @@ export default function ElevenLabs() {
   };
 
   useEffect(() => {
+    setCurrentQuestion("Tell me about yourself.");
     handleStart();
     return () => {
       clearSilenceTimer();
@@ -117,13 +121,16 @@ export default function ElevenLabs() {
   return (
     <div style={{ padding: 20 }}>
 
+      <h3 style={{color:"white", fontSize: "30px"}}>Q: {currentQuestion}</h3>
+
       <p className="listening-tag" style={{color:"white"}}> {scribe.isConnected ? "Listening" : "start speaking when ready"}</p>
 
       {scribe.partialTranscript && (
         <p style={{color:"white"}}><strong>Live:</strong> {scribe.partialTranscript}</p>
       )}
 
-      <button
+
+    <button
       onClick={() => {
         clearSilenceTimer();
         scribe.disconnect();
