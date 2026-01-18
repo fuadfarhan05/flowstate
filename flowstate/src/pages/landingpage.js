@@ -1,4 +1,4 @@
-import '../App.css';
+import '../styles/landing.css'
 import UploadImg from '../images/flowstateuploadimg.png'
 import grade from '../images/grade.png'
 
@@ -18,7 +18,7 @@ function Landing() {
                         <li>Pricing</li>
                     </ul>
 
-                    <button className="nav-btn">Get Started</button>
+                    <button className="nav-btn">Sign In</button>
                     </nav>
             </div>
 
@@ -72,10 +72,9 @@ function Landing() {
                 
 
                 <p className="section-label">PREPARATION WITH PRACTICE</p>
-                <h2>Interview Practice</h2>
+                <h2>Speaking Practice</h2>
                 <p className="description">
-                Get detailed insights on task completion, team performance,
-                and progress with customizable reports.
+                Improve speaking confidence and skills for your interviews and with grades and feedback.
                 </p>
             </div>
             </div>
