@@ -5,7 +5,7 @@ import { FaSheetPlastic } from "react-icons/fa6";
 
 
 //import Particles from '../backgrounds/particles';
-import Aurora from '../backgrounds/Aurura.js';
+import Aurora from '../backgrounds/Aurora.js';
   
 import "../styles/App.css"
 

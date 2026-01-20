@@ -12,7 +12,7 @@ app.use(cors({
 const Airoute = require('./routes/AI.route.js');  
 const interviewsimRoute = require('./routes/interviewsim.route.js'); 
 const ElevenLabsRoute = require('./routes/scribeToken.route.js');
-const GenQuestionsRoute = require('./routes/genquestions.route.js');
+const GenerateQuestionsRoute = require('./routes/genquestions.route.js');
 
 app.get('/', (req, res) => { 
   res.json({ 
@@ -25,6 +25,6 @@ app.get('/', (req, res) => {
 app.use("/api/v1/", Airoute);  
 app.use("/api/v1/", interviewsimRoute); 
 app.use("/api/v1/", ElevenLabsRoute);
-app.use("api/v1/", GeneralQuestionsRoute);
+app.use("api/v1/", GenerateQuestionsRoute);
  
 module.exports = app; 
