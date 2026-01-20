@@ -12,7 +12,7 @@ export default function ElevenLabs() {
   const currentAnswerRef = useRef("");
   const [currentQuestion, setCurrentQuestion] = useState("");
 
-  const SILENCE_DURATION = 10000; 
+  const SILENCE_DURATION = 5000; 
   
   const clearSilenceTimer = () => {
     if (silenceTimeoutRef.current) {
@@ -90,7 +90,7 @@ export default function ElevenLabs() {
   const handleSaveAnswer = async (answerText) => {
     if(!answerText) return;
 
-    console.log("answer: ", answerText)
+    console.log("Your Answer: ", answerText)
     try {
       const res = await fetch("http://localhost:5434/api/v1/generate-questions", {
         method: "POST",
