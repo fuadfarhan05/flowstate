@@ -397,11 +397,43 @@
   margin-bottom: 16px;
 }
 
+/* Make the entire title container take full viewport and center content */
 .title {
-  font-size: 48px;
-  color: white;
-  margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+  align-items: center;     /* horizontal centering */
+  text-align: center;
+  gap: 16px;               /* space between brand and tagline */
 }
+
+/* Brand (logo + title) */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between logo and text */
+}
+
+/* Logo size */
+.logo {
+  width: 48px;
+  height: 48px;
+}
+
+/* Title styling */
+.brand h1 {
+  font-size: 48px;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Tagline styling */
+.tagline {
+  font-size: 22px;
+  color: #c0c0c0;
+  max-width: 600px;
+}
+
 
 .title span {
   color: #aab0c0;
