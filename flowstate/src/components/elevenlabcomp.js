@@ -1,6 +1,9 @@
 import { useScribe } from "@elevenlabs/react";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../styles/elevenstyle.css';
+
+
 
 export default function ElevenLabs() {
   const navigate = useNavigate();
@@ -9,10 +12,8 @@ export default function ElevenLabs() {
   const currentAnswerRef = useRef("");
   const [currentQuestion, setCurrentQuestion] = useState("");
 
-  const SILENCE_DURATION = 5000; 
-
+  const SILENCE_DURATION = 10000; 
   
-
   const clearSilenceTimer = () => {
     if (silenceTimeoutRef.current) {
       clearTimeout(silenceTimeoutRef.current);
@@ -31,8 +32,11 @@ export default function ElevenLabs() {
     const finalAnswer = currentAnswerRef.current.trim();
     if (!finalAnswer) return;
 
+    handleSaveAnswer(finalAnswer);
+    
 
-    // reset buffer
+
+    //reset buffer
     currentAnswerRef.current = "";
   };
 
@@ -85,6 +89,8 @@ export default function ElevenLabs() {
 
   const handleSaveAnswer = async (answerText) => {
     if(!answerText) return;
+
+    console.log("answer: ", answerText)
     try {
       const res = await fetch("http://localhost:5434/api/v1/generate-questions", {
         method: "POST",
@@ -123,14 +129,20 @@ export default function ElevenLabs() {
 
       <h3 style={{color:"white", fontSize: "30px"}}>Q: {currentQuestion}</h3>
 
-      <p className="listening-tag" style={{color:"white"}}> {scribe.isConnected ? "Listening" : "start speaking when ready"}</p>
+      <p className="listening-tag"> {scribe.isConnected ? "Listening" : "start speaking when ready"}</p>
 
-      {scribe.partialTranscript && (
-        <p style={{color:"white"}}><strong>Live:</strong> {scribe.partialTranscript}</p>
-      )}
+      {scribe.partialTranscript
+        //<p style={{color:"white"}}><strong>Live:</strong> {scribe.partialTranscript}</p>
+      }
+
+      <div>
+         <div>
+      </div>
+      </div>
 
 
     <button
+      className="next-btn"
       onClick={() => {
         clearSilenceTimer();
         scribe.disconnect();
@@ -141,7 +153,9 @@ export default function ElevenLabs() {
       Next Question
     </button>
 
-    <button onClick={async () => {
+    <button 
+    className="end-btn"
+    onClick={async () => {
       scribe.disconnect();
       navigate("/home");
 

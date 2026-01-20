@@ -25,6 +25,6 @@ app.get('/', (req, res) => {
 app.use("/api/v1/", Airoute);  
 app.use("/api/v1/", interviewsimRoute); 
 app.use("/api/v1/", ElevenLabsRoute);
-app.use("api/v1/", GenerateQuestionsRoute);
+app.use("/api/v1/", GenerateQuestionsRoute);
  
 module.exports = app; 
