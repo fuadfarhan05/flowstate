@@ -1,6 +1,7 @@
 import '../styles/landing.css'
 import UploadImg from '../images/flowstateuploadimg.png'
 import grade from '../images/grade.png'
+import logo from '../images/flowstatelogo.png'
 
 function Landing() {
 
@@ -9,7 +10,10 @@ function Landing() {
             <div className="navbar">
 
                 <nav className="glass-navbar">
-                    <div className="nav-left">Flowstate</div>
+                    <div className="nav-left" style={{display:'flex'}}>
+                        <img style={{marginTop: '10px',width: "32px", height: "32px"}} src={logo} alt="flowstate-logo" />
+                        <p style={{marginTop: "15px"}}>Flowstate</p>
+                        </div>
 
                     <ul className="nav-links">
                         <li>Features</li>
@@ -25,7 +29,12 @@ function Landing() {
             <p style={{color: "#7f9bff", fontSize: "20px", marginTop: "150px"}}>Enter Your</p>
 
             <div className="title">
-                <h1 style={{marginTop: '0px'}}>FlowState</h1>
+                <div style={{display: "flex"}}>
+                    <img style={{marginTop: '15px', width: "100px", height: "100px"}} src={logo} alt="flowstate-logo" />
+                    <h1 style={{marginTop: '30px'}}>FlowState</h1>
+
+                </div>
+                
                 <p style={{color:'#c0c0c0', fontSize: "30px"}}>The Proper Training You Need Before The Interview</p>
 
             </div>
