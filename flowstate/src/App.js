@@ -4,6 +4,7 @@ import Home from './pages/home';
 import AnalysisPreview from './pages/analysishome';
 import InterviewSimulation from './pages/interviewsim';
 import Landing from './pages/landingpage';
+import GradeArchives from './pages/gradearchives';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/analysis" element={<AnalysisPreview />} />
         <Route path="/interview" element={<InterviewSimulation/>} />
+        <Route path="/archives" element={<GradeArchives/>} />
       </Routes>
     </Router>
    </div>
