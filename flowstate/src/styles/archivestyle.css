@@ -1,53 +1,48 @@
 .body {
-    background-color:black;
+  background-color: black;
 }
 
 .start-btn {
-    margin-top: 60px;
-    background-color: rgb(250, 53, 53);
-    color: white;
-    padding: 10px;
-    font-size: 18px;
-    border: none;
-    border-radius: 10px;
-
-
-
+  margin-top: 60px;
+  background-color: rgb(250, 53, 53);
+  color: white;
+  padding: 10px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
 }
 
 .archive-list {
-    margin-top: 100px;
+  margin-top: 100px;
 }
 
 .glass-container {
-    margin: 0 auto;
-    margin-bottom: 20px;
-    width: 80%;
-    height: 80px;
-    padding: 24px 28px;
-    border-radius: 35px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  width: 80%;
+  height: 80px;
+  padding: 24px 28px;
+  border-radius: 35px;
 
-    /* Glass effect */
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.15),
-        rgba(255, 255, 255, 0.05)
-    );
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  /* Glass effect */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
 
-    /* Border + glow */
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  /* Border + glow */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-
+  color: #fff;
+  position: relative;
+  overflow: hidden;
 }
-
 
 .container-content {
   display: flex;
@@ -61,7 +56,6 @@
   padding: 15px;
   margin-top: -15px;
   margin-left: -15px;
-
 
   align-items: center;
   justify-content: center;
@@ -87,8 +81,6 @@
   box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(252, 253, 191, 0.4);
-
-  
 }
 
 .grade-circle.blue {
@@ -108,7 +100,6 @@
     inset 0 1px 0 rgba(220, 235, 255, 0.45);
 }
 
-
 .grade-circle.green {
   color: rgb(220, 255, 235);
 
@@ -126,20 +117,12 @@
     inset 0 1px 0 rgba(220, 255, 235, 0.45);
 }
 
-
-
-
-
 .feedback-text {
-    margin: 0 auto;
-    width: 750px;
+  margin: 0 auto;
+  width: 750px;
 }
 
 .date {
-    margin-top: 15px;
-    color: rgb(137, 139, 137);
+  margin-top: 15px;
+  color: rgb(137, 139, 137);
 }
-
-
-
-

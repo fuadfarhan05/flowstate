@@ -1,10 +1,8 @@
-const express = require('express'); 
-const interviewsim = express.Router();  
-// import the controller here as such 
-const interviewController = require('../controllers/interviewsim.controller.js'); 
+const express = require("express");
+const interviewsim = express.Router();
+// import the controller here as such
+const interviewController = require("../controllers/interviewsim.controller.js");
 
-const hivariabletest = "hi"; 
-
-interviewsim.post('/grade-answers', interviewController); 
+interviewsim.post("/grade-answers", interviewController);
 
 module.exports = interviewsim;
