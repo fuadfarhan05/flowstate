@@ -4,7 +4,6 @@
   z-index: 1000;
 }
 
-
 .glass-navbar {
   top: 0;
   z-index: 1000;
@@ -89,7 +88,9 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.3),
     0 6px 20px rgba(0, 0, 0, 0.15);
 
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .nav-btn:hover {
@@ -99,11 +100,9 @@
     0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-
-
 .get-started {
-  height:50px;
-  width:150px;
+  height: 50px;
+  width: 150px;
   font-weight: bold;
   font-size: 15px;
   margin: 20px;
@@ -118,31 +117,26 @@
   color: rgb(255, 254, 254);
   font-weight: 1000;
   cursor: pointer;
-  border:none;
+  border: none;
 }
 
 .learn-more-btn {
-  height:50px;
-  width:150px;
+  height: 50px;
+  width: 150px;
   font-weight: bold;
-  font-size:15px;
+  font-size: 15px;
   border-radius: 15px;
   background-color: white;
   color: rgb(90, 90, 90);
-  border:none;
-
-  
-
+  border: none;
 }
 
-
-.main-img{
+.main-img {
   width: 90%;
   height: 100%;
-  border:solid blue 2px;
+  border: solid blue 2px;
   margin: 0 auto;
 }
-
 
 .grade-card {
   width: 85%;
@@ -152,7 +146,8 @@
   justify-content: space-between;
   align-items: center;
 
-  background: radial-gradient(
+  background:
+    radial-gradient(
       120% 120% at 100% 0%,
       rgba(80, 120, 255, 0.12),
       transparent 60%
@@ -382,7 +377,6 @@
   }
 }
 
-
 .testimonials {
   margin-top: 50px;
   padding: 120px 40px;
@@ -402,9 +396,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center; /* vertical centering */
-  align-items: center;     /* horizontal centering */
+  align-items: center; /* horizontal centering */
   text-align: center;
-  gap: 16px;               /* space between brand and tagline */
+  gap: 16px; /* space between brand and tagline */
 }
 
 /* Brand (logo + title) */
@@ -433,7 +427,6 @@
   color: #c0c0c0;
   max-width: 600px;
 }
-
 
 .title span {
   color: #aab0c0;
@@ -480,7 +473,6 @@
 }
 
 .background {
-
   background-color: #000000; /* dark base */
   background-image:
     linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px),
@@ -488,4 +480,3 @@
 
   background-size: 40px 40px;
 }
-

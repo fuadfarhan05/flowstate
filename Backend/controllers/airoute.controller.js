@@ -34,7 +34,7 @@ Role:
 ${title}
 
 Resume bullets:
-${bullets.map(b => `- ${b}`).join("\n")}
+${bullets.map((b) => `- ${b}`).join("\n")}
 `;
 
     const completion = await openai.chat.completions.create({
@@ -70,7 +70,6 @@ ${bullets.map(b => `- ${b}`).join("\n")}
       message: "AI script generated successfully",
       script: parsedScript,
     });
-
   } catch (error) {
     console.error("AI Script Error:", error);
 

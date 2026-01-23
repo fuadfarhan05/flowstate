@@ -1,20 +1,18 @@
-import { useState } from 'react'
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import ElevenLabs from '../components/elevenlabcomp';
+import ElevenLabs from "../components/elevenlabcomp";
 
 function InterviewSimulation() {
-
   return (
     <div
       style={{
         position: "relative",
         minHeight: "100vh",
         overflow: "hidden",
-        backgroundColor: "#05080d"
+        backgroundColor: "#05080d",
       }}
     >
       {/* 🌌 Background Aurora */}
-      
 
       {/* 🔝 Foreground Content */}
       <div style={{ position: "relative", zIndex: 2 }}>
@@ -40,9 +38,8 @@ function InterviewSimulation() {
           </h3>
         </div>
 
-        <ElevenLabs/>
+        <ElevenLabs />
       </div>
-      
     </div>
   );
 }

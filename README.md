@@ -65,7 +65,7 @@ npm start
 
 - **Frontend**: React
 - **Backend**: Express.Js
-- **AI/ML**: OpenAi 
+- **AI/ML**: OpenAi
 - **Database**: MongoDB
 
 ## Contributing

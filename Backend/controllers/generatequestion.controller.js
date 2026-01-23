@@ -36,7 +36,7 @@ const GenerateQuestions = async (req, res) => {
     res.json({
       question: nextQuestion,
     });
-    console.log("answer recieved, generating new question")
+    console.log("answer recieved, generating new question");
   } catch (error) {
     console.error("Error generating question:", error);
     res.status(500).json({ error: "Failed to generate question" });

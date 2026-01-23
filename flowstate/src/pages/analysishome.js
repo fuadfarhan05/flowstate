@@ -1,10 +1,9 @@
-
 import { BsStars } from "react-icons/bs";
 import { useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
-import '../styles/App.css'; 
+import "../styles/App.css";
 
 function AnalysisPreview() {
   const location = useLocation();
@@ -13,32 +12,26 @@ function AnalysisPreview() {
   const pdf = location.state?.pdf;
 
   const experienceEntries = Object.entries(experiences);
-  
 
   return (
     <div className="App">
-      <h2 style={{ color: 'white' }}>FlowState</h2>
+      <h2 style={{ color: "white" }}>FlowState</h2>
 
       {/* FLEX ROW */}
-      <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
-
+      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
         {/* LEFT SIDE — DYNAMIC CARDS */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            minWidth: '500px',
-            marginTop: '30px',
-            marginLeft: '20px'
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            minWidth: "500px",
+            marginTop: "30px",
+            marginLeft: "20px",
           }}
         >
           {experienceEntries.map(([title, bullets], index) => (
-            <ExperienceCard
-              key={index}
-              title={title}
-              bullets={bullets}
-            />
+            <ExperienceCard key={index} title={title} bullets={bullets} />
           ))}
         </div>
 
@@ -48,19 +41,17 @@ function AnalysisPreview() {
             <iframe
               src={URL.createObjectURL(pdf)}
               style={{
-                width: '90%',
-                height: '100%',
-                borderColor: '#a3e7ffff',
-                borderWidth: '5px',
-                borderRadius:'10px',
+                width: "90%",
+                height: "100%",
+                borderColor: "#a3e7ffff",
+                borderWidth: "5px",
+                borderRadius: "10px",
               }}
             />
           ) : (
-            <p style={{ color: 'black' }}>No PDF uploaded.</p>
+            <p style={{ color: "black" }}>No PDF uploaded.</p>
           )}
         </div>
-
-
       </div>
     </div>
   );
@@ -73,7 +64,6 @@ const ExperienceCard = ({ title, bullets }) => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
 
   const generateScript = async () => {
     setLoading(true);
@@ -98,100 +88,113 @@ const ExperienceCard = ({ title, bullets }) => {
     <div
       className={`card ${loading ? "loading" : ""}`} // <-- pulse class when loading
       style={{
-        width: '500px',
-        height: '10px',
-        overflow: 'hidden',
-        background: '#4c575cff',
-        borderRadius: '30px',
-        padding: '22px',
-        color: 'white',
+        width: "500px",
+        height: "10px",
+        overflow: "hidden",
+        background: "#4c575cff",
+        borderRadius: "30px",
+        padding: "22px",
+        color: "white",
         boxShadow: `
           inset 0 1px 0 rgba(255,255,255,0.6),
           0 2px 4px rgba(0,0,0,0.18),
           0 8px 20px rgba(0,0,0,0.25),
           0 16px 40px rgba(0,0,0,0.22)
         `,
-        transition: 'all 0.7s ease',
-        cursor: 'pointer',
-        position: 'relative',
-        marginLeft: '10px',
+        transition: "all 0.7s ease",
+        cursor: "pointer",
+        position: "relative",
+        marginLeft: "10px",
       }}
-      onMouseEnter={e => e.currentTarget.style.height = '450px'}
-      onMouseLeave={e => e.currentTarget.style.height = '20px'}
+      onMouseEnter={(e) => (e.currentTarget.style.height = "450px")}
+      onMouseLeave={(e) => (e.currentTarget.style.height = "20px")}
     >
-      <h3 style={{ margin: 0, fontSize: '25px', fontWeight: '700', color: "white" }}>
+      <h3
+        style={{
+          margin: 0,
+          fontSize: "25px",
+          fontWeight: "700",
+          color: "white",
+        }}
+      >
         {title}
       </h3>
 
-      <ul style={{ textAlign: 'left', marginTop: '10px', marginBottom: '100px', paddingLeft: '18px', opacity: 0.9, color: "white" }}>
+      <ul
+        style={{
+          textAlign: "left",
+          marginTop: "10px",
+          marginBottom: "100px",
+          paddingLeft: "18px",
+          opacity: 0.9,
+          color: "white",
+        }}
+      >
         {loading ? (
-          <li style={{ fontSize: '17px', fontStyle: 'italic'}}>
-          </li>
-          ) : aiScript ? (
-        <>
-          {/* Opening Line */}
-          <li
-            style={{ fontSize: '16px', fontWeight: 700, marginBottom: '10px'}}
-            className="generate-text"
-          >
-            {aiScript.openingLine}
-          </li>
-
-          {/* Tasks */}
-          {aiScript.tasks.map((task, i) => (
+          <li style={{ fontSize: "17px", fontStyle: "italic" }}></li>
+        ) : aiScript ? (
+          <>
+            {/* Opening Line */}
             <li
-              key={i}
-              style={{ fontSize: '16px', opacity: 0.95, color: 'white' }}
+              style={{
+                fontSize: "16px",
+                fontWeight: 700,
+                marginBottom: "10px",
+              }}
               className="generate-text"
-              
             >
-              {task}
+              {aiScript.openingLine}
             </li>
 
-            
-          ))}
+            {/* Tasks */}
+            {aiScript.tasks.map((task, i) => (
+              <li
+                key={i}
+                style={{ fontSize: "16px", opacity: 0.95, color: "white" }}
+                className="generate-text"
+              >
+                {task}
+              </li>
+            ))}
 
-          {/* Impact */}
-          <li
-            style={{
-              fontSize: '16px',
-              fontStyle: 'italic',
-              marginTop: '6px',
-            }}
-            className="generate-text"
-          >
-            Impact: {aiScript.impact}
-          </li>
+            {/* Impact */}
+            <li
+              style={{
+                fontSize: "16px",
+                fontStyle: "italic",
+                marginTop: "6px",
+              }}
+              className="generate-text"
+            >
+              Impact: {aiScript.impact}
+            </li>
 
-           <button className="test-button"
-        onClick={() =>
-          navigate("/interview", {
-            state: {experienceTitle: title}
-          })
-        }
-        > 
-          Practice AI Interview
-        </button>
-        </>
-        
-      ) : (
-
+            <button
+              className="test-button"
+              onClick={() =>
+                navigate("/interview", {
+                  state: { experienceTitle: title },
+                })
+              }
+            >
+              Practice AI Interview
+            </button>
+          </>
+        ) : (
           bullets.map((bullet, i) => (
-            <li key={i} style={{ fontSize: '17px' }}>
-              {bullet.replace(/^-\s*/, '')}
+            <li key={i} style={{ fontSize: "17px" }}>
+              {bullet.replace(/^-\s*/, "")}
             </li>
           ))
         )}
       </ul>
-    <div>
+      <div>
         <button className="go-btn" onClick={generateScript}>
           Generate Script <BsStars />
         </button>
-
-    </div>
+      </div>
     </div>
   );
 };
-
 
 export default AnalysisPreview;

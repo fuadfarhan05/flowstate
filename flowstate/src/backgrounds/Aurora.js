@@ -1,7 +1,7 @@
-import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
-import { useEffect, useRef } from 'react';
+import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
+import { useEffect, useRef } from "react";
 
-import '../styles/Aurora.css';
+import "../styles/Aurora.css";
 
 const VERT = `#version 300 es
 in vec2 position;
@@ -121,9 +121,9 @@ void main() {
 
 export default function Aurora(props) {
   const {
-    colorStops = ['#3880f4', '#66a4f6', '#115ddf'],
+    colorStops = ["#3880f4", "#66a4f6", "#115ddf"],
     amplitude = 1.0,
-    blend = 0.5
+    blend = 0.5,
   } = props;
 
   const propsRef = useRef(props);
@@ -138,14 +138,14 @@ export default function Aurora(props) {
     const renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: true,
-      antialias: true
+      antialias: true,
     });
 
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.canvas.style.backgroundColor = 'transparent';
+    gl.canvas.style.backgroundColor = "transparent";
 
     let program;
 
@@ -158,14 +158,14 @@ export default function Aurora(props) {
       }
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
 
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {
       delete geometry.attributes.uv;
     }
 
-    const colorStopsArray = colorStops.map(hex => {
+    const colorStopsArray = colorStops.map((hex) => {
       const c = new Color(hex);
       return [c.r, c.g, c.b];
     });
@@ -178,15 +178,15 @@ export default function Aurora(props) {
         uAmplitude: { value: amplitude },
         uColorStops: { value: colorStopsArray },
         uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uBlend: { value: blend }
-      }
+        uBlend: { value: blend },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
     ctn.appendChild(gl.canvas);
 
     let raf;
-    const update = t => {
+    const update = (t) => {
       raf = requestAnimationFrame(update);
       const { time = t * 0.01, speed = 1.0 } = propsRef.current;
 
@@ -196,7 +196,7 @@ export default function Aurora(props) {
 
       program.uniforms.uColorStops.value = (
         propsRef.current.colorStops ?? colorStops
-      ).map(hex => {
+      ).map((hex) => {
         const c = new Color(hex);
         return [c.r, c.g, c.b];
       });
@@ -209,11 +209,11 @@ export default function Aurora(props) {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas);
       }
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [amplitude]);
 
