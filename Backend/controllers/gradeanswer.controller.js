@@ -1,7 +1,7 @@
 const GradeAnswer = async (req, res) => {
     try { 
         const { question, answer } = req.body;
-        if (!question || !answer) {
+        if (!question || question.trim() === "" || !answer || answer.trim() === "") {
             return res.status(400).json({error: "both question and answer are required for grade"});
         }
 
