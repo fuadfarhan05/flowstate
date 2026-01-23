@@ -25,7 +25,7 @@ function GradeArchives() {
                 <div className="glass-container">
                     <div className="container-content">
                         <div className="grade-circle green">
-                           89
+                           88
                         </div>
                         <div className="feedback-text">
                             <p>Good job on being specific and detailed. Don’t forget to include the impact you made for the experience you speak about.</p>
