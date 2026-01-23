@@ -13,6 +13,7 @@ const Airoute = require('./routes/AI.route.js');
 const interviewsimRoute = require('./routes/interviewsim.route.js'); 
 const ElevenLabsRoute = require('./routes/scribeToken.route.js');
 const GenerateQuestionsRoute = require('./routes/genquestions.route.js');
+const GradeAnswerRoute = require('./routes/gradeanswer.route.js');
 
 app.get('/', (req, res) => { 
   res.json({ 
@@ -26,5 +27,6 @@ app.use("/api/v1/", Airoute);
 app.use("/api/v1/", interviewsimRoute); 
 app.use("/api/v1/", ElevenLabsRoute);
 app.use("/api/v1/", GenerateQuestionsRoute);
+app.use("/api/v1/", GradeAnswerRoute);
  
 module.exports = app; 

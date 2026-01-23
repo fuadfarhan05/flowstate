@@ -69,6 +69,25 @@ export default function ElevenLabs() {
     }
 
     console.log("💾 Saving answer:", answerText);
+    try {
+      const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
+        method:"POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: currentQuestion,
+          answer: answerText
+        })
+      });
+      if (!res.ok) {
+        throw new Error(`Server responded with ${res.status}`);
+      }
+
+      console.log("sending answers to grade");
+    } catch(error) {
+      console.log("unable to get a grade for answer", error);
+    }
 
     try {
       const res = await fetch("http://localhost:5434/api/v1/generate-questions", {

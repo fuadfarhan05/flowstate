@@ -38,6 +38,16 @@ SECTION_HEADERS = [
     "activities"
 ]
 
+date_pattern = re.compile(
+      r"""
+    \b\d{1,2}[/-]\d{1,2}([/-]\d{2,4})?\b |   #date format
+    \b\d{1,2}[/-]\d{2,4}\b                 
+    """,
+    re.VERBOSE
+
+
+)
+
 date_words = [
     "present",
     "january", "jan",
@@ -112,27 +122,20 @@ def extract_sections(text: str) -> dict:
     return sections
 
 
-
-
-
-def split(line):
-    word_split = line.split()
-    for i in word_split:
-        if i.lower() in date_words:
-            return True
-    return False
-
-
         
 
 header = []
 
-def split(line):
-    word_split = line.split()
-    for i in word_split:
-        if i.lower() in date_words:
+def contains_date(line):
+    for word in line.lower().split():
+        if word in date_words:
             return True
+    if date_pattern.search(line):
+        return True
+    
     return False
+        
+    
 
 
         
@@ -145,7 +148,7 @@ def make_headers(experience_string):
             r += 1
 
         line = experience_string[l:r]
-        if split(line):
+        if contains_date(line):
             header.append(line)
         
         l = r + 1
