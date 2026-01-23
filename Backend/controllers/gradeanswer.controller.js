@@ -1,4 +1,5 @@
-const GradeAnswer = async (req, res) => {
+const GradeAnswer = async (req, res) => { 
+    //for now route just takes in response. 
     try { 
         const { question, answer } = req.body;
         if (!question || question.trim() === "" || !answer || answer.trim() === "") {
@@ -6,10 +7,10 @@ const GradeAnswer = async (req, res) => {
         }
 
         console.log("recieved, ready to grade");
-        res.status(200).send();
+        return res.status(200).send();
     } catch(error) {
         console.log("error with grade route", error);
-        res.status(500).json({ error: "grading failed" });
+        return res.status(500).json({ error: "grading failed" });
     }
 };
 
