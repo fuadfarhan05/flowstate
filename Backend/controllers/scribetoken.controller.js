@@ -1,7 +1,5 @@
 const { ElevenLabsClient } = require("@elevenlabs/elevenlabs-js");
 
-const hi = 'testing if this works'; 
-
 const elevenlabs = new ElevenLabsClient({
     apiKey: process.env.ELEVENLABS_API_KEY,
 });
