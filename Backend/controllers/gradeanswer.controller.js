@@ -5,11 +5,11 @@ const client = new OpenAi({
 
 const GradeAnswer = async (req, res) => {
   try {
-    const { question, answer } = req.body;
-        if (!question || question.trim() === "" || !answer || answer.trim() === "") {
+    const { transcriptlog } = req.body;
+        if (!transcriptlog?.trim()) {
             return res.status(400).json(
                 { 
-                    error: "both question and answer are required for grade" 
+                    error: "No Transcript Log has been provided" 
                 }
             );
         }
@@ -17,7 +17,7 @@ const GradeAnswer = async (req, res) => {
 
     const prompt = `
         You are an interview communication evaluator.
-        You will be given a whole interview sessions with a collection of questions and answers,
+        You will be given a whole interview transcript log with a collection of questions and answers,
         your job is to evaluate it on how well a user communicated their answers.
 
         You will be given:
@@ -69,6 +69,8 @@ const GradeAnswer = async (req, res) => {
 
         Use conversation context if provided to judge relevance.
 
+        Additionally, give a percentage grade as well from 0 - 100.
+
         ––––––––––––––––––––
         OUTPUT FORMAT
         ––––––––––––––––––––
@@ -85,13 +87,18 @@ const GradeAnswer = async (req, res) => {
         },
         "strengths": [1–3 short bullet points],
         "improvements": [1–3 specific, actionable suggestions],
-        "overall_feedback": "Short, encouraging summary focused on speaking improvement"
+        "overall_feedback": "Short, encouraging summary focused on speaking improvement",
+        "overall_percentage_grade: number
         }
 
         Tone:
         - Supportive and constructive
         - Assume the user is practicing and improving
         - Do not shame or over-criticize
+
+        IMPORTANT:
+        Return ONLY valid JSON.
+        Do not include markdown, explanations, or extra text.
     `;
 
 
@@ -99,20 +106,30 @@ const GradeAnswer = async (req, res) => {
         model: 'gpt-4o-mini',
         messages: [
             { 
-            role: 'system',
-            content: prompt
+                role: 'system',
+                content: prompt
             }, 
-            { 
-                role: 'user', 
-                content: `Question asked: ${question}\n\n Answer Given: ${answer}` 
+            {
+                role: 'user',
+                content: transcriptlog
             }
         ] 
     }); 
-    const AiEvaluation = { evaluation: AIresponse.choices[0].message.content }; // in the frontend remember to call the Evaluation key to get the AI data to show in the frontend.  
-    console.log(AiEvaluation); 
-    return res.status(200).json({ 
-        AiEvaluation // remember this is already an object. 
-    }); 
+    const content = AIresponse.choices[0]?.message?.content;
+    if (!content) {
+        return res.status(500).json({ error: "AI returned no evaluation" });
+    }
+
+    // parse the string JSON
+    let parsed;
+    try {
+    parsed = JSON.parse(content);
+    } catch (err) {
+    console.error("Failed to parse AI JSON:", content);
+    return res.status(500).json({ error: "AI returned invalid JSON" });
+    }
+
+    return res.status(200).json({ evaluation: parsed });
   } catch (error) {
     console.log("error with grade route", error);
     return res.status(500).json({ error: "grading failed" });

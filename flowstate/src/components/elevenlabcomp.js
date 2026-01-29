@@ -10,6 +10,8 @@ export default function ElevenLabs() {
   const currentAnswerRef = useRef("");
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [evalData, setEvalData] = useState(null);
+  const qaBufferRef = useRef([]);
 
   const scribe = useScribe({
     modelId: "scribe_v2_realtime",
@@ -68,25 +70,11 @@ export default function ElevenLabs() {
     }
 
     console.log("💾 Saving answer:", answerText);
-    try {
-      const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          question: currentQuestion,
-          answer: answerText,
-        }),
-      });
-      if (!res.ok) {
-        throw new Error(`Server responded with ${res.status}`);
-      }
-
-      console.log("sending answers to grade");
-    } catch (error) {
-      console.log("unable to get a grade for answer", error);
-    }
+    qaBufferRef.current.push({
+      question: currentQuestion,
+      answer: answerText,
+    });
+    
 
     try {
       const res = await fetch(
@@ -172,6 +160,35 @@ export default function ElevenLabs() {
     }
   };
 
+  const handleEnd = async () => {
+  const transcriptlog = qaBufferRef.current
+    .map((qa, i) =>
+      `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`
+    )
+    .join("\n\n");
+
+  try {
+    const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcriptlog }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server responded with ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    setEvalData(data.evaluation); // store locally
+    return data.evaluation;
+  } catch (error) {
+    console.error("unable to get a grade", error);
+    return null;
+  }
+};
+
+
   useEffect(() => {
     setCurrentQuestion("Tell me about yourself.");
     handleStart();
@@ -214,15 +231,20 @@ export default function ElevenLabs() {
         <button
           className="end-btn"
           onClick={async () => {
+            const evaluation = await handleEnd();
+
             if (scribe.isConnected) {
               scribe.disconnect();
             }
-            navigate("/");
+
+            navigate("/results", { state: { evaluation } });
           }}
           disabled={isProcessing}
         >
           End
         </button>
+
+
       </div>
     </div>
   );
