@@ -10,11 +10,10 @@ function Landing() {
         <nav className="glass-navbar">
           <div className="nav-left" style={{ display: "flex" }}>
             <img
-              style={{ marginTop: "10px", width: "32px", height: "32px" }}
+              style={{ width: "50px", height: "50px" }}
               src={logo}
               alt="flowstate-logo"
             />
-            <p style={{ marginTop: "15px" }}>Flowstate</p>
           </div>
 
           <ul className="nav-links">
@@ -34,12 +33,12 @@ function Landing() {
 
       <div className="title">
         <div style={{ display: "flex" }}>
+          <h1 style={{ marginTop: "30px", color: 'white', fontSize:'60px' }}>FlowState</h1>
           <img
             style={{ marginTop: "15px", width: "100px", height: "100px" }}
             src={logo}
             alt="flowstate-logo"
           />
-          <h1 style={{ marginTop: "30px" }}>FlowState</h1>
         </div>
 
         <p style={{ color: "#c0c0c0", fontSize: "30px" }}>
