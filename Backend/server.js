@@ -1,5 +1,6 @@
 require("dotenv").config();
-//call db connection later on in the server.js file JUST the connection
+const DBconnection = require("./config/dbconnection.js");
+DBconnection(); // calls the connection here
 
 const app = require("./app.js");
 const PORT = 5434; // hardcoded port.
