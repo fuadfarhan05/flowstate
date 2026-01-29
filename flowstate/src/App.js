@@ -5,7 +5,9 @@ import AnalysisPreview from "./pages/analysishome";
 import InterviewSimulation from "./pages/interviewsim";
 import Landing from "./pages/landingpage";
 import GradeArchives from "./pages/gradearchives";
-import Results from "./pages/resultspage"
+import Results from "./pages/resultspage";
+import LoginPage from "./pages/loginpage";
+import SignUpPage from "./pages/signuppage";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/interview" element={<InterviewSimulation />} />
           <Route path="/archives" element={<GradeArchives />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/loginpage" element={<LoginPage />} />
+          <Route path="/signuppage" element={<SignUpPage />} />
         </Routes>
       </Router>
     </div>
