@@ -18,21 +18,20 @@
 }
 
 h2 {
-    color: rgb(186, 185, 185);
-    margin-right:450px;
-    font-size: 25px;
+  color: rgb(186, 185, 185);
+  margin-right: 450px;
+  font-size: 25px;
 }
 
 h1 {
-    font-size: 25px;
-    color: #b0b0b0;
-    margin-left: 10px;
+  font-size: 25px;
+  color: #b0b0b0;
+  margin-left: 10px;
 }
 
 .categories {
-    margin-left: -500px;
+  margin-left: -500px;
 }
-
 
 .glass-line {
   height: 5px;
@@ -48,12 +47,12 @@ h1 {
 }
 
 .results {
-    display: flex;
-    flex-direction: row;
-    gap:420px;
+  display: flex;
+  flex-direction: row;
+  gap: 420px;
 }
 
 .title-and-grade {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }

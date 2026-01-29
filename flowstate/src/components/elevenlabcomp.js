@@ -74,7 +74,6 @@ export default function ElevenLabs() {
       question: currentQuestion,
       answer: answerText,
     });
-    
 
     try {
       const res = await fetch(
@@ -161,33 +160,30 @@ export default function ElevenLabs() {
   };
 
   const handleEnd = async () => {
-  const transcriptlog = qaBufferRef.current
-    .map((qa, i) =>
-      `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`
-    )
-    .join("\n\n");
+    const transcriptlog = qaBufferRef.current
+      .map((qa, i) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`)
+      .join("\n\n");
 
-  try {
-    const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ transcriptlog }),
-    });
+    try {
+      const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcriptlog }),
+      });
 
-    if (!res.ok) {
-      throw new Error(`Server responded with ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`Server responded with ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      setEvalData(data.evaluation); // store locally
+      return data.evaluation;
+    } catch (error) {
+      console.error("unable to get a grade", error);
+      return null;
     }
-
-    const data = await res.json();
-
-    setEvalData(data.evaluation); // store locally
-    return data.evaluation;
-  } catch (error) {
-    console.error("unable to get a grade", error);
-    return null;
-  }
-};
-
+  };
 
   useEffect(() => {
     setCurrentQuestion("Tell me about yourself.");
@@ -243,8 +239,6 @@ export default function ElevenLabs() {
         >
           End
         </button>
-
-
       </div>
     </div>
   );
