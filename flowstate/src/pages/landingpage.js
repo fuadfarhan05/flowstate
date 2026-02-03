@@ -3,7 +3,14 @@ import UploadImg from "../images/flowstateuploadimg.png";
 import grade from "../images/grade.png";
 import logo from "../images/flowstatelogo.png";
 
+import { useNavigate } from "react-router-dom";
+
 function Landing() {
+  const navigate = useNavigate();
+
+  function LoginNavigation() {
+    navigate("/LoginPage");
+  }
   return (
     <div className="background">
       <div className="navbar">
@@ -23,7 +30,9 @@ function Landing() {
             <li>Pricing</li>
           </ul>
 
-          <button className="nav-btn">Sign In</button>
+          <button className="nav-btn" onClick={LoginNavigation}>
+            Log In
+          </button>
         </nav>
       </div>
 
@@ -33,7 +42,9 @@ function Landing() {
 
       <div className="title">
         <div style={{ display: "flex" }}>
-          <h1 style={{ marginTop: "30px", color: 'white', fontSize:'60px' }}>FlowState</h1>
+          <h1 style={{ marginTop: "30px", color: "white", fontSize: "60px" }}>
+            FlowState
+          </h1>
           <img
             style={{ marginTop: "15px", width: "100px", height: "100px" }}
             src={logo}
