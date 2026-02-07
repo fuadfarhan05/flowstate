@@ -16,7 +16,8 @@ const interviewsimRoute = require("./routes/interviewsim.route.js");
 const ElevenLabsRoute = require("./routes/scribeToken.route.js");
 const GenerateQuestionsRoute = require("./routes/genquestions.route.js");
 const GradeAnswerRoute = require("./routes/gradeanswer.route.js");
-const userRoute = require("./routes/user.route.js");
+const userRoute = require("./routes/user.route.js"); 
+const googleOauth = require('./routes/googleoauth.route.js'); 
 
 app.get("/", (req, res) => {
   res.json({
@@ -30,6 +31,7 @@ app.use("/api/v1/", interviewsimRoute);
 app.use("/api/v1/", ElevenLabsRoute);
 app.use("/api/v1/", GenerateQuestionsRoute);
 app.use("/api/v1/", GradeAnswerRoute);
-app.use("/api/v1/", userRoute);
+app.use("/api/v1/", userRoute); 
+app.use("/", googleOauth); 
 
 module.exports = app;
