@@ -15,7 +15,7 @@ const authController = async (req, res) => {
     const client_id = process.env.CLIENTID; 
     const client_secret = process.env.CLIENTSECRET;  
     const redirect_uri = process.env.RDURI;
-    const grant_type = ''; 
+    const grant_type = 'authorization_code'; 
 
     const sendtogoogleapi = await fetch(`https://oauth2.googleapis.com/token`, { 
         method: "POST", 
