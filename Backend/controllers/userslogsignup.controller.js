@@ -58,7 +58,7 @@ const loginFunction = async (req, res) => {
   } catch (error) {
     console.error("Error handling user login details", error);
     return res.status(500).json({
-      Error: "Error logging user in with given credentials",
+      Error: "Error loggCaing user in with given credentials",
     });
   }
 };
