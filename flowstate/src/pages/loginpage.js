@@ -155,8 +155,8 @@ export default function LoginPage() {
           </div>
 
           <button className="google-btn" onClick={() => {
-            const clientId = "97788009804-9c06an5g5mvkbod6p9p087s6b5olnnba.apps.googleusercontent.com";
-            const redirectUri = "http://localhost:5434/googleauth";
+            const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+            const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
             const scope = "openid email profile";
             const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}`;
             window.location.href = googleAuthUrl;
