@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({ 
-  googleid: { 
-    required: false, 
+const UserSchema = new mongoose.Schema({
+  googleid: {
+    required: false,
     type: String,
-  }, 
+  },
   name: {
     required: true,
     type: String,
