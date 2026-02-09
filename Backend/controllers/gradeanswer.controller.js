@@ -1,19 +1,17 @@
-const OpenAi = require('openai'); 
-const client = new OpenAi({ 
-    apiKey: process.env.OPENAI_API_KEY,
-}); 
+const OpenAi = require("openai");
+const client = new OpenAi({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const GradeAnswer = async (req, res) => {
   try {
     const { transcriptlog } = req.body;
-        if (!transcriptlog?.trim()) {
-            return res.status(400).json(
-                { 
-                    error: "No Transcript Log has been provided" 
-                }
-            );
-        }
-    console.log("recieved, ready to grade"); 
+    if (!transcriptlog?.trim()) {
+      return res.status(400).json({
+        error: "No Transcript Log has been provided",
+      });
+    }
+    console.log("recieved, ready to grade");
 
     const prompt = `
         You are an interview communication evaluator.
@@ -102,32 +100,31 @@ const GradeAnswer = async (req, res) => {
         [DO NOT GIVE GENERICE ADVICE]
     `;
 
-
-    const AIresponse = await client.chat.completions.create({  
-        model: 'gpt-4o-mini',
-        messages: [
-            { 
-                role: 'system',
-                content: prompt
-            }, 
-            {
-                role: 'user',
-                content: transcriptlog
-            }
-        ] 
-    }); 
+    const AIresponse = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: prompt,
+        },
+        {
+          role: "user",
+          content: transcriptlog,
+        },
+      ],
+    });
     const content = AIresponse.choices[0]?.message?.content;
     if (!content) {
-        return res.status(500).json({ error: "AI returned no evaluation" });
+      return res.status(500).json({ error: "AI returned no evaluation" });
     }
 
     // parse the string JSON
     let parsed;
     try {
-    parsed = JSON.parse(content);
+      parsed = JSON.parse(content);
     } catch (err) {
-    console.error("Failed to parse AI JSON:", content);
-    return res.status(500).json({ error: "AI returned invalid JSON" });
+      console.error("Failed to parse AI JSON:", content);
+      return res.status(500).json({ error: "AI returned invalid JSON" });
     }
 
     return res.status(200).json({ evaluation: parsed });
