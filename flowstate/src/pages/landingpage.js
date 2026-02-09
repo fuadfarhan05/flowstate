@@ -1,4 +1,4 @@
- import { useEffect } from "react";
+import { useEffect } from "react";
 import "../styles/landing.css";
 
 import UploadImg from "../images/flowstateuploadimg.png";
@@ -17,7 +17,11 @@ function Landing() {
 
   // Load Tally script once
   useEffect(() => {
-    if (document.querySelector('script[src="https://tally.so/widgets/embed.js"]')) {
+    if (
+      document.querySelector(
+        'script[src="https://tally.so/widgets/embed.js"]'
+      )
+    ) {
       return;
     }
 
@@ -29,6 +33,7 @@ function Landing() {
 
   return (
     <div className="background">
+      {/* NAVBAR */}
       <div className="navbar">
         <nav className="glass-navbar">
           <div className="nav-left" style={{ display: "flex" }}>
@@ -40,10 +45,52 @@ function Landing() {
           </div>
 
           <ul className="nav-links">
-            <li>Features</li>
-            <li>Join Our Waitlist</li>
+
+            <li>
+              <a
+                href="#pricing"
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                Pricing
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#tally-open=2EN49e&tally-layout=modal&tally-width=400&tally-overlay=1"
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                Join Our Waitlist
+              </a>
+            </li>
+
             <li>Our Mission</li>
-            <li>Pricing</li>
+
+            <li>
+              <a
+                href="#faq"
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                FAQ
+              </a>
+            </li>
+
+         
+
+
+
           </ul>
 
           <button className="nav-btn" onClick={LoginNavigation}>
@@ -52,6 +99,7 @@ function Landing() {
         </nav>
       </div>
 
+      {/* HERO */}
       <p style={{ color: "#7f9bff", fontSize: "20px", marginTop: "150px" }}>
         Enter Your
       </p>
@@ -81,17 +129,23 @@ function Landing() {
           data-tally-layout="modal"
           data-tally-width="400"
           data-tally-overlay="1"
-          data-tally-emoji-text="👋"
-          data-tally-emoji-animation="wave"
-          data-tally-auto-close="0"
-          data-tally-form-events-forwarding="1"
         >
-          Join Our WaitList
+          Join Our Waitlist
         </button>
 
-        <button className="learn-more-btn">Learn More</button>
+        <button
+          className="learn-more-btn"
+          onClick={() =>
+            document
+              .getElementById("pricing")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          View Pricing
+        </button>
       </div>
 
+      {/* GRADE SECTION */}
       <div className="grade-card">
         <div className="grade-left">
           <p className="badge">CLEAR PROGRESSION</p>
@@ -110,71 +164,171 @@ function Landing() {
           <img
             style={{ width: "500px" }}
             src={grade}
-            alt="FlowState resume parsing diagram"
+            alt="FlowState grading"
           />
         </div>
       </div>
 
-      <div className="feature-grid">
+      {/* FEATURES */}
+      <div className="feature-grid" id="features">
         <div className="feature-card">
           <img
-            style={{ width: "500px", marginLeft: "50px" }}
+            style={{ width: "550px", marginRight: "-10px" }}
             src={UploadImg}
-            alt="FlowState resume parsing diagram"
+            alt="Resume upload"
           />
           <p className="section-label">UNDERSTAND YOUR EXPERIENCE</p>
           <h2>Resume Based Context</h2>
           <p className="description">
-            Gives you the script you need to practice to speak confidently and
-            fluently about your experiences.
+            Gives you the script you need to practice confidently about your
+            experiences.
           </p>
         </div>
 
         <div className="feature-card">
           <img
-            style={{ width: "600px", marginLeft: "-70px" }}
+            style={{ width: "640px", marginLeft: "-70px" }}
             src={SessionImg}
-            alt="FlowState speaking practice"
+            alt="Practice sessions"
           />
           <p className="section-label">PREPARATION WITH PRACTICE</p>
           <h2>Speaking Practice</h2>
           <p className="description">
-            Improve speaking confidence and skills for your interviews with
-            grades and feedback.
+            Improve speaking confidence with real-time grades and feedback.
           </p>
         </div>
       </div>
 
+      {/* PRICING */}
+      <section className="pricing-section" id="pricing">
+        <p className="eyebrow">PRICING</p>
+        <p className="pricing-subtitle">
+          Start free. Upgrade only when you’re ready to go all in.
+        </p>
+
+        <div className="pricing-grid">
+          <div className="pricing-card">
+            <p className="plan-name">Free</p>
+            <h3 className="price">$0</h3>
+            <ul className="plan-features">
+              <li>✓ Limited interview sessions</li>
+              <li>✓ Resume upload</li>
+              <li>✓ Basic AI feedback</li>
+            </ul>
+            <button className="pricing-btn secondary" data-tally-open="2EN49e">
+              Join Waitlist
+            </button>
+          </div>
+
+          <div className="pricing-card featured">
+            <p className="plan-name">Pro</p>
+            <h3 className="price">
+              $15<span>/mo</span>
+            </h3>
+            <ul className="plan-features">
+              <li>✓ Unlimited practice</li>
+              <li>✓ Resume-based probing</li>
+              <li>✓ Detailed feedback</li>
+            </ul>
+            <button className="pricing-btn primary" data-tally-open="2EN49e">
+              Get Early Access
+            </button>
+          </div>
+
+          <div className="pricing-card">
+            <p className="plan-name">Lifetime</p>
+            <h3 className="price">$30</h3>
+            <ul className="plan-features">
+              <li>✓ Everything in Pro</li>
+              <li>✓ Priority support</li>
+              <li>✓ Future updates</li>
+            </ul>
+            <button className="pricing-btn secondary" data-tally-open="2EN49e">
+              Contact Us
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+      {/* FAQ */}
+<section className="faq-section" id="faq">
+  <p className="eyebrow">FAQ</p>
+  <h2 className="faq-title">Frequently Asked Questions</h2>
+
+  <div className="faq-grid">
+    <details className="faq-item">
+      <summary>What is FlowState?</summary>
+      <p>
+        FlowState is an AI-powered interview training platform that helps you
+        practice speaking confidently, get real-time feedback, and improve how
+        you communicate your experiences.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>Is FlowState free to use?</summary>
+      <p>
+        Yes! You can start for free with limited interview sessions. When you’re
+        ready, you can upgrade to unlock unlimited practice and advanced
+        feedback.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>What kind of interviews does FlowState help with?</summary>
+      <p>
+        FlowState focuses on behavioral and experience-based interviews, helping
+        you clearly explain your resume, projects, and past roles.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>Do I need an interviewer or partner?</summary>
+      <p>
+        Nope. FlowState acts as your interviewer and coach, so you can practice
+        anytime without needing another person.
+      </p>
+    </details>
+
+    <details className="faq-item">
+      <summary>When will FlowState be fully available?</summary>
+      <p>
+        We’re currently onboarding early users through our waitlist. Join now
+        to get early access and help shape the product.
+      </p>
+    </details>
+  </div>
+</section>
+
+
+      {/* TESTIMONIALS */}
       <section className="testimonials">
         <p className="eyebrow">TESTIMONIALS</p>
 
         <div className="testimonial-grid">
           <div className="testimonial-card">
             <p>
-              The idea of FlowState originated when I didn’t find any easy way
-              to learn how to speak confidently. I also didn’t know how to
-              prepare for an interview without having another person test me.
+              FlowState was born from the struggle of learning how to speak
+              confidently.
               <br />
-              <br />– Fuad <strong>(Founder of FlowState)</strong>
+              <br />– Fuad <strong>(Founder)</strong>
             </p>
           </div>
 
           <div className="testimonial-card">
             <p>
-              FlowState was never just a project for us — it was personal.
-              We experienced how unpredictable the job market is and knew
-              there had to be a better way.
+              We knew there had to be a better way to prepare for interviews.
               <br />
-              <br />– Rayat <strong>(Co-Founder of FlowState)</strong>
+              <br />– Rayat <strong>(Co-Founder)</strong>
             </p>
           </div>
 
           <div className="testimonial-card">
             <p>
-              FlowState helped me understand my resume and gave me scripts
-              that actually worked in real interviews.
+              The scripts and feedback actually work in real interviews.
               <br />
-              <br />– Kyle <strong>(Engineer @ FlowState)</strong>
+              <br />– Kyle <strong>(Engineer)</strong>
             </p>
           </div>
         </div>
