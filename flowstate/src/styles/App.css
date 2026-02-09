@@ -8,7 +8,8 @@
   position: relative;
   min-height: 100vh;
 
-  background: black; /* allow galaxy to show */
+  background-color: rgba(16, 20, 47, 0.831); /* allow galaxy to show */
+
   z-index: 1; /* ✅ app stays on top */
 }
 

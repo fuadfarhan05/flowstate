@@ -5,6 +5,10 @@ import AnalysisPreview from "./pages/analysishome";
 import InterviewSimulation from "./pages/interviewsim";
 import Landing from "./pages/landingpage";
 import GradeArchives from "./pages/gradearchives";
+import Results from "./pages/resultspage"
+import CreatePage from "./pages/createpage";
+import ElevenLabs from "./components/elevenlabcomp";
+
 import Results from "./pages/resultspage";
 import LoginPage from "./pages/loginpage";
 import SignUpPage from "./pages/signuppage";
@@ -17,9 +21,10 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/home" element={<Home />} />
           <Route path="/analysis" element={<AnalysisPreview />} />
-          <Route path="/interview" element={<InterviewSimulation />} />
+          <Route path="/interview" element={<ElevenLabs />} />
           <Route path="/archives" element={<GradeArchives />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/create" element={<CreatePage />} />
           <Route path="/loginpage" element={<LoginPage />} />
           <Route path="/signuppage" element={<SignUpPage />} />
         </Routes>

@@ -31,6 +31,7 @@ app.use("/api/v1/", interviewsimRoute);
 app.use("/api/v1/", ElevenLabsRoute);
 app.use("/api/v1/", GenerateQuestionsRoute);
 app.use("/api/v1/", GradeAnswerRoute);
+app.use("/api/v1/", ExperienceQuestionRoute);
 app.use("/api/v1/", userRoute);
 app.use("/", googleOauth);
 

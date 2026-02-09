@@ -1,0 +1,133 @@
+.create-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-card {
+    width: 600px;
+    padding: 32px;
+    color: white;
+
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.header h2 {
+    margin-bottom: 6px;
+    font-size: 22px;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: 0.85;
+    margin-bottom: 24px;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 15px;
+    opacity: 0.9;
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.section input {
+    margin: 0 auto;
+    width: 95%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.section input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.upload-box {
+    width: 93%;
+    padding: 20px;
+    border-radius: 14px;
+    text-align: center;
+    cursor: pointer;
+
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+}
+
+.upload-box p {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.upload-box span {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.question-options {
+    display: flex;
+    gap: 10px;
+}
+
+.question-options button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+}
+
+.question-options .active {
+    background: white;
+    color: black;
+    font-weight: 600;
+}
+
+.start-btn {
+    width: 300px;
+    margin-top: 50px;
+    padding: 14px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+
+     background: linear-gradient(
+    135deg,
+    rgba(77, 97, 250, 0.829),
+    rgba(39, 111, 255, 0.939)
+  );
+
+  backdrop-filter: blur(10px);
+  color: rgb(255, 254, 254);
+  font-weight: 1000;
+
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.start-btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}

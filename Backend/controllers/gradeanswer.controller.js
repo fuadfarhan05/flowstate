@@ -29,7 +29,7 @@ const GradeAnswer = async (req, res) => {
         GRADING DIMENSIONS
         ––––––––––––––––––––
 
-        1. CLARITY (0–10)
+        1. CLARITY
         Evaluate how easy the answer was to understand.
         Consider:
         - Clear sentences vs run-on or fragmented speech
@@ -41,7 +41,7 @@ const GradeAnswer = async (req, res) => {
         - Count "like" as a filler ONLY when it is used as hesitation, not when it has semantic meaning
         - Some filler words are normal; only penalize excessive or disruptive usage
 
-        2. STRUCTURE (0–10)
+        2. STRUCTURE 
         Evaluate whether the answer followed an appropriate structure for the question type.
 
         First, identify the question type:
@@ -58,7 +58,7 @@ const GradeAnswer = async (req, res) => {
 
         Partial structure is acceptable. Do not grade strictly.
 
-        3. RELEVANCE (0–10)
+        3. RELEVANCE 
         Evaluate how directly the answer addressed the question.
         Consider:
         - Did the user stay on topic?
@@ -66,6 +66,11 @@ const GradeAnswer = async (req, res) => {
         - Did they ramble or drift into unrelated details?
 
         Use conversation context if provided to judge relevance.
+
+        For each section give a sentence on something specific user needs to improve on that section 
+        and something good the user did 
+
+        for filler words take the filler words that the user used and have it as a string of the words spearated between commas 
 
         Additionally, give a percentage grade as well from 0 - 100.
 
@@ -76,16 +81,11 @@ const GradeAnswer = async (req, res) => {
         Return a JSON object with:
 
         {
-        "clarity_score": number,
-        "structure_score": number,
-        "relevance_score": number,
-        "filler_words": {
-            "count": number,
-            "examples": [list of example filler usages]
-        },
-        "strengths": [1–3 short bullet points],
+        "clarity_score": "",
+        "structure_score": "",
+        "relevance_score": "",
+        "filler_words": "",
         "improvements": [1–3 specific, actionable suggestions],
-        "overall_feedback": "Short, encouraging summary focused on speaking improvement",
         "overall_percentage_grade: number
         }
 
@@ -97,6 +97,7 @@ const GradeAnswer = async (req, res) => {
         IMPORTANT:
         Return ONLY valid JSON.
         Do not include markdown, explanations, or extra text.
+        [DO NOT GIVE GENERICE ADVICE]
     `;
 
     const AIresponse = await client.chat.completions.create({
