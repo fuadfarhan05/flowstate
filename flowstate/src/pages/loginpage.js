@@ -19,7 +19,7 @@ export default function LoginPage() {
 
     if (token) {
       localStorage.setItem("authToken", token);
-      setSuccess("Google Login Successful! Entering your Flow...");
+      setSuccess("Google Login Successful! Entering your FlowState...");
       setTimeout(() => navigate("/interview"), 1500);
     }
 
@@ -111,7 +111,7 @@ export default function LoginPage() {
             <h1 className="login-title">FlowState</h1>
           </div>
 
-          <p className="login-subtitle">Welcome back</p>
+          <p className="login-subtitle">Welcome Back</p>
           <p className="login-description">Log in to enter your FlowState</p>
 
           {error && <div className="error-message">{error}</div>}
