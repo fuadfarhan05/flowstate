@@ -1,3 +1,11 @@
+#features,
+#pricing,
+#faq {
+  scroll-margin-top: 120px;
+}
+
+
+
 .navbar {
   position: sticky;
   top: 0;
@@ -486,3 +494,144 @@
 
   background-size: 40px 40px;
 }
+
+.pricing-section {
+  padding: 120px 80px;
+  text-align: center;
+}
+
+.pricing-title {
+  font-size: 42px;
+  color: white;
+  margin-top: 10px;
+}
+
+.pricing-subtitle {
+  color: #b5b5b5;
+  font-size: 18px;
+  margin-bottom: 60px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.pricing-card {
+  background: rgba(16, 20, 47, 0.85);
+  border-radius: 20px;
+  padding: 40px 30px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-6px);
+}
+
+.pricing-card.featured {
+  border: 1px solid #7f9bff;
+  box-shadow: 0 0 30px rgba(127, 155, 255, 0.25);
+}
+
+.plan-name {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #7f9bff;
+}
+
+.price {
+  font-size: 48px;
+  margin: 10px 0;
+}
+
+.price span {
+  font-size: 18px;
+  color: #aaa;
+}
+
+.price-note {
+  color: #b5b5b5;
+  margin-bottom: 25px;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.plan-features li {
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.pricing-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+}
+
+.pricing-btn.primary {
+  background: #7f9bff;
+  color: white;
+}
+
+.pricing-btn.secondary {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+
+.faq-section {
+  margin-top: 160px;
+  text-align: center;
+}
+
+.faq-title {
+  font-size: 40px;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.faq-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  background: rgba(16, 20, 47, 0.7);
+  border-radius: 14px;
+  padding: 18px 24px;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.faq-item summary {
+  font-size: 18px;
+  font-weight: 600;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item p {
+  margin-top: 12px;
+  color: #c0c0c0;
+  line-height: 1.6;
+}
+
