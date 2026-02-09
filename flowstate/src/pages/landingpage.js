@@ -26,9 +26,9 @@ function Landing() {
           </div>
 
           <ul className="nav-links">
-            <li>Features</li>
+            <l1>Features</l1>
+            <li>Join Our Waitlist</li>
             <li>Our Mission</li>
-            <li>Testimonial</li>
             <li>Pricing</li>
           </ul>
 
