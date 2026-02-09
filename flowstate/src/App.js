@@ -5,7 +5,6 @@ import AnalysisPreview from "./pages/analysishome";
 import InterviewSimulation from "./pages/interviewsim";
 import Landing from "./pages/landingpage";
 import GradeArchives from "./pages/gradearchives";
-import Results from "./pages/resultspage"
 import CreatePage from "./pages/createpage";
 import ElevenLabs from "./components/elevenlabcomp";
 
