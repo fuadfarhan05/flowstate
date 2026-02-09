@@ -1,7 +1,9 @@
 import "../styles/landing.css";
 import UploadImg from "../images/flowstateuploadimg.png";
+import SessionImg from "../images/sessions.png";
 import grade from "../images/grade.png";
 import logo from "../images/flowstatelogo.png";
+
 
 import { useNavigate } from "react-router-dom";
 
@@ -86,11 +88,11 @@ function Landing() {
       <div className="feature-grid">
         <div className="feature-card">
           <img
-            style={{ width: "550px" }}
+            style={{ width: "500px", marginLeft: "50px" }}
             src={UploadImg}
             alt="FlowState resume parsing diagram"
           />
-          <p className="section-label">UNDERSTANDS YOUR EXPERIENCE</p>
+          <p className="section-label">UNDERSTAND YOUR EXPERIENCE</p>
           <h2>Resume Based Context</h2>
           <p className="description">
             Gives you the script you need to practice to speak confidentally and
@@ -99,6 +101,11 @@ function Landing() {
         </div>
 
         <div className="feature-card">
+          <img
+            style={{ width: "600px",marginLeft: "-70px" }}
+            src={SessionImg}
+            alt="FlowState resume parsing diagram"
+          />
           <p className="section-label">PREPARATION WITH PRACTICE</p>
           <h2>Speaking Practice</h2>
           <p className="description">
