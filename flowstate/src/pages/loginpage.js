@@ -112,7 +112,7 @@ export default function LoginPage() {
           </div>
 
           <p className="login-subtitle">Welcome back</p>
-          <p className="login-description">Log in to continue your Flow</p>
+          <p className="login-description">Log in to enter your FlowState</p>
 
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
@@ -149,7 +149,7 @@ export default function LoginPage() {
 
           <div className="google-divider">
             <span className="divider-line"></span>
-            <span className="divider-text">Or Sign in with</span>
+            <span className="divider-text">or</span>
             <span className="divider-line"></span>
           </div>
 
@@ -186,7 +186,7 @@ export default function LoginPage() {
                 fill="#EA4335"
               />
             </svg>
-            Google
+            Sign In With Google
           </button>
 
           <div className="login-footer">
