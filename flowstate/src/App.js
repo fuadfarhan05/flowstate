@@ -6,6 +6,9 @@ import InterviewSimulation from "./pages/interviewsim";
 import Landing from "./pages/landingpage";
 import GradeArchives from "./pages/gradearchives";
 import Results from "./pages/resultspage"
+import CreatePage from "./pages/createpage";
+import ElevenLabs from "./components/elevenlabcomp";
+
 
 function App() {
   return (
@@ -15,9 +18,10 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/home" element={<Home />} />
           <Route path="/analysis" element={<AnalysisPreview />} />
-          <Route path="/interview" element={<InterviewSimulation />} />
+          <Route path="/interview" element={<ElevenLabs />} />
           <Route path="/archives" element={<GradeArchives />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/create" element={<CreatePage />} />
         </Routes>
       </Router>
     </div>

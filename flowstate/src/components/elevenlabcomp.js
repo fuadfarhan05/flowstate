@@ -3,8 +3,20 @@ import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/elevenstyle.css";
 import BarVisualizer from "./barvisualizer";
+import { useLocation } from "react-router-dom";
+
 
 export default function ElevenLabs() {
+
+  const location = useLocation();
+  const questions = location.state?.questions || [];
+
+  const experienceIndexRef = useRef(0); // xp questions
+  const followUpCountRef = useRef(0);   //drill questions based on answer
+  const MAX_FOLLOWUPS = 5; //in the future this will be a user choice
+
+
+
   const navigate = useNavigate();
   const isSpeakingRef = useRef(false);
   const currentAnswerRef = useRef("");
@@ -64,44 +76,46 @@ export default function ElevenLabs() {
   };
 
   const handleSaveAnswer = async (answerText) => {
-    if (!answerText || answerText.trim() === "") {
-      console.log("⚠️ No answer provided, skipping save");
-      return;
-    }
+    if (!answerText.trim()) return;
 
-    console.log("💾 Saving answer:", answerText);
     qaBufferRef.current.push({
       question: currentQuestion,
       answer: answerText,
     });
-    
 
-    try {
-      const res = await fetch(
-        "http://localhost:5434/api/v1/generate-questions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            answer: answerText,
-          }),
-        },
-      );
+    if (followUpCountRef.current < MAX_FOLLOWUPS) {
+      try {
+        const res = await fetch(
+          "http://localhost:5434/api/v1/generate-questions",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ answer: answerText }),
+          }
+        );
 
-      if (!res.ok) {
-        throw new Error(`Server responded with ${res.status}`);
+        const data = await res.json();
+
+        followUpCountRef.current += 1;
+        setCurrentQuestion(data.question);
+      } catch (err) {
+        console.error("Failed to generate follow-up", err);
       }
+    } else {
+      // Move to next experience
+      experienceIndexRef.current += 1;
+      followUpCountRef.current = 0;
 
-      const data = await res.json();
-      console.log("✅ Received new question:", data);
-      setCurrentQuestion(data.question);
-    } catch (error) {
-      console.error("❌ Failed to send to server:", error);
-      alert("Failed to generate next question. Please try again.");
+      if (experienceIndexRef.current < questions.length) {
+        setCurrentQuestion(
+          questions[experienceIndexRef.current]
+        );
+      } else {
+        console.log("✅ Interview complete");
+      }
     }
   };
+
 
   const handleNextQuestion = async () => {
     if (isProcessing) {
@@ -190,7 +204,12 @@ export default function ElevenLabs() {
 
 
   useEffect(() => {
-    setCurrentQuestion("Tell me about yourself.");
+    if (!questions.length) {
+      console.warn("No questions passed to interview");
+      return;
+    }
+
+    setCurrentQuestion(questions[0]);
     handleStart();
 
     return () => {
@@ -202,13 +221,23 @@ export default function ElevenLabs() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h3 style={{ color: "white", fontSize: "30px" }}>Q: {currentQuestion}</h3>
+      <div className="question-card">
+        <h3 id="question-gen" style={{ color: "white", fontSize: "30px" }}>{currentQuestion}</h3>
+      </div>
 
-      <p className="listening-tag">
-        {scribe.isConnected ? "Listening..." : "Start speaking when ready"}
-      </p>
+      <button
+          className="next-btn"
+          onClick={handleNextQuestion}
+          disabled={isProcessing}
+          style={{ opacity: isProcessing ? 0.6 : 1 }}
+        >
+          {isProcessing ? "Processing..." : "Next Question"}
+        </button>
 
-      <BarVisualizer
+      
+
+      <div style={{marginTop: '100px'}}>
+        <BarVisualizer
         isActive={scribe.isConnected}
         barCount={6}
         barGap={10}
@@ -217,16 +246,9 @@ export default function ElevenLabs() {
         primaryColor="#75a8ff"
         secondaryColor="#b0d4f4"
       />
+      </div>
 
       <div style={{ marginTop: 20 }}>
-        <button
-          className="next-btn"
-          onClick={handleNextQuestion}
-          disabled={isProcessing}
-          style={{ opacity: isProcessing ? 0.6 : 1 }}
-        >
-          {isProcessing ? "Processing..." : "Next Question"}
-        </button>
 
         <button
           className="end-btn"
@@ -241,7 +263,7 @@ export default function ElevenLabs() {
           }}
           disabled={isProcessing}
         >
-          End
+          Finish Here
         </button>
 
 

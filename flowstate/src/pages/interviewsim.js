@@ -1,45 +1,13 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import ElevenLabs from "../components/elevenlabcomp";
+import '../styles/App.css';
 
 function InterviewSimulation() {
   return (
-    <div
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-        overflow: "hidden",
-        backgroundColor: "#05080d",
-      }}
-    >
-      {/* 🌌 Background Aurora */}
-
-      {/* 🔝 Foreground Content */}
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            position: "relative",
-            left: "30px",
-          }}
-        >
-          <h3 style={{ color: "white", fontSize: "25px", margin: 0 }}>
-            FlowState
-          </h3>
-          <h3
-            style={{
-              color: "#80e1f9",
-              fontSize: "25px",
-              marginLeft: "6px",
-            }}
-          >
-            Interviews
-          </h3>
-        </div>
-
+    <div className="App">
+  
         <ElevenLabs />
-      </div>
     </div>
   );
 }

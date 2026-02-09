@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+
 import '../styles/results.css';
 
 
@@ -45,12 +46,7 @@ function Results () {
                     <p style={{color: '#6bb4fd', fontWeight: "bold",fontSize:'20px', marginLeft: '-540px', marginTop: '20px'}}>Comments: </p>
                     <p style={{color: '#ffffff', fontSize: '16px',margin:'0 auto', width: '600px'}}>{evaluation.improvements}</p>
                     
-                    <button style={{marginTop: '10px', width: '200px', height: '50px', borderRadius: '30px', fontSize: '20px', border:'none', marginLeft: '-100px',marginTop: "80px", backgroundColor:'#6bb4fd', color: 'black', position:'fixed'}}>Save Grade</button>
-                    
-
-                    
-
-
+                    <button style={{marginTop: '10px', width: '200px', height: '50px', borderRadius: '30px', fontSize: '20px', border:'none', marginLeft: '-100px',marginTop: "80px", backgroundColor:'#6bb4fd', color: 'black', position:'fixed'}}>Save Grade</button>      
 
                 </div>
 
