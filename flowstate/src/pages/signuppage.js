@@ -104,7 +104,7 @@ export default function SignUpPage() {
 
           <p className="signup-subtitle">Get Started</p>
           <p className="signup-description">
-            Create your account and enter your FlowState
+            Create your account and enter your Flow
           </p>
 
           {error && <div className="error-message">{error}</div>}
