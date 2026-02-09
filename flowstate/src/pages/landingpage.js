@@ -1,9 +1,10 @@
+ import { useEffect } from "react";
 import "../styles/landing.css";
+
 import UploadImg from "../images/flowstateuploadimg.png";
 import SessionImg from "../images/sessions.png";
 import grade from "../images/grade.png";
 import logo from "../images/flowstatelogo.png";
-
 
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +14,19 @@ function Landing() {
   function LoginNavigation() {
     navigate("/LoginPage");
   }
+
+  // Load Tally script once
+  useEffect(() => {
+    if (document.querySelector('script[src="https://tally.so/widgets/embed.js"]')) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://tally.so/widgets/embed.js";
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
+
   return (
     <div className="background">
       <div className="navbar">
@@ -26,7 +40,7 @@ function Landing() {
           </div>
 
           <ul className="nav-links">
-            <l1>Features</l1>
+            <li>Features</li>
             <li>Join Our Waitlist</li>
             <li>Our Mission</li>
             <li>Pricing</li>
@@ -58,8 +72,23 @@ function Landing() {
           The Proper Training You Need Before The Interview
         </p>
       </div>
+
+      {/* CTA BUTTONS */}
       <div className="buttons-place">
-        <button className="get-started">Get Started</button>
+        <button
+          className="get-started"
+          data-tally-open="2EN49e"
+          data-tally-layout="modal"
+          data-tally-width="400"
+          data-tally-overlay="1"
+          data-tally-emoji-text="👋"
+          data-tally-emoji-animation="wave"
+          data-tally-auto-close="0"
+          data-tally-form-events-forwarding="1"
+        >
+          Join Our WaitList
+        </button>
+
         <button className="learn-more-btn">Learn More</button>
       </div>
 
@@ -85,6 +114,7 @@ function Landing() {
           />
         </div>
       </div>
+
       <div className="feature-grid">
         <div className="feature-card">
           <img
@@ -95,21 +125,21 @@ function Landing() {
           <p className="section-label">UNDERSTAND YOUR EXPERIENCE</p>
           <h2>Resume Based Context</h2>
           <p className="description">
-            Gives you the script you need to practice to speak confidentally and
-            fluenty about your experiences.
+            Gives you the script you need to practice to speak confidently and
+            fluently about your experiences.
           </p>
         </div>
 
         <div className="feature-card">
           <img
-            style={{ width: "600px",marginLeft: "-70px" }}
+            style={{ width: "600px", marginLeft: "-70px" }}
             src={SessionImg}
-            alt="FlowState resume parsing diagram"
+            alt="FlowState speaking practice"
           />
           <p className="section-label">PREPARATION WITH PRACTICE</p>
           <h2>Speaking Practice</h2>
           <p className="description">
-            Improve speaking confidence and skills for your interviews and with
+            Improve speaking confidence and skills for your interviews with
             grades and feedback.
           </p>
         </div>
@@ -121,33 +151,30 @@ function Landing() {
         <div className="testimonial-grid">
           <div className="testimonial-card">
             <p>
-              The idea of FlowState originated when I didn't find any easy way
-              to learn how to speak confidentally. I also didn't know how to
-              prepare for an interview without having to ask another person test
-              me. My priority for FlowState was to make sure it can help users
-              with both being prepared and confident.<br></br>
-              <br></br> - Fuad <strong>(Founder of FlowState)</strong>
+              The idea of FlowState originated when I didn’t find any easy way
+              to learn how to speak confidently. I also didn’t know how to
+              prepare for an interview without having another person test me.
+              <br />
+              <br />– Fuad <strong>(Founder of FlowState)</strong>
             </p>
           </div>
 
           <div className="testimonial-card">
             <p>
-              FlowState was never just a project for Fuad and I, it was
-              personal. We both experienced how unpredictable the job market can
-              be, where even landing an internship feels uncertain. We’d quiz
-              each other, run mock interviews, and review resumes, but it never
-              matched the pressure of the real thing. We knew there had to be a
-              better way. That’s why we built FlowState.
-              <br></br>
-              <br></br> - Rayat <strong>(Co-Founder of FlowState)</strong>
+              FlowState was never just a project for us — it was personal.
+              We experienced how unpredictable the job market is and knew
+              there had to be a better way.
+              <br />
+              <br />– Rayat <strong>(Co-Founder of FlowState)</strong>
             </p>
           </div>
 
           <div className="testimonial-card">
             <p>
-              Using flowstate helped me understand my resume more and gave me
-              scripts to improve on real interviews. <br></br>
-              <br></br> - Kyle <strong>- Engineer @ FlowState</strong>
+              FlowState helped me understand my resume and gave me scripts
+              that actually worked in real interviews.
+              <br />
+              <br />– Kyle <strong>(Engineer @ FlowState)</strong>
             </p>
           </div>
         </div>
