@@ -19,7 +19,7 @@ export default function LoginPage() {
 
     if (token) {
       localStorage.setItem("authToken", token);
-      setSuccess("Google Login Successful! Entering your Flow...");
+      setSuccess("Google Login Successful! Entering your FlowState...");
       setTimeout(() => navigate("/interview"), 1500);
     }
 
@@ -111,8 +111,8 @@ export default function LoginPage() {
             <h1 className="login-title">FlowState</h1>
           </div>
 
-          <p className="login-subtitle">Welcome back</p>
-          <p className="login-description">Log in to continue your Flow</p>
+          <p className="login-subtitle">Welcome Back</p>
+          <p className="login-description">Log in to enter your FlowState</p>
 
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
@@ -149,7 +149,7 @@ export default function LoginPage() {
 
           <div className="google-divider">
             <span className="divider-line"></span>
-            <span className="divider-text">Or Sign in with</span>
+            <span className="divider-text">or</span>
             <span className="divider-line"></span>
           </div>
 
@@ -186,7 +186,7 @@ export default function LoginPage() {
                 fill="#EA4335"
               />
             </svg>
-            Google
+            Sign In With Google
           </button>
 
           <div className="login-footer">
