@@ -73,11 +73,6 @@ function CreatePage() {
         </div>
 
         <div className="section">
-          <label>Role you’re interviewing for</label>
-          <input type="text" placeholder="e.g. Software Engineer Intern" />
-        </div>
-
-        <div className="section">
           <label>Upload your resume</label>
           <div className="upload-box">
             <button

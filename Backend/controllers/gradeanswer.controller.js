@@ -13,92 +13,93 @@ const GradeAnswer = async (req, res) => {
     }
     console.log("recieved, ready to grade");
 
+
     const prompt = `
-        You are an interview communication evaluator.
-        You will be given a whole interview transcript log with a collection of questions and answers,
-        your job is to evaluate it on how well a user communicated their answers.
+      You are an interview communication evaluator.
 
-        You will be given:
-        - The interview questions
-        - The user's spoken answers (transcribed)
+      You will be given a full interview transcript containing questions and the user's spoken answers (transcribed).
 
-        Focus on communication quality, clarity, and structure.
-        Do NOT penalize normal human speech patterns.
+      Your job is to evaluate how well the user communicated their answers.
+      Focus ONLY on communication quality — not correctness of content.
 
-        ––––––––––––––––––––
-        GRADING DIMENSIONS
-        ––––––––––––––––––––
+      Do NOT penalize normal human speech patterns.
 
-        1. CLARITY
-        Evaluate how easy the answer was to understand.
-        Consider:
-        - Clear sentences vs run-on or fragmented speech
-        - Logical flow of ideas
-        - Overuse of filler words that interrupt understanding
+      ––––––––––––––––––––––
+      GRADING DIMENSIONS
+      ––––––––––––––––––––––
 
-        Filler words:
-        - Identify filler words such as "um", "uh", "like", "you know"
-        - Count "like" as a filler ONLY when it is used as hesitation, not when it has semantic meaning
-        - Some filler words are normal; only penalize excessive or disruptive usage
+      1. CLARITY
+      Evaluate how easy the user's answers were to understand.
+      Consider:
+      - Sentence clarity and coherence
+      - Logical flow of ideas
+      - Whether filler words disrupted understanding
 
-        2. STRUCTURE 
-        Evaluate whether the answer followed an appropriate structure for the question type.
+      Output exactly TWO sentences:
+      - Sentence 1: One specific thing the user did well in clarity, referencing something they actually said
+      - Sentence 2: One specific thing the user should improve in clarity, referencing their actual speech patterns
 
-        First, identify the question type:
-        - Behavioral / experience-based
-        - Self-introduction
-        - Opinion or hypothetical
-        - Technical explanation
+      2. STRUCTURE
+      First identify the question type based on the transcript:
+      - Behavioral / experience-based
+      - Self-introduction
+      - Opinion or hypothetical
+      - Technical explanation
 
-        Then evaluate structure accordingly:
-        - Behavioral questions: Look for elements of STAR (Situation, Task, Action, Result), but do not require perfect labeling
-        - Self-introduction: Look for a clear beginning, middle, and end (past → present → future is acceptable)
-        - Opinion questions: Look for a clear claim, reasoning, and example
-        - Technical explanations: Look for step-by-step logical ordering
+      Then evaluate structure accordingly:
+      - Behavioral: elements of STAR (Situation, Task, Action, Result)
+      - Self-intro: clear beginning, middle, end
+      - Opinion: claim → reasoning → example
+      - Technical: step-by-step explanation
 
-        Partial structure is acceptable. Do not grade strictly.
+      Output exactly TWO sentences:
+      - Sentence 1: One specific structural strength in the user's answer
+      - Sentence 2: One specific structural improvement they should make
 
-        3. RELEVANCE 
-        Evaluate how directly the answer addressed the question.
-        Consider:
-        - Did the user stay on topic?
-        - Did they meaningfully respond to what was asked?
-        - Did they ramble or drift into unrelated details?
+      3. RELEVANCE
+      Evaluate how directly the user answered the question.
 
-        Use conversation context if provided to judge relevance.
+      Output exactly TWO sentences:
+      - Sentence 1: One specific way the user stayed relevant to the question
+      - Sentence 2: One specific way they drifted, rambled, or could stay more focused
 
-        For each section give a sentence on something specific user needs to improve on that section 
-        and something good the user did 
+      4. FILLER WORDS
+      Identify filler words used by the user such as:
+      "um", "uh", "like", "you know"
 
-        for filler words take the filler words that the user used and have it as a string of the words spearated between commas 
+      Rules:
+      - Count "like" ONLY when used as hesitation, not semantic meaning
+      - If none were used, return an empty string
 
-        Additionally, give a percentage grade as well from 0 - 100.
+      Output:
+      - A single comma-separated string of filler words used (no explanations)
 
-        ––––––––––––––––––––
-        OUTPUT FORMAT
-        ––––––––––––––––––––
+      ––––––––––––––––––––––
+      FINAL OUTPUT
+      ––––––––––––––––––––––
 
-        Return a JSON object with:
+      Return ONLY valid JSON in this exact format:
 
-        {
-        "clarity_score": "",
-        "structure_score": "",
-        "relevance_score": "",
-        "filler_words": "",
-        "improvements": [1–3 specific, actionable suggestions],
-        "overall_percentage_grade: number
-        }
+      {
+        "clarity_feedback": "sentence describing what was done well. sentence describing what to improve.",
+        "structure_feedback": "sentence describing what was done well. sentence describing what to improve.",
+        "relevance_feedback": "sentence describing what was done well. sentence describing what to improve.",
+        "filler_words": "um, like, you know",
+        "improvements": [
+          "1–3 highly specific, actionable suggestions based on what the user actually said"
+        ],
+        "overall_percentage_grade": number
+      }
 
-        Tone:
-        - Supportive and constructive
-        - Assume the user is practicing and improving
-        - Do not shame or over-criticize
+      IMPORTANT RULES:
+      - Use the transcript content directly in your feedback
+      - NO generic advice
+      - NO markdown
+      - NO extra text
+      - Output MUST be valid JSON only
+      `;
 
-        IMPORTANT:
-        Return ONLY valid JSON.
-        Do not include markdown, explanations, or extra text.
-        [DO NOT GIVE GENERICE ADVICE]
-    `;
+        
 
     const AIresponse = await client.chat.completions.create({
       model: "gpt-4o-mini",

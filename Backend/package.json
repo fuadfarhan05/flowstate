@@ -20,7 +20,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.0.0",
-    "mongoose": "^9.1.5",
+    "mongoose": "^9.2.1",
     "multer": "^2.0.2",
     "openai": "^6.16.0",
     "websocket": "^1.0.35"

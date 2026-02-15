@@ -13,8 +13,7 @@ export default function ElevenLabs() {
 
   const experienceIndexRef = useRef(0); // xp questions
   const followUpCountRef = useRef(0);   //drill questions based on answer
-  const MAX_FOLLOWUPS = 5; //in the future this will be a user choice
-
+  const MAX_FOLLOWUPS = 2; //in the future this will be a user choice
 
 
   const navigate = useNavigate();
