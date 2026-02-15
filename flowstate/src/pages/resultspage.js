@@ -5,10 +5,16 @@ function Results() {
   const location = useLocation();
   const { evaluation } = location.state || {};
 
+  if (!evaluation) {
+    return <h1 style={{ color: "white" }}>No results available.</h1>;
+  }
+
   return (
     <div className="body">
       <div className="results-card">
         <div className="results-card-content">
+          
+          {/* Overall Grade */}
           <div className="results">
             <p style={{ color: "white", fontWeight: "bold", fontSize: "20px" }}>
               Your Grade:
@@ -19,89 +25,67 @@ function Results() {
           </div>
 
           <div className="glass-line"></div>
-          <div>
-            <div style={{ gap: "495px" }} className="title-and-grade">
-              <h1>Clarity: </h1>
-              <h1 style={{ color: "white", fontSize: "30px" }}>
-                {" "}
-                {evaluation.clarity_score}
-              </h1>
-            </div>
-            <div
-              style={{ gap: "465px", fontSize: "40px" }}
-              className="title-and-grade"
-            >
-              <h1>Structure: </h1>
-              <h1 style={{ color: "white", fontSize: "30px" }}>
-                {" "}
-                {evaluation.structure_score}
-              </h1>
-            </div>
-            <div style={{ gap: "450px" }} className="title-and-grade">
-              <h1>Relevance: </h1>
-              <h1 style={{ color: "white", fontSize: "30px" }}>
-                {" "}
-                {evaluation.relevance_score}
-              </h1>
-            </div>
-            <div style={{ gap: "432px" }} className="title-and-grade">
-              <h1 style={{ color: "#fffeb1" }}>Filler Words: </h1>
-              <h1 style={{ color: "#fffeb1", fontSize: "30px" }}>
-                {" "}
-                {evaluation.filler_words.count}
-              </h1>
-            </div>
-            <p
-              style={{
-                color: "white",
-                fontSize: "15px",
-                marginTop: "-20px",
-                marginLeft: "-500px",
-              }}
-            >
-              "{evaluation.filler_words.examples}"
-            </p>
+
+          {/* Feedback Sections */}
+          <div style={{ color: "white", width: "600px", margin: "0 auto" }}>
+            
+            <h2 style={{ color: "#6bb4fd" }}>Clarity</h2>
+            <p>{evaluation.clarity_feedback}</p>
+
+            <h2 style={{ color: "#6bb4fd", marginTop: "20px" }}>Structure</h2>
+            <p>{evaluation.structure_feedback}</p>
+
+            <h2 style={{ color: "#6bb4fd", marginTop: "20px" }}>Relevance</h2>
+            <p>{evaluation.relevance_feedback}</p>
+
+            <h2 style={{ color: "#fffeb1", marginTop: "20px" }}>Filler Words Used</h2>
+            <p>{evaluation.filler_words}</p>
+
           </div>
+
           <div className="glass-line"></div>
-          <p
+
+          {/* Improvements */}
+          <h2
             style={{
               color: "#6bb4fd",
-              fontWeight: "bold",
-              fontSize: "20px",
-              marginLeft: "-540px",
               marginTop: "20px",
             }}
           >
-            Comments:{" "}
-          </p>
-          <p
+            Actionable Improvements
+          </h2>
+
+          <ul
             style={{
-              color: "#ffffff",
-              fontSize: "16px",
-              margin: "0 auto",
+              color: "white",
               width: "600px",
+              margin: "0 auto",
+              textAlign: "left",
             }}
           >
-            {evaluation.improvements}
-          </p>
+            {evaluation.improvements &&
+              evaluation.improvements.map((item, index) => (
+                <li key={index} style={{ marginBottom: "10px" }}>
+                  {item}
+                </li>
+              ))}
+          </ul>
 
           <button
             style={{
-              marginTop: "10px",
+              marginTop: "40px",
               width: "200px",
               height: "50px",
               borderRadius: "30px",
               fontSize: "20px",
               border: "none",
-              marginLeft: "-100px",
-              marginTop: "80px",
               backgroundColor: "#6bb4fd",
               color: "black",
-              position: "fixed",
             }}
           >
             Save Grade
           </button>
+
         </div>
       </div>
     </div>
