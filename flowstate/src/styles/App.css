@@ -1,6 +1,17 @@
 /* Import Google Font */
 @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: rgba(16, 20, 47, 0.831);
+}
+
 /* Main App Container */
 .App {
   text-align: center;
@@ -12,6 +23,10 @@
 
   z-index: 1; /* ✅ app stays on top */
 }
+
+/* Full viewport + background lock */
+
+
 
 .particles-container {
   position: fixed; /* ✅ full-screen background */

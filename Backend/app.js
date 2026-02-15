@@ -18,6 +18,7 @@ const GenerateQuestionsRoute = require("./routes/genquestions.route.js");
 const GradeAnswerRoute = require("./routes/gradeanswer.route.js");
 const userRoute = require("./routes/user.route.js");
 const googleOauth = require("./routes/googleoauth.route.js");
+const ExperienceQuestionRoute = require("./routes/experienceq.route.js");
 
 app.get("/", (req, res) => {
   res.json({
