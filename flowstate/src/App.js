@@ -11,21 +11,18 @@ import ElevenLabs from "./components/elevenlabcomp";
 import Results from "./pages/resultspage";
 import LoginPage from "./pages/loginpage";
 import SignUpPage from "./pages/signuppage";
+import AccessPage from "./pages/accessform";
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/analysis" element={<AnalysisPreview />} />
+          <Route path="/" element={< AccessPage />} />
           <Route path="/interview" element={<ElevenLabs />} />
-          <Route path="/archives" element={<GradeArchives />} />
           <Route path="/results" element={<Results />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/loginpage" element={<LoginPage />} />
-          <Route path="/signuppage" element={<SignUpPage />} />
+          
+
         </Routes>
       </Router>
     </div>
