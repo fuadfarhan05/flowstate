@@ -2,12 +2,13 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSheetPlastic } from "react-icons/fa6";
 
-import Aurora from "../backgrounds/Aurora.js";
 import "../styles/createpage.css";
 
 function CreatePage() {
   const navigate = useNavigate();
   const [upload, setUpload] = useState(null);
+  const [questionsPerExperience, setQuestionsPerExperience] = useState(2);
+
   const fileInputRef = useRef(null);
 
   function handleUpload(event) {
@@ -34,11 +35,9 @@ function CreatePage() {
 
       const data = await response.json();
 
-
       const normalizedExperiences = Object.keys(data.experiences);
 
-
-      // 3️⃣ Generate interview questions
+      // 2️⃣ Generate interview questions
       const genResponse = await fetch(
         "http://localhost:5434/api/v1/generate-experiencequestions",
         {
@@ -48,17 +47,19 @@ function CreatePage() {
           },
           body: JSON.stringify({
             experiences: normalizedExperiences,
+            questionsPerExperience,
           }),
         }
       );
 
       const genData = await genResponse.json();
 
-      // 4️⃣ Navigate with ONLY the questions array
       navigate("/interview", {
         state: {
           questions: genData.questions,
+          maxFollowUps: questionsPerExperience,
         },
+
       });
     } catch (error) {
       console.error("Failed to create interview session:", error);
@@ -67,13 +68,16 @@ function CreatePage() {
 
   return (
     <div className="create-container">
+
       <div className="main-card">
         <div className="header">
           <h3>Create Interview Session</h3>
         </div>
 
+        {/* Upload Section */}
         <div className="section">
           <label>Upload your resume</label>
+
           <div className="upload-box">
             <button
               style={{
@@ -81,6 +85,7 @@ function CreatePage() {
                 background: "none",
                 border: "none",
                 fontSize: "80px",
+                cursor: "pointer",
               }}
               onClick={triggerUpload}
             >
@@ -88,7 +93,9 @@ function CreatePage() {
               <p>click here to upload</p>
             </button>
 
-            {upload && <p className="upload-name">🔗 {upload.name}</p>}
+            {upload && (
+              <p className="upload-name">🔗 {upload.name}</p>
+            )}
 
             <input
               type="file"
@@ -99,7 +106,42 @@ function CreatePage() {
           </div>
         </div>
 
-        <button className="start-btn" onClick={handleSubmit}>
+        {/* Questions Per Experience */}
+        <div className="section">
+          <label style={{marginTop: '100px'}}>FlowState asks your question about your work experience, how many FOLLOW UP questions do you want to be asked about each experience on your resume?</label>
+
+          <select
+            value={questionsPerExperience}
+            onChange={(e) =>
+              setQuestionsPerExperience(Number(e.target.value))
+            }
+            style={{
+              width: "100%",
+              padding: "12px",
+              borderRadius: "10px",
+              background: "rgba(255,255,255,0.1)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.3)",
+              fontSize: "16px",
+              marginTop: "10px",
+            }}
+          >
+            <option value={1}>1 question(easy)</option>
+            <option value={2}>2 questions(Normal)</option>
+            <option value={3}>3 questions(Advanced)</option>
+          </select>
+        </div>
+
+        {/* Start Button */}
+        <button
+          className="start-btn"
+          onClick={handleSubmit}
+          disabled={!upload}
+          style={{
+            opacity: upload ? 1 : 0.6,
+            cursor: upload ? "pointer" : "not-allowed",
+          }}
+        >
           Start Session
         </button>
       </div>

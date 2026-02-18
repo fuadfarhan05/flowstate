@@ -1,48 +1,48 @@
 import { useScribe } from "@elevenlabs/react";
 import { useRef, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/elevenstyle.css";
 import BarVisualizer from "./barvisualizer";
-import { useLocation } from "react-router-dom";
-
 
 export default function ElevenLabs() {
-
   const location = useLocation();
-  const questions = location.state?.questions || [];
 
-  const experienceIndexRef = useRef(0); // xp questions
-  const followUpCountRef = useRef(0);   //drill questions based on answer
-  const MAX_FOLLOWUPS = 2; //in the future this will be a user choice
-
+  const { questions, maxFollowUps } = location.state;
 
   const navigate = useNavigate();
+
+  // Interview flow refs
+  const experienceIndexRef = useRef(0);
+  const followUpCountRef = useRef(0);
+  const maxFollowUpsSafe = maxFollowUps ?? 2;
+
+  const MAX_FOLLOWUPS = maxFollowUpsSafe;
+
+
+  // Audio / transcript refs
   const isSpeakingRef = useRef(false);
   const currentAnswerRef = useRef("");
+  const qaBufferRef = useRef([]);
+
+  // UI state
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [evalData, setEvalData] = useState(null);
-  const qaBufferRef = useRef([]);
+  const [isFinished, setIsFinished] = useState(false);
+  const [isFinalizing, setIsFinalizing] = useState(false);
 
   const scribe = useScribe({
     modelId: "scribe_v2_realtime",
 
-    onPartialTranscript: (data) => {
-      console.log("📝 Partial:", data.text);
+    onPartialTranscript: () => {
       if (!isSpeakingRef.current) {
-        console.log("🎤 User started speaking");
         isSpeakingRef.current = true;
       }
     },
 
     onCommittedTranscript: (data) => {
-      console.log("✅ Committed:", data.text);
-      if (currentAnswerRef.current) {
-        currentAnswerRef.current += " " + data.text;
-      } else {
-        currentAnswerRef.current = data.text;
-      }
-      console.log("💾 Full answer so far:", currentAnswerRef.current);
+      currentAnswerRef.current = currentAnswerRef.current
+        ? `${currentAnswerRef.current} ${data.text}`
+        : data.text;
     },
 
     onError: (error) => {
@@ -57,21 +57,14 @@ export default function ElevenLabs() {
   }
 
   const handleStart = async () => {
-    try {
-      const token = await fetchTokenFromServer();
-
-      await scribe.connect({
-        token,
-        microphone: {
-          echoCancellation: true,
-          noiseSuppression: true,
-        },
-      });
-
-      console.log("🎙️ Continuous listening started");
-    } catch (error) {
-      console.error("❌ Failed to start listening:", error);
-    }
+    const token = await fetchTokenFromServer();
+    await scribe.connect({
+      token,
+      microphone: {
+        echoCancellation: true,
+        noiseSuppression: true,
+      },
+    });
   };
 
   const handleSaveAnswer = async (answerText) => {
@@ -94,80 +87,56 @@ export default function ElevenLabs() {
         );
 
         const data = await res.json();
-
         followUpCountRef.current += 1;
         setCurrentQuestion(data.question);
       } catch (err) {
         console.error("Failed to generate follow-up", err);
       }
-    } else {
-      // Move to next experience
-      experienceIndexRef.current += 1;
-      followUpCountRef.current = 0;
-
-      if (experienceIndexRef.current < questions.length) {
-        setCurrentQuestion(
-          questions[experienceIndexRef.current]
-        );
-      } else {
-        console.log("✅ Interview complete");
-      }
-    }
-  };
-
-
-  const handleNextQuestion = async () => {
-    if (isProcessing) {
-      console.log("⏳ Already processing, please wait");
       return;
     }
 
+    experienceIndexRef.current += 1;
+    followUpCountRef.current = 0;
+
+    if (experienceIndexRef.current < questions.length) {
+      setCurrentQuestion(questions[experienceIndexRef.current]);
+    } else {
+      setIsFinished(true);
+    }
+  };
+
+  const handleNextQuestion = async () => {
+    if (isProcessing || isFinished || isFinalizing) return;
+
     setIsProcessing(true);
-    console.log("🔵 Next Question clicked");
 
     try {
-      // Get committed transcript
       let fullAnswer = currentAnswerRef.current.trim();
 
-      // Fallback to partial transcript if committed is empty
       if (!fullAnswer && scribe.partialTranscript) {
         fullAnswer = scribe.partialTranscript.trim();
-        console.log("⚠️ Using partial transcript as fallback");
       }
 
-      console.log("📋 Full answer:", fullAnswer);
-      console.log("📏 Answer length:", fullAnswer.length);
-
-      // Disconnect
       if (scribe.isConnected) {
         scribe.disconnect();
-        console.log("🔌 Disconnected");
       }
 
-      // Small delay to ensure disconnect completes
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((r) => setTimeout(r, 300));
 
-      // Save the answer
       if (fullAnswer) {
         await handleSaveAnswer(fullAnswer);
-        console.log("💾 Answer saved");
-      } else {
-        console.log("❌ No answer to save");
       }
 
-      // Reset for next question
       currentAnswerRef.current = "";
       isSpeakingRef.current = false;
-      console.log("🔄 Reset answer ref");
 
-      // Small delay before reconnecting
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((r) => setTimeout(r, 300));
 
-      // Reconnect
-      await handleStart();
-      console.log("🎙️ Reconnected");
+      if (!isFinished) {
+        await handleStart();
+      }
     } catch (error) {
-      console.error("❌ Error in handleNextQuestion:", error);
+      console.error("❌ Next question error:", error);
     } finally {
       setIsProcessing(false);
     }
@@ -175,35 +144,44 @@ export default function ElevenLabs() {
 
   const handleEnd = async () => {
     const transcriptlog = qaBufferRef.current
-      .map((qa, i) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`)
+      .map(
+        (qa) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`
+      )
       .join("\n\n");
 
-    try {
-      const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcriptlog }),
-      });
+    const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcriptlog }),
+    });
 
-      if (!res.ok) {
-        throw new Error(`Server responded with ${res.status}`);
+    const data = await res.json();
+    return data.evaluation;
+  };
+
+  const finalizeInterview = async () => {
+    if (isFinalizing) return;
+
+    setIsFinalizing(true);
+
+    try {
+      if (scribe.isConnected) {
+        scribe.disconnect();
       }
 
-      const data = await res.json();
+      const evaluation = await handleEnd();
 
-      setEvalData(data.evaluation); // store locally
-      return data.evaluation;
-    } catch (error) {
-      console.error("unable to get a grade", error);
-      return null;
+      await new Promise((r) => setTimeout(r, 800));
+
+      navigate("/results", { state: { evaluation } });
+    } catch (err) {
+      console.error("❌ Finalization error:", err);
+      setIsFinalizing(false);
     }
   };
 
   useEffect(() => {
-    if (!questions.length) {
-      console.warn("No questions passed to interview");
-      return;
-    }
+    if (!questions.length) return;
 
     setCurrentQuestion(questions[0]);
     handleStart();
@@ -215,53 +193,100 @@ export default function ElevenLabs() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isFinished) {
+      finalizeInterview();
+    }
+  }, [isFinished]);
+
   return (
     <div style={{ padding: 20 }}>
       <div className="question-card">
-        <h3 id="question-gen" style={{ color: "white", fontSize: "30px" }}>{currentQuestion}</h3>
+        <h3
+          id="question-gen"
+          style={{ color: "white", fontSize: "30px" }}
+        >
+          {currentQuestion}
+        </h3>
       </div>
 
       <button
-          className="next-btn"
-          onClick={handleNextQuestion}
-          disabled={isProcessing}
-          style={{ opacity: isProcessing ? 0.6 : 1 }}
-        >
-          {isProcessing ? "Processing..." : "Next Question"}
-        </button>
+        className="next-btn"
+        onClick={handleNextQuestion}
+        disabled={isProcessing || isFinished || isFinalizing}
+        style={{
+          opacity:
+            isProcessing || isFinished || isFinalizing ? 0.6 : 1,
+          cursor: isFinished ? "not-allowed" : "pointer",
+        }}
+      >
+        {isFinalizing
+          ? "Finalizing..."
+          : isFinished
+          ? "Interview Complete"
+          : isProcessing
+          ? "Processing..."
+          : "Next Question"}
+      </button>
 
-      
 
-      <div style={{marginTop: '100px'}}>
+      <div style={{ marginTop: "100px" }}>
         <BarVisualizer
-        isActive={scribe.isConnected}
-        barCount={6}
-        barGap={10}
-        barWidth={15}
-        barMaxHeight={80}
-        primaryColor="#75a8ff"
-        secondaryColor="#b0d4f4"
-      />
+          isActive={scribe.isConnected && !isFinalizing}
+          barCount={6}
+          barGap={10}
+          barWidth={15}
+          barMaxHeight={80}
+          primaryColor="#75a8ff"
+          secondaryColor="#b0d4f4"
+        />
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <button
+        className="end-btn"
+        onClick={finalizeInterview}
+        disabled={isFinalizing}
+        style={{
+          marginTop: "20px",
+          opacity: isFinalizing ? 0.6 : 1,
+        }}
+      >
+        Finish Here
+      </button>
 
-        <button
-          className="end-btn"
-          onClick={async () => {
-            const evaluation = await handleEnd();
-
-            if (scribe.isConnected) {
-              scribe.disconnect();
-            }
-
-            navigate("/results", { state: { evaluation } });
+      {isFinalizing && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(10, 15, 40, 0.85)",
+            backdropFilter: "blur(6px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            flexDirection: "column",
+            color: "white",
           }}
-          disabled={isProcessing}
         >
-          Finish Here
-        </button>
-      </div>
+          <div
+            style={{
+              width: 60,
+              height: 60,
+              border: "5px solid rgba(255,255,255,0.2)",
+              borderTop: "5px solid #75a8ff",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+              marginBottom: 20,
+            }}
+          />
+
+          <h2>Grading your interview…</h2>
+          <p style={{ opacity: 0.7 }}>
+            In a moment you will get an analysis report on your speech performance
+          </p>
+        </div>
+      )}
     </div>
   );
 }
