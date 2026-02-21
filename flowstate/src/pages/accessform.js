@@ -6,7 +6,22 @@ import "../styles/accessform.css";
 function AccessPage() {
   const [accessCode, setAccessCode] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("http://localhost:5434/api/v1/access", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ accessCode }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit access code");
+      }
+    } catch (error) {
+      console.error("Error submitting access code:", error);
+    }
   };
 
   return (
