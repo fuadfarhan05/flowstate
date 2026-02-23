@@ -54,7 +54,6 @@ function AccessPage({ hasAccess, onAccessGranted }) {
     <div className="access-container">
       <div className="access-card">
         <p className="access-badge">Beta Access</p>
-        <p className="access-badge">Beta Access</p>
         <div className="header">
           <h2>Congratulations for taking on this journey to help contribute to FlowState.</h2>
           <p>
@@ -62,8 +61,6 @@ function AccessPage({ hasAccess, onAccessGranted }) {
             from your email and you're all set from there!
           </p>
         </div>
-
-        <div className="access-divider" />
 
         <div className="access-divider" />
 
@@ -77,11 +74,8 @@ function AccessPage({ hasAccess, onAccessGranted }) {
             placeholder="Enter your access code here"
           />
           {error && <p className="access-error">{error}</p>}
-          {error && <p className="access-error">{error}</p>}
         </div>
 
-        <button className="start-btn" onClick={handleSubmit} disabled={loading}>
-          {loading ? "Submitting..." : "Submit"}
         <button className="start-btn" onClick={handleSubmit} disabled={loading}>
           {loading ? "Submitting..." : "Submit"}
         </button>
