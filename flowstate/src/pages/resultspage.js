@@ -1,9 +1,57 @@
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/results.css";
 
 function Results() {
   const location = useLocation();
   const { evaluation } = location.state || {};
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+
+  useEffect(() => {
+    if (!showFeedbackForm) return;
+
+    const doc = document;
+    const scriptSrc = "https://tally.so/widgets/embed.js";
+
+    const loadEmbeds = () => {
+      if (typeof window.Tally !== "undefined") {
+        window.Tally.loadEmbeds();
+        return;
+      }
+
+      doc
+        .querySelectorAll("iframe[data-tally-src]:not([src])")
+        .forEach((iframe) => {
+          iframe.src = iframe.dataset.tallySrc;
+        });
+    };
+
+    if (typeof window.Tally !== "undefined") {
+      loadEmbeds();
+      return;
+    }
+
+    const existingScript = doc.querySelector(`script[src="${scriptSrc}"]`);
+    if (existingScript) {
+      existingScript.addEventListener("load", loadEmbeds);
+      existingScript.addEventListener("error", loadEmbeds);
+      return () => {
+        existingScript.removeEventListener("load", loadEmbeds);
+        existingScript.removeEventListener("error", loadEmbeds);
+      };
+    }
+
+    const script = doc.createElement("script");
+    script.src = scriptSrc;
+    script.onload = loadEmbeds;
+    script.onerror = loadEmbeds;
+    doc.body.appendChild(script);
+
+    return () => {
+      script.onload = null;
+      script.onerror = null;
+    };
+  }, [showFeedbackForm]);
 
   if (!evaluation) {
     return <h1 style={{ color: "white", fontSize: '19px'}}>No results available</h1>;
@@ -60,9 +108,42 @@ function Results() {
             ))}
           </ul>
 
-          <button className="save-btn">
+          <button
+            className="save-btn"
+            onClick={() => setShowFeedbackForm(true)}
+          >
             Save Grade
           </button>
+
+          {showFeedbackForm && (
+            <div
+              className="tally-modal-overlay"
+              onClick={() => setShowFeedbackForm(false)}
+            >
+              <div
+                className="tally-modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  className="tally-close-btn"
+                  onClick={() => setShowFeedbackForm(false)}
+                >
+                  Close
+                </button>
+
+                <iframe
+                  data-tally-src="https://tally.so/embed/rjAl8o?alignLeft=1&hideTitle=1&transparentBackground=1"
+                  loading="lazy"
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  marginHeight="0"
+                  marginWidth="0"
+                  title="Beta Testing Feedback"
+                />
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

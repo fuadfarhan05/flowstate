@@ -19,8 +19,11 @@ const GradeAnswer = async (req, res) => {
 
       You will be given a full interview transcript containing questions and the user's spoken answers (transcribed).
 
-      Your job is to evaluate how well the user communicated their answers.
+      Your job is to evaluate how well the candidate communicated their answers.
       Focus ONLY on communication quality — not correctness of content.
+
+      Write all feedback directly to the candidate using second-person language ("you", "your").
+      Never refer to the candidate as "the user", "the candidate", or in third person.
 
       Do NOT penalize normal human speech patterns.
 
@@ -29,15 +32,15 @@ const GradeAnswer = async (req, res) => {
       ––––––––––––––––––––––
 
       1. CLARITY
-      Evaluate how easy the user's answers were to understand.
+      Evaluate how easy your answers were to understand.
       Consider:
       - Sentence clarity and coherence
       - Logical flow of ideas
       - Whether filler words disrupted understanding
 
       Output exactly TWO sentences:
-      - Sentence 1: One specific thing the user did well in clarity, referencing something they actually said
-      - Sentence 2: One specific thing the user should improve in clarity, referencing their actual speech patterns
+      - Sentence 1: One specific thing you did well in clarity, referencing something you actually said
+      - Sentence 2: One specific thing you should improve in clarity, referencing your actual speech patterns
 
       2. STRUCTURE
       First identify the question type based on the transcript:
@@ -53,18 +56,18 @@ const GradeAnswer = async (req, res) => {
       - Technical: step-by-step explanation
 
       Output exactly TWO sentences:
-      - Sentence 1: One specific structural strength in the user's answer
-      - Sentence 2: One specific structural improvement they should make
+      - Sentence 1: One specific structural strength in your answer
+      - Sentence 2: One specific structural improvement you should make
 
       3. RELEVANCE
-      Evaluate how directly the user answered the question.
+      Evaluate how directly you answered the question.
 
       Output exactly TWO sentences:
-      - Sentence 1: One specific way the user stayed relevant to the question
-      - Sentence 2: One specific way they drifted, rambled, or could stay more focused
+      - Sentence 1: One specific way you stayed relevant to the question
+      - Sentence 2: One specific way you drifted, rambled, or could stay more focused
 
       4. FILLER WORDS
-      Identify filler words used by the user such as:
+      Identify filler words you used such as:
       "um", "uh", "like", "you know"
 
       Rules:
@@ -86,13 +89,15 @@ const GradeAnswer = async (req, res) => {
         "relevance_feedback": "sentence describing what was done well. sentence describing what to improve.",
         "filler_words": "um, like, you know",
         "improvements": [
-          "1–3 highly specific, actionable suggestions based on what the user actually said"
+          "1–3 highly specific, actionable suggestions based on what you actually said"
         ],
         "overall_percentage_grade": number
       }
 
       IMPORTANT RULES:
       - Use the transcript content directly in your feedback
+      - Address the candidate directly as "you" and "your"
+      - Do not use phrases like "the user" or "the candidate"
       - NO generic advice
       - NO markdown
       - NO extra text

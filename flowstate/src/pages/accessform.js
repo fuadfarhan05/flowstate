@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../styles/accessform.css";
 
-function AccessPage() {
+function AccessPage({ hasAccess, onAccessGranted }) {
   const [accessCode, setAccessCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async () => { 
-    // extra validation i added here 
+  useEffect(() => {
+    if (hasAccess) {
+      navigate("/create", { replace: true });
+    }
+  }, [hasAccess, navigate]);
+
+  const handleSubmit = async () => {
     if (!accessCode) {
       setError("Please enter a valid access code");
       return;
@@ -28,13 +33,15 @@ function AccessPage() {
         body: JSON.stringify({ accessCode }),
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const data = await response.json();
-        setError(data.validation || "Invalid access code.");
+        setError(data.validation || data.Validation || "Invalid access code.");
         return;
       }
 
-      navigate("/interview"); // if response is good then we just navigate to the homepage this can be changed to whereever you want it to go. 
+      onAccessGranted();
+      navigate("/create", { replace: true });
     } catch (err) {
       setError("Validation Error");
       console.error("Error submitting access code:", err);
@@ -47,10 +54,16 @@ function AccessPage() {
     <div className="access-container">
       <div className="access-card">
         <p className="access-badge">Beta Access</p>
+        <p className="access-badge">Beta Access</p>
         <div className="header">
           <h2>Congratulations for taking on this journey to help contribute to FlowState.</h2>
-          <p>To access FlowState Beta Testing Program, enter the access code that you received from your email and you're all set from there!</p>
+          <p>
+            To access FlowState Beta Testing Program, enter the access code that you received
+            from your email and you're all set from there!
+          </p>
         </div>
+
+        <div className="access-divider" />
 
         <div className="access-divider" />
 
@@ -64,8 +77,11 @@ function AccessPage() {
             placeholder="Enter your access code here"
           />
           {error && <p className="access-error">{error}</p>}
+          {error && <p className="access-error">{error}</p>}
         </div>
 
+        <button className="start-btn" onClick={handleSubmit} disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
         <button className="start-btn" onClick={handleSubmit} disabled={loading}>
           {loading ? "Submitting..." : "Submit"}
         </button>
