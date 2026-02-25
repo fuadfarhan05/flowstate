@@ -1,4 +1,8 @@
 {
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix flowstate run build"
+  },
   "devDependencies": {
     "prettier": "3.8.1",
     "typescript": "^4.9.5"
