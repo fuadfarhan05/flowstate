@@ -200,7 +200,8 @@ export default function ElevenLabs() {
   }, [isFinished]);
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="interview-container">
+      <div className="interview-content">
       <div className="question-card">
         <h3
           id="question-gen"
@@ -287,6 +288,7 @@ export default function ElevenLabs() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

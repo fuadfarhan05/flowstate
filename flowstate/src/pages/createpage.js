@@ -8,6 +8,7 @@ function CreatePage() {
   const navigate = useNavigate();
   const [upload, setUpload] = useState(null);
   const [questionsPerExperience, setQuestionsPerExperience] = useState(2);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -21,10 +22,11 @@ function CreatePage() {
   }
 
   const handleSubmit = async () => {
-    if (!upload) return;
+    if (!upload || isCreatingSession) return;
 
     const formData = new FormData();
     formData.append("upload", upload);
+    setIsCreatingSession(true);
 
     try {
       // 1️⃣ Parse resume
@@ -62,6 +64,7 @@ function CreatePage() {
 
       });
     } catch (error) {
+      setIsCreatingSession(false);
       console.error("Failed to create interview session:", error);
     }
   };
@@ -136,15 +139,23 @@ function CreatePage() {
         <button
           className="start-btn"
           onClick={handleSubmit}
-          disabled={!upload}
+          disabled={!upload || isCreatingSession}
           style={{
-            opacity: upload ? 1 : 0.6,
-            cursor: upload ? "pointer" : "not-allowed",
+            opacity: upload && !isCreatingSession ? 1 : 0.6,
+            cursor: upload && !isCreatingSession ? "pointer" : "not-allowed",
           }}
         >
-          Start Session
+          {isCreatingSession ? "Creating Session..." : "Start Session"}
         </button>
       </div>
+
+      {isCreatingSession && (
+        <div className="create-loading-overlay">
+          <div className="create-loading-spinner" />
+          <h2>Creating your interview session...</h2>
+          <p>Parsing your resume and generating your questions.</p>
+        </div>
+      )}
     </div>
   );
 }
