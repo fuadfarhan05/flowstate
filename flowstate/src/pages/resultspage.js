@@ -112,7 +112,7 @@ function Results() {
             className="save-btn"
             onClick={() => setShowFeedbackForm(true)}
           >
-            Save Grade
+            Give us Your Feedback!
           </button>
 
           {showFeedbackForm && (
