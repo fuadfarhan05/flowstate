@@ -7,7 +7,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server -> frontend server. 
+    allow_origins=["http://localhost:3000", "https://flowstatebetatesting.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

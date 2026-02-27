@@ -30,7 +30,7 @@ function CreatePage() {
 
     try {
       // 1️⃣ Parse resume
-      const response = await fetch("http://localhost:8000/parse-resume", {
+      const response = await fetch(`${process.env.REACT_APP_PYTHON_URL}/parse-resume`, {
         method: "POST",
         body: formData,
       });
@@ -41,7 +41,7 @@ function CreatePage() {
 
       // 2️⃣ Generate interview questions
       const genResponse = await fetch(
-        "http://localhost:5434/api/v1/generate-experiencequestions",
+        `${process.env.REACT_APP_BACKEND_URL}/api/v1/generate-experiencequestions`,
         {
           method: "POST",
           headers: {

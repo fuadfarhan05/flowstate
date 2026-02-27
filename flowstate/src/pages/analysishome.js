@@ -68,7 +68,7 @@ const ExperienceCard = ({ title, bullets }) => {
   const generateScript = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5434/api/v1/generate-script", {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/generate-script`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, bullets }),

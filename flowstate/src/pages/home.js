@@ -29,7 +29,7 @@ function Home() {
     formData.append("upload", upload);
 
     try {
-      const response = await fetch("http://localhost:8000/parse-resume", {
+      const response = await fetch(`${process.env.REACT_APP_PYTHON_URL}/parse-resume`, {
         method: "POST",
         body: formData,
       });

@@ -52,7 +52,7 @@ export default function SignUpPage() {
 
       setLoading(true);
 
-      const sendtobackend = await fetch(`http://localhost:5434/api/v1/signup`, {
+      const sendtobackend = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

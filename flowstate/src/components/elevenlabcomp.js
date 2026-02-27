@@ -51,7 +51,7 @@ export default function ElevenLabs() {
   });
 
   async function fetchTokenFromServer() {
-    const res = await fetch("http://localhost:5434/api/v1/scribe-token");
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/scribe-token`);
     const data = await res.json();
     return data.token;
   }
@@ -78,7 +78,7 @@ export default function ElevenLabs() {
     if (followUpCountRef.current < MAX_FOLLOWUPS) {
       try {
         const res = await fetch(
-          "http://localhost:5434/api/v1/generate-questions",
+          `${process.env.REACT_APP_BACKEND_URL}/api/v1/generate-questions`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -149,7 +149,7 @@ export default function ElevenLabs() {
       )
       .join("\n\n");
 
-    const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
+    const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/grade-answer`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ transcriptlog }),

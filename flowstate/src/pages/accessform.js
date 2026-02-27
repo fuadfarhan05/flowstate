@@ -25,7 +25,7 @@ function AccessPage({ hasAccess, onAccessGranted }) {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5434/api/v1/access", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/access`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

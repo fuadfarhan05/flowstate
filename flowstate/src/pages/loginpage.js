@@ -55,7 +55,7 @@ export default function LoginPage() {
 
       setLoading(true);
 
-      const sendToBackend = await fetch(`http://localhost:5434/api/v1/login`, {
+      const sendToBackend = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
