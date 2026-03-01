@@ -2,11 +2,28 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const envOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = new Set([
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  ...envOrigins,
+]);
+
 //middle ware here
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://flowstatebetatesting.vercel.app"],
+    origin: (origin, callback) => {
+      // Allow non-browser requests (no Origin header) and configured frontend origins.
+      if (!origin || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
   }),
 );
 

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import "../styles/accessform.css";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5434";
+
 function AccessPage({ hasAccess, onAccessGranted }) {
   const [accessCode, setAccessCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,7 +27,7 @@ function AccessPage({ hasAccess, onAccessGranted }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/v1/access`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/access`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
