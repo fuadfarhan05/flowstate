@@ -34,8 +34,8 @@ app.use(
   })
 );
 
-// Optional: handle preflight requests explicitly
-app.options("*", cors());
+// Express 5 no longer accepts bare "*" route strings; use a regex wildcard.
+app.options(/.*/, cors());
 
 /**
  * Routes
