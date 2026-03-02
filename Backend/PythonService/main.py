@@ -1,5 +1,9 @@
+from collections import Counter
+from typing import Any
+
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from pydantic import BaseModel, Field
 import pdfplumber
 import re
 
@@ -7,7 +11,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server -> frontend server. 
+    allow_origins=["http://localhost:3000"],  # React dev server -> frontend server.
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -79,6 +83,136 @@ date_words = [
 
 bulletpoints = []
 header = []
+
+TOKEN_PATTERN = re.compile(r"[a-zA-Z']+")
+FILLER_PHRASES = [
+    "um",
+    "uh",
+    "erm",
+    "ah",
+    "like",
+    "you know",
+    "i mean",
+    "sort of",
+    "kind of",
+    "actually",
+    "basically",
+    "literally",
+    "well",
+]
+FILLER_TOKEN_MAP = {
+    phrase: tuple(part for part in phrase.split(" ") if part) for phrase in FILLER_PHRASES
+}
+SORTED_FILLER_TOKENS = sorted(
+    FILLER_TOKEN_MAP.items(), key=lambda item: len(item[1]), reverse=True
+)
+
+
+class FillerAnalysisRequest(BaseModel):
+    transcript: str = ""
+    window_size_words: int = Field(default=20, ge=5, le=120)
+    step_words: int = Field(default=5, ge=1, le=60)
+    elapsed_seconds: float | None = Field(default=None, gt=0)
+
+
+def normalize_tokens(text: str) -> list[str]:
+    return [token.strip("'").lower() for token in TOKEN_PATTERN.findall(text) if token.strip("'")]
+
+
+def count_fillers_in_tokens(tokens: list[str]) -> Counter:
+    counts = Counter()
+    i = 0
+    while i < len(tokens):
+        matched = False
+        for filler_phrase, filler_tokens in SORTED_FILLER_TOKENS:
+            width = len(filler_tokens)
+            if tokens[i : i + width] == list(filler_tokens):
+                counts[filler_phrase] += 1
+                i += width
+                matched = True
+                break
+        if not matched:
+            i += 1
+    return counts
+
+
+def build_sliding_windows(tokens: list[str], window_size: int, step: int) -> list[dict[str, Any]]:
+    if not tokens:
+        return []
+
+    windows = []
+    if len(tokens) <= window_size:
+        starts = [0]
+    else:
+        starts = list(range(0, len(tokens) - window_size + 1, step))
+        if starts[-1] != len(tokens) - window_size:
+            starts.append(len(tokens) - window_size)
+
+    for start in starts:
+        end = min(start + window_size, len(tokens))
+        window_tokens = tokens[start:end]
+        filler_counts = count_fillers_in_tokens(window_tokens)
+        filler_total = sum(filler_counts.values())
+        word_total = len(window_tokens)
+        density = round((filler_total / word_total) * 100, 2) if word_total else 0.0
+        windows.append(
+            {
+                "start_word": start + 1,
+                "end_word": end,
+                "word_count": word_total,
+                "filler_total": filler_total,
+                "density_percent": density,
+                "top_fillers": filler_counts.most_common(3),
+            }
+        )
+
+    return windows
+
+
+@app.post("/analyze-filler-words")
+async def analyze_filler_words(payload: FillerAnalysisRequest):
+    normalized_text = payload.transcript.strip()
+    tokens = normalize_tokens(normalized_text)
+
+    if not tokens:
+        return {
+            "word_count": 0,
+            "filler_total": 0,
+            "filler_density_percent": 0.0,
+            "filler_counts": {},
+            "sliding_windows": [],
+            "recent_windows": [],
+            "speaking_speed_wpm": None,
+            "filler_rate_per_minute": None,
+        }
+
+    filler_counts = count_fillers_in_tokens(tokens)
+    filler_total = sum(filler_counts.values())
+    filler_density = round((filler_total / len(tokens)) * 100, 2)
+
+    windows = build_sliding_windows(
+        tokens=tokens,
+        window_size=payload.window_size_words,
+        step=payload.step_words,
+    )
+
+    speaking_speed_wpm = None
+    filler_rate_per_minute = None
+    if payload.elapsed_seconds:
+        minutes = payload.elapsed_seconds / 60.0
+        speaking_speed_wpm = round(len(tokens) / minutes, 2) if minutes > 0 else None
+        filler_rate_per_minute = round(filler_total / minutes, 2) if minutes > 0 else None
+
+    return {
+        "word_count": len(tokens),
+        "filler_total": filler_total,
+        "filler_density_percent": filler_density,
+        "filler_counts": dict(filler_counts.most_common()),
+        "sliding_windows": windows,
+        "recent_windows": windows[-3:],
+        "speaking_speed_wpm": speaking_speed_wpm,
+        "filler_rate_per_minute": filler_rate_per_minute,
+    }
 
 
 # ----------------------------
@@ -213,4 +347,3 @@ async def parse_resume(upload: UploadFile = File(...)):
     return {
         "experiences": organize_experience(experience_text)
     }
-

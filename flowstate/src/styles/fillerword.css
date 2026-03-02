@@ -1,0 +1,120 @@
+.fillerwords-page {
+  min-height: 100vh;
+  padding: 24px;
+  color: white;
+}
+
+.fillerwords-shell {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.fillerwords-prompt {
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+.fillerwords-controls {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fillerwords-timer {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: rgba(117, 168, 255, 0.2);
+  border: 1px solid rgba(176, 212, 244, 0.5);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.fillerwords-clear-btn {
+  margin-top: 0;
+  width: auto;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.fillerwords-transcript-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.fillerwords-transcript-box {
+  margin-top: 18px;
+  text-align: left;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.fillerwords-transcript-box h4 {
+  margin: 0;
+}
+
+.fillerwords-transcript-box p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.fillerwords-error {
+  margin-top: 10px;
+  color: #ffb6b6;
+}
+
+.fillerwords-notes {
+  max-width: 900px;
+  margin: 16px auto 0 auto;
+  text-align: left;
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.fillerwords-notes h4 {
+  margin: 0 0 6px 0;
+}
+
+.fillerwords-notes p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.fillerwords-metrics {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fillerwords-window-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+.back-btn {
+  margin-top: 50px;
+  width: 300px;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  font-size: 15px;
+  padding: 10px;
+  border-radius: 15px;
+  color: black;
+  font-weight: bold;
+}

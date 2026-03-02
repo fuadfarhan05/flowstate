@@ -65,6 +65,7 @@ export default function SignUpPage() {
       const resfrombackend = await sendtobackend.json();
 
       if (sendtobackend.ok) {
+        localStorage.setItem("userName", name.trim());
         setSuccess("Account created successfully! Redirecting to login...");
         setTimeout(() => {
           navigate("/LoginPage");

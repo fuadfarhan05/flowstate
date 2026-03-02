@@ -12,15 +12,45 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  function normalizeName(value) {
+    if (!value || typeof value !== "string") return "";
+    return value.trim();
+  }
+
+  function deriveNameFromResponse(responseData, fallbackEmail) {
+    const candidates = [
+      responseData?.name,
+      responseData?.fullName,
+      responseData?.firstName,
+      responseData?.username,
+      responseData?.user?.name,
+      responseData?.user?.fullName,
+      responseData?.user?.firstName,
+      responseData?.user?.username,
+    ];
+
+    for (const candidate of candidates) {
+      const parsed = normalizeName(candidate);
+      if (parsed) return parsed;
+    }
+
+    const emailPrefix = normalizeName(fallbackEmail).split("@")[0];
+    return emailPrefix || "";
+  }
+
   // Handle Google OAuth callback - token comes back as a query param
   useEffect(() => {
     const token = searchParams.get("token");
     const oauthError = searchParams.get("error");
+    const oauthName = searchParams.get("name");
 
     if (token) {
       localStorage.setItem("authToken", token);
-      setSuccess("Google Login Successful! Entering your Flow...");
-      setTimeout(() => navigate("/interview"), 1500);
+      if (oauthName) {
+        localStorage.setItem("userName", normalizeName(oauthName));
+      }
+      setSuccess("Google Login Successful! Enter your FlowState...");
+      setTimeout(() => navigate("/dashboard"), 1500);
     }
 
     if (oauthError) {
@@ -67,15 +97,19 @@ export default function LoginPage() {
       const resFromBackend = await sendToBackend.json();
 
       if (sendToBackend.ok) {
-        setSuccess("Login Successful! Entering your Flow...");
+        setSuccess("Login Successful! Entering your FlowState...");
 
         // handle token in local storage
         if (resFromBackend.token) {
           localStorage.setItem("authToken", resFromBackend.token);
         }
 
-        // redirect to a certain page ask fuad which page for now redirect to the analysis page
-        setTimeout(() => navigate("/interview"), 1500); // navigates to the interview page once successful
+        const userName = deriveNameFromResponse(resFromBackend, email);
+        if (userName) {
+          localStorage.setItem("userName", userName);
+        }
+
+        setTimeout(() => navigate("/dashboard"), 1500); // navigates to the dashboard once successful
       } else {
         setError(resFromBackend.error || "Login failed. Please try again");
       }

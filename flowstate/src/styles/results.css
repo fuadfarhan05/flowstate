@@ -65,7 +65,7 @@ h2 {
   overflow-wrap: break-word;
 }
 
-/ eliminate hard margins */
+/* eliminate hard margins */
 .categories,
 .title-and-grade {
   margin: 0;
