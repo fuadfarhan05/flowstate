@@ -1,13 +1,34 @@
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, UploadFile, File, HTTPException
-import pdfplumber
+import os
 import re
+
+import pdfplumber
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+allow_vercel_previews = os.getenv("CORS_ALLOW_VERCEL_PREVIEWS", "true").lower() != "false"
+
+configured_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("CORS_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
+allow_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    *configured_origins,
+]
+
+origin_regex = os.getenv("CORS_ORIGIN_REGEX")
+if not origin_regex and allow_vercel_previews:
+    origin_regex = r"https://[a-zA-Z0-9-]+\.vercel\.app"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://flowstatebetatesting.vercel.app"],
+    allow_origins=allow_origins,
+    allow_origin_regex=origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -213,4 +234,3 @@ async def parse_resume(upload: UploadFile = File(...)):
     return {
         "experiences": organize_experience(experience_text)
     }
-
