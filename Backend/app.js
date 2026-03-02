@@ -51,7 +51,6 @@ const corsOptions = {
 
 // middle ware here
 app.use(express.json());
-app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 
 //Importing routes here as such
