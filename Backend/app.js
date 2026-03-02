@@ -2,50 +2,44 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-const normalizeOrigin = (origin = "") => origin.trim().replace(/\/+$/, "");
-
-const envOrigins = (process.env.CORS_ORIGINS || "")
-  .split(",")
-  .map((origin) => normalizeOrigin(origin))
-  .filter(Boolean);
-
-const allowVercelPreviews = (process.env.CORS_ALLOW_VERCEL_PREVIEWS || "true").toLowerCase() !== "false";
-
+/**
+ * Allowed frontend origins
+ */
 const allowedOrigins = new Set([
   "http://localhost:3000",
   "http://127.0.0.1:3000",
   "https://flowstatebetatesting.vercel.app",
-  ...envOrigins,
-].map((origin) => normalizeOrigin(origin)));
+]);
 
-const allowedOriginPatterns = [
-  ...(allowVercelPreviews ? [/^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/] : []),
-];
-
-//middle ware here
+/**
+ * Middleware
+ */
 app.use(express.json());
+
 app.use(
   cors({
     origin: (origin, callback) => {
+      // Allow server-to-server requests (Postman, curl, etc.)
       if (!origin) {
         return callback(null, true);
       }
 
-      const normalizedOrigin = normalizeOrigin(origin);
-      if (allowedOrigins.has(normalizedOrigin)) {
-        return callback(null, true);
-      }
-
-      if (allowedOriginPatterns.some((pattern) => pattern.test(normalizedOrigin))) {
+      if (allowedOrigins.has(origin)) {
         return callback(null, true);
       }
 
       return callback(new Error("Not allowed by CORS"));
     },
-  }),
+    credentials: true, // keep if you use cookies/auth
+  })
 );
 
-//Importing routes here as such
+// Optional: handle preflight requests explicitly
+app.options("*", cors());
+
+/**
+ * Routes
+ */
 const Airoute = require("./routes/AI.route.js");
 const interviewsimRoute = require("./routes/interviewsim.route.js");
 const ElevenLabsRoute = require("./routes/scribeToken.route.js");
@@ -54,15 +48,20 @@ const GradeAnswerRoute = require("./routes/gradeanswer.route.js");
 const userRoute = require("./routes/user.route.js");
 const googleOauth = require("./routes/googleoauth.route.js");
 const ExperienceQuestionRoute = require("./routes/experienceq.route.js");
-const AccessRoute = require("./routes/access.route.js")
+const AccessRoute = require("./routes/access.route.js");
 
+/**
+ * Health check
+ */
 app.get("/", (req, res) => {
   res.json({
-    Server: "Successfully running",
+    server: "Successfully running",
   });
 });
 
-//Initialize the routes to be called.
+/**
+ * API routes
+ */
 app.use("/api/v1/", Airoute);
 app.use("/api/v1/", interviewsimRoute);
 app.use("/api/v1/", ElevenLabsRoute);
@@ -71,6 +70,8 @@ app.use("/api/v1/", GradeAnswerRoute);
 app.use("/api/v1/", ExperienceQuestionRoute);
 app.use("/api/v1/", userRoute);
 app.use("/api/v1/", AccessRoute);
+
+// OAuth routes (intentionally not under /api/v1)
 app.use("/", googleOauth);
 
 module.exports = app;
