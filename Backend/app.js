@@ -9,49 +9,41 @@ const envOrigins = (process.env.CORS_ORIGINS || "")
   .map((origin) => normalizeOrigin(origin))
   .filter(Boolean);
 
-const envRegexPatterns = (process.env.CORS_ORIGIN_REGEX || "")
-  .split(",")
-  .map((pattern) => pattern.trim())
-  .filter(Boolean)
-  .map((pattern) => new RegExp(pattern));
-
 const allowVercelPreviews = (process.env.CORS_ALLOW_VERCEL_PREVIEWS || "true").toLowerCase() !== "false";
 
 const allowedOrigins = new Set([
   "http://localhost:3000",
   "http://127.0.0.1:3000",
+  "https://flowstatebetatesting.vercel.app",
   ...envOrigins,
 ].map((origin) => normalizeOrigin(origin)));
 
 const allowedOriginPatterns = [
   ...(allowVercelPreviews ? [/^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/] : []),
-  ...envRegexPatterns,
 ];
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow non-browser requests (no Origin header).
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    const normalizedOrigin = normalizeOrigin(origin);
-
-    if (allowedOrigins.has(normalizedOrigin)) {
-      return callback(null, true);
-    }
-
-    if (allowedOriginPatterns.some((pattern) => pattern.test(normalizedOrigin))) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("Not allowed by CORS"));
-  },
-};
-
-// middle ware here
+//middle ware here
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const normalizedOrigin = normalizeOrigin(origin);
+      if (allowedOrigins.has(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      if (allowedOriginPatterns.some((pattern) => pattern.test(normalizedOrigin))) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  }),
+);
 
 //Importing routes here as such
 const Airoute = require("./routes/AI.route.js");
