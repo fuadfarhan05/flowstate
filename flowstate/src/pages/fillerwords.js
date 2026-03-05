@@ -98,6 +98,16 @@ function FillerWordsPage() {
         <p>
           {transcript.trim() ? transcript.trim().split(/\s+/).length : 0} words.
         </p>
+
+        <div className="fillerwords-metrics">
+          <h4>Transcript</h4>
+          <p>
+            {transcript.trim()
+              ? transcript
+              : "Your live transcript will appear here after you start speaking."}
+          </p>
+        </div>
+
         {analysis && (
           <div className="fillerwords-metrics">
             <p>

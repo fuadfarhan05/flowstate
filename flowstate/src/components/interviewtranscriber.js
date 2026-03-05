@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useScribe } from "@elevenlabs/react";
 import BarVisualizer from "./barvisualizer";
 import "../styles/elevenstyle.css";
 
@@ -16,28 +15,17 @@ export default function InterviewTranscriber({
   const [error, setError] = useState("");
   const committedTranscriptRef = useRef("");
   const [committedTranscript, setCommittedTranscript] = useState("");
+  const [partialTranscript, setPartialTranscript] = useState("");
   const [secondsLeft, setSecondsLeft] = useState(
     hasTimer ? maxDurationSeconds : null,
   );
 
-  const scribe = useScribe({
-    modelId: "scribe_v2_realtime",
-    onCommittedTranscript: (data) => {
-      const updated = committedTranscriptRef.current
-        ? `${committedTranscriptRef.current} ${data.text}`
-        : data.text;
-
-      committedTranscriptRef.current = updated;
-      setCommittedTranscript(updated);
-    },
-    onError: (scribeError) => {
-      console.error("Scribe error:", scribeError);
-      setError("Transcription failed. Please reconnect and try again.");
-    },
-  });
+  const socketRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const streamRef = useRef(null);
 
   const liveTranscript = useMemo(() => {
-    const partial = scribe.partialTranscript?.trim();
+    const partial = partialTranscript.trim();
 
     if (!partial) {
       return committedTranscript;
@@ -46,7 +34,7 @@ export default function InterviewTranscriber({
     return committedTranscript
       ? `${committedTranscript} ${partial}`
       : partial;
-  }, [committedTranscript, scribe.partialTranscript]);
+  }, [committedTranscript, partialTranscript]);
 
   useEffect(() => {
     if (typeof onTranscriptChange === "function") {
@@ -54,14 +42,34 @@ export default function InterviewTranscriber({
     }
   }, [liveTranscript, onTranscriptChange]);
 
+  const cleanupAudio = (closeSocket = true) => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+    }
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    if (closeSocket && socketRef.current) {
+      socketRef.current.onclose = null;
+      socketRef.current.close();
+    }
+
+    mediaRecorderRef.current = null;
+    streamRef.current = null;
+    socketRef.current = null;
+    setIsConnected(false);
+  };
+
   async function fetchTokenFromServer() {
-    const res = await fetch("http://localhost:5434/api/v1/scribe-token");
+    const res = await fetch("http://localhost:5434/api/v1/assembly-token");
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.details || body.error || "Failed to fetch AssemblyAI token");
+    }
     const data = await res.json();
     return data.token;
   }
 
   const handleStart = async () => {
-    if (isConnecting || scribe.isConnected) return;
+    if (isConnecting || isConnected || socketRef.current) return;
 
     setError("");
     if (hasTimer) {
@@ -71,42 +79,81 @@ export default function InterviewTranscriber({
 
     try {
       const token = await fetchTokenFromServer();
-      await scribe.connect({
-        token,
-        microphone: {
-          echoCancellation: true,
-          noiseSuppression: true,
-        },
-      });
-      setIsConnected(true);
+
+      const socket = new WebSocket(
+        `wss://streaming.assemblyai.com/v3/ws?sample_rate=16000&format_turns=true&token=${token}`,
+      );
+      socketRef.current = socket;
+
+      socket.onopen = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+          },
+        });
+
+        streamRef.current = stream;
+        const recorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = recorder;
+
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0 && socket.readyState === WebSocket.OPEN) {
+            socket.send(event.data);
+          }
+        };
+
+        recorder.start(250);
+        setIsConnected(true);
+      };
+
+      socket.onmessage = (msg) => {
+        const data = JSON.parse(msg.data);
+
+        if (data.type !== "Turn") return;
+
+        const text = (data.transcript || "").trim();
+        if (!text) return;
+
+        const updated = committedTranscriptRef.current
+          ? `${committedTranscriptRef.current} ${text}`
+          : text;
+
+        committedTranscriptRef.current = updated;
+        setCommittedTranscript(updated);
+        setPartialTranscript("");
+      };
+
+      socket.onerror = (socketError) => {
+        console.error("AssemblyAI error:", socketError);
+        setError("Transcription failed. Please reconnect and try again.");
+      };
+
+      socket.onclose = () => {
+        cleanupAudio(false);
+      };
     } catch (startError) {
-      console.error("Failed to connect to scribe:", startError);
+      console.error("Failed to connect to AssemblyAI:", startError);
       setError("Unable to connect to transcription service.");
-      setIsConnected(false);
+      cleanupAudio();
     } finally {
       setIsConnecting(false);
     }
   };
 
   const handleStop = () => {
-    if (scribe.isConnected) {
-      scribe.disconnect();
-    }
-    setIsConnected(false);
+    cleanupAudio();
   };
 
   const handleClear = () => {
     committedTranscriptRef.current = "";
     setCommittedTranscript("");
+    setPartialTranscript("");
     setError("");
     if (hasTimer) {
       setSecondsLeft(maxDurationSeconds);
     }
   };
-
-  useEffect(() => {
-    setIsConnected(scribe.isConnected);
-  }, [scribe.isConnected]);
 
   useEffect(() => {
     if (hasTimer) {
@@ -118,9 +165,7 @@ export default function InterviewTranscriber({
 
   useEffect(() => {
     return () => {
-      if (scribe.isConnected) {
-        scribe.disconnect();
-      }
+      cleanupAudio();
     };
   }, []);
 
@@ -143,15 +188,11 @@ export default function InterviewTranscriber({
   useEffect(() => {
     if (!hasTimer || !isConnected || secondsLeft !== 0) return;
 
-    if (scribe.isConnected) {
-      scribe.disconnect();
-    }
-
-    setIsConnected(false);
+    cleanupAudio();
     setError(
       `Reached ${maxDurationSeconds} seconds. Transcription stopped automatically.`,
     );
-  }, [hasTimer, isConnected, maxDurationSeconds, scribe, secondsLeft]);
+  }, [hasTimer, isConnected, maxDurationSeconds, secondsLeft]);
 
   const formattedTimeLeft =
     hasTimer && secondsLeft !== null

@@ -1,71 +1,122 @@
-import { useScribe } from "@elevenlabs/react";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/elevenstyle.css";
 import BarVisualizer from "./barvisualizer";
 
-export default function ElevenLabs() {
+export default function AssemblyInterview() {
   const location = useLocation();
-
   const { questions, maxFollowUps } = location.state;
-
   const navigate = useNavigate();
 
   // Interview flow refs
   const experienceIndexRef = useRef(0);
   const followUpCountRef = useRef(0);
-  const maxFollowUpsSafe = maxFollowUps ?? 2;
-
-  const MAX_FOLLOWUPS = maxFollowUpsSafe;
-
+  const MAX_FOLLOWUPS = maxFollowUps ?? 2;
 
   // Audio / transcript refs
-  const isSpeakingRef = useRef(false);
+  const socketRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const streamRef = useRef(null);
   const currentAnswerRef = useRef("");
   const qaBufferRef = useRef([]);
+  const sessionIdRef = useRef(null);
 
   // UI state
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [isFinalizing, setIsFinalizing] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const scribe = useScribe({
-    modelId: "scribe_v2_realtime",
+  /* ---------------- PRODUCTION TOKEN FETCH ---------------- */
 
-    onPartialTranscript: () => {
-      if (!isSpeakingRef.current) {
-        isSpeakingRef.current = true;
-      }
-    },
+  async function fetchToken() {
+    const res = await fetch(
+      `http://localhost:5434/api/v1/assembly-token`,
+      { credentials: "include" }
+    );
 
-    onCommittedTranscript: (data) => {
-      currentAnswerRef.current = currentAnswerRef.current
-        ? `${currentAnswerRef.current} ${data.text}`
-        : data.text;
-    },
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.details || body.error || "Token fetch failed");
+    }
 
-    onError: (error) => {
-      console.error("❌ Scribe error:", error);
-    },
-  });
-
-  async function fetchTokenFromServer() {
-    const res = await fetch("http://localhost:5434/api/v1/scribe-token");
     const data = await res.json();
+    sessionIdRef.current = data.sessionId;
     return data.token;
   }
 
+  /* ---------------- START RECORDING ---------------- */
+
   const handleStart = async () => {
-    const token = await fetchTokenFromServer();
-    await scribe.connect({
-      token,
-      microphone: {
-        echoCancellation: true,
-        noiseSuppression: true,
-      },
-    });
+    if (socketRef.current) return;
+
+    const token = await fetchToken();
+
+    const socket = new WebSocket(
+      `wss://streaming.assemblyai.com/v3/ws?sample_rate=16000&format_turns=true&token=${token}`
+    );
+
+    socketRef.current = socket;
+
+    socket.onopen = async () => {
+      setIsConnected(true);
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+
+      streamRef.current = stream;
+
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0 && socket.readyState === 1) {
+          socket.send(event.data);
+        }
+      };
+
+      mediaRecorder.start(250);
+    };
+
+    socket.onmessage = (msg) => {
+      const data = JSON.parse(msg.data);
+
+      if (data.type === "Turn" && data.transcript?.trim()) {
+        currentAnswerRef.current +=
+          (currentAnswerRef.current ? " " : "") + data.transcript;
+      }
+    };
+
+    socket.onerror = (err) => {
+      console.error("AssemblyAI error:", err);
+    };
+
+    socket.onclose = () => {
+      setIsConnected(false);
+      cleanupAudio(false);
+    };
   };
+
+  /* ---------------- CLEANUP ---------------- */
+
+  const cleanupAudio = (closeSocket = true) => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stop();
+    }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    if (closeSocket && socketRef.current) {
+      socketRef.current.onclose = null;
+      socketRef.current.close();
+    }
+
+    mediaRecorderRef.current = null;
+    streamRef.current = null;
+    socketRef.current = null;
+  };
+
+  /* ---------------- SAVE ANSWER ---------------- */
 
   const handleSaveAnswer = async (answerText) => {
     if (!answerText.trim()) return;
@@ -76,22 +127,19 @@ export default function ElevenLabs() {
     });
 
     if (followUpCountRef.current < MAX_FOLLOWUPS) {
-      try {
-        const res = await fetch(
-          "http://localhost:5434/api/v1/generate-questions",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ answer: answerText }),
-          }
-        );
+      const res = await fetch(
+        `http://localhost:5434/api/v1/generate-questions`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answer: answerText }),
+          //in here we will also pass in question along with answer from now on from now
+        }
+      );
 
-        const data = await res.json();
-        followUpCountRef.current += 1;
-        setCurrentQuestion(data.question);
-      } catch (err) {
-        console.error("Failed to generate follow-up", err);
-      }
+      const data = await res.json();
+      followUpCountRef.current += 1;
+      setCurrentQuestion(data.question);
       return;
     }
 
@@ -105,55 +153,50 @@ export default function ElevenLabs() {
     }
   };
 
+  /* ---------------- NEXT QUESTION ---------------- */
+
   const handleNextQuestion = async () => {
     if (isProcessing || isFinished || isFinalizing) return;
 
     setIsProcessing(true);
 
     try {
-      let fullAnswer = currentAnswerRef.current.trim();
+      cleanupAudio();
+      await new Promise((r) => setTimeout(r, 400));
 
-      if (!fullAnswer && scribe.partialTranscript) {
-        fullAnswer = scribe.partialTranscript.trim();
-      }
-
-      if (scribe.isConnected) {
-        scribe.disconnect();
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
+      const fullAnswer = currentAnswerRef.current.trim();
 
       if (fullAnswer) {
         await handleSaveAnswer(fullAnswer);
       }
 
       currentAnswerRef.current = "";
-      isSpeakingRef.current = false;
-
-      await new Promise((r) => setTimeout(r, 300));
 
       if (!isFinished) {
         await handleStart();
       }
     } catch (error) {
-      console.error("❌ Next question error:", error);
+      console.error("Next question error:", error);
     } finally {
       setIsProcessing(false);
     }
   };
 
+  /* ---------------- FINALIZE ---------------- */
+
   const handleEnd = async () => {
     const transcriptlog = qaBufferRef.current
-      .map(
-        (qa) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`
-      )
+      .map((qa) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`)
       .join("\n\n");
 
-    const res = await fetch("http://localhost:5434/api/v1/grade-answer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ transcriptlog }),
-    });
+    const res = await fetch(
+      `http://localhost:5434/api/v1/grade-answer`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcriptlog }),
+      }
+    );
 
     const data = await res.json();
     return data.evaluation;
@@ -161,51 +204,39 @@ export default function ElevenLabs() {
 
   const finalizeInterview = async () => {
     if (isFinalizing) return;
-
     setIsFinalizing(true);
 
     try {
-      if (scribe.isConnected) {
-        scribe.disconnect();
-      }
-
+      cleanupAudio();
       const evaluation = await handleEnd();
-
-      await new Promise((r) => setTimeout(r, 800));
-
       navigate("/results", { state: { evaluation } });
     } catch (err) {
-      console.error("❌ Finalization error:", err);
+      console.error("Finalization error:", err);
       setIsFinalizing(false);
     }
   };
 
+  /* ---------------- LIFECYCLE ---------------- */
+
   useEffect(() => {
-    if (!questions.length) return;
+    if (!questions?.length) return;
 
     setCurrentQuestion(questions[0]);
     handleStart();
 
-    return () => {
-      if (scribe.isConnected) {
-        scribe.disconnect();
-      }
-    };
+    return () => cleanupAudio();
   }, []);
 
   useEffect(() => {
-    if (isFinished) {
-      finalizeInterview();
-    }
+    if (isFinished) finalizeInterview();
   }, [isFinished]);
+
+  /* ---------------- UI ---------------- */
 
   return (
     <div style={{ padding: 20 }}>
       <div className="question-card">
-        <h3
-          id="question-gen"
-          style={{ color: "white", fontSize: "30px" }}
-        >
+        <h3 style={{ color: "white", fontSize: "30px" }}>
           {currentQuestion}
         </h3>
       </div>
@@ -214,11 +245,6 @@ export default function ElevenLabs() {
         className="next-btn"
         onClick={handleNextQuestion}
         disabled={isProcessing || isFinished || isFinalizing}
-        style={{
-          opacity:
-            isProcessing || isFinished || isFinalizing ? 0.6 : 1,
-          cursor: isFinished ? "not-allowed" : "pointer",
-        }}
       >
         {isFinalizing
           ? "Finalizing..."
@@ -229,10 +255,9 @@ export default function ElevenLabs() {
           : "Next Question"}
       </button>
 
-
       <div style={{ marginTop: "100px" }}>
         <BarVisualizer
-          isActive={scribe.isConnected && !isFinalizing}
+          isActive={isConnected && !isFinalizing}
           barCount={6}
           barGap={10}
           barWidth={15}
@@ -246,47 +271,10 @@ export default function ElevenLabs() {
         className="end-btn"
         onClick={finalizeInterview}
         disabled={isFinalizing}
-        style={{
-          marginTop: "20px",
-          opacity: isFinalizing ? 0.6 : 1,
-        }}
+        style={{ marginTop: 20 }}
       >
         Finish Here
       </button>
-
-      {isFinalizing && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(10, 15, 40, 0.85)",
-            backdropFilter: "blur(6px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            flexDirection: "column",
-            color: "white",
-          }}
-        >
-          <div
-            style={{
-              width: 60,
-              height: 60,
-              border: "5px solid rgba(255,255,255,0.2)",
-              borderTop: "5px solid #75a8ff",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-              marginBottom: 20,
-            }}
-          />
-
-          <h2>Grading your interview…</h2>
-          <p style={{ opacity: 0.7 }}>
-            In a moment you will get an analysis report on your speech performance
-          </p>
-        </div>
-      )}
     </div>
   );
 }
