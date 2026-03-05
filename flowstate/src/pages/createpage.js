@@ -9,6 +9,8 @@ function CreatePage() {
   const [upload, setUpload] = useState(null);
   const [questionsPerExperience, setQuestionsPerExperience] = useState(2);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [showPrepModal, setShowPrepModal] = useState(false);
+  const [pendingSessionData, setPendingSessionData] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -56,17 +58,24 @@ function CreatePage() {
 
       const genData = await genResponse.json();
 
-      navigate("/interview", {
-        state: {
-          questions: genData.questions,
-          maxFollowUps: questionsPerExperience,
-        },
-
+      setPendingSessionData({
+        questions: genData.questions,
+        maxFollowUps: questionsPerExperience,
       });
+      setIsCreatingSession(false);
+      setShowPrepModal(true);
     } catch (error) {
       setIsCreatingSession(false);
       console.error("Failed to create interview session:", error);
     }
+  };
+
+  const handlePrepConfirm = () => {
+    if (!pendingSessionData) return;
+
+    navigate("/interview", {
+      state: pendingSessionData,
+    });
   };
 
   return (
@@ -154,6 +163,56 @@ function CreatePage() {
           <div className="create-loading-spinner" />
           <h2>Creating your interview session...</h2>
           <p>Parsing your resume and generating your questions.</p>
+        </div>
+      )}
+
+      {showPrepModal && (
+        <div className="prep-modal-overlay">
+          <div className="prep-modal-card">
+            <div className="prep-row">
+              <div className="prep-icon prep-icon-white" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+              <p>
+                Have your microphone on. FlowState will not be able to hear your responses otherwise.
+              </p>
+            </div>
+
+            <div className="prep-row">
+              <div className="prep-icon prep-icon-gold" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+              <p>
+                Be in an environment that is quiet so that your voice is heard clearly and to boost your focus.
+              </p>
+            </div>
+
+            <div className="prep-row">
+              <div className="prep-icon prep-icon-blue" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+              <p>
+                Try your best! Answer all questions to the best of your ability. Don&apos;t worry or stress as this is
+                just a practice interview.
+              </p>
+            </div>
+
+            <button className="prep-confirm-btn" onClick={handlePrepConfirm}>
+              Sounds good
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -177,6 +177,127 @@ label {
     font-size: 15px;
 }
 
+.prep-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+}
+
+.prep-modal-card {
+    width: min(950px, 92vw);
+    border-radius: 24px;
+    padding: 36px 34px 30px;
+    color: #f5f7ff;
+    background:
+        radial-gradient(120% 140% at 50% 50%, rgba(21, 93, 131, 0.56) 0%, rgba(3, 18, 30, 0.98) 70%),
+        #03101e;
+    border: 1px solid rgba(177, 217, 255, 0.2);
+    box-shadow: 0 35px 80px rgba(0, 0, 0, 0.6);
+}
+
+.prep-row {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 36px;
+}
+
+.prep-row p {
+    margin: 0;
+    font-size: clamp(22px, 2.1vw, 34px);
+    line-height: 1.34;
+    letter-spacing: 0.01em;
+}
+
+.prep-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 7px;
+}
+
+.prep-icon span {
+    width: 10px;
+    border-radius: 999px;
+    opacity: 0.95;
+}
+
+.prep-icon span:nth-child(1) {
+    width: 8px;
+    height: 6px;
+}
+
+.prep-icon span:nth-child(2) {
+    height: 18px;
+}
+
+.prep-icon span:nth-child(3) {
+    height: 44px;
+}
+
+.prep-icon span:nth-child(4) {
+    height: 44px;
+}
+
+.prep-icon span:nth-child(5) {
+    height: 30px;
+}
+
+.prep-icon-white span {
+    background: #edf3ff;
+}
+
+.prep-icon-gold span {
+    background: #f2d47a;
+}
+
+.prep-icon-blue span {
+    background: #8ec1ff;
+}
+
+.prep-confirm-btn {
+    margin-top: 8px;
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #021423;
+    background: linear-gradient(90deg, #f5f7ff 0%, #c7deff 100%);
+}
+
+.prep-confirm-btn:hover {
+    filter: brightness(0.98);
+}
+
+@media (max-width: 900px) {
+    .prep-modal-card {
+        width: min(700px, 95vw);
+        padding: 24px 20px;
+    }
+
+    .prep-row {
+        grid-template-columns: 56px 1fr;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .prep-row p {
+        font-size: clamp(18px, 4.8vw, 28px);
+    }
+}
+
 @keyframes create-spin {
     to {
         transform: rotate(360deg);
