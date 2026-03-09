@@ -146,7 +146,7 @@ export default function LoginPage() {
           </div>
 
           <p className="login-subtitle">Welcome back</p>
-          <p className="login-description">Log in to continue your Flow</p>
+          <p className="login-description">Log in to enter your FlowState</p>
 
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}

@@ -74,7 +74,7 @@ function FillerWordsPage() {
         setAnalysisError("");
       } catch (err) {
         console.error("Filler analysis error:", err);
-        setAnalysisError("Python NLP service is unavailable on port 8000.");
+        setAnalysisError("Issue with tracking filler words");
       }
     }, 350);
 
@@ -88,7 +88,7 @@ function FillerWordsPage() {
   return (
     <div className="fillerwords-page">
       <InterviewTranscriber
-        title="Filler Word Practice"
+        title="Reduced Your Filler Words"
         onTranscriptChange={setTranscript}
         maxDurationSeconds={90}
         fillerDensityPercent={visualizerFillerDensity}
@@ -98,15 +98,6 @@ function FillerWordsPage() {
         <p>
           {transcript.trim() ? transcript.trim().split(/\s+/).length : 0} words.
         </p>
-
-        <div className="fillerwords-metrics">
-          <h4>Transcript</h4>
-          <p>
-            {transcript.trim()
-              ? transcript
-              : "Your live transcript will appear here after you start speaking."}
-          </p>
-        </div>
 
         {analysis && (
           <div className="fillerwords-metrics">

@@ -15,8 +15,10 @@ export default function AssemblyInterview() {
 
   // Audio / transcript refs
   const socketRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
   const streamRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const sourceNodeRef = useRef(null);
+  const processorNodeRef = useRef(null);
   const currentAnswerRef = useRef("");
   const qaBufferRef = useRef([]);
   const sessionIdRef = useRef(null);
@@ -27,6 +29,43 @@ export default function AssemblyInterview() {
   const [isFinished, setIsFinished] = useState(false);
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+
+  const downsampleBuffer = (buffer, inputSampleRate, outputSampleRate) => {
+    if (outputSampleRate >= inputSampleRate) {
+      return buffer;
+    }
+    const sampleRateRatio = inputSampleRate / outputSampleRate;
+    const newLength = Math.round(buffer.length / sampleRateRatio);
+    const result = new Float32Array(newLength);
+    let offsetResult = 0;
+    let offsetBuffer = 0;
+
+    while (offsetResult < result.length) {
+      const nextOffsetBuffer = Math.round((offsetResult + 1) * sampleRateRatio);
+      let accum = 0;
+      let count = 0;
+
+      for (let i = offsetBuffer; i < nextOffsetBuffer && i < buffer.length; i += 1) {
+        accum += buffer[i];
+        count += 1;
+      }
+
+      result[offsetResult] = accum / count;
+      offsetResult += 1;
+      offsetBuffer = nextOffsetBuffer;
+    }
+
+    return result;
+  };
+
+  const float32ToInt16Buffer = (floatBuffer) => {
+    const int16 = new Int16Array(floatBuffer.length);
+    for (let i = 0; i < floatBuffer.length; i += 1) {
+      const s = Math.max(-1, Math.min(1, floatBuffer[i]));
+      int16[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+    }
+    return int16.buffer;
+  };
 
   /* ---------------- PRODUCTION TOKEN FETCH ---------------- */
 
@@ -54,7 +93,7 @@ export default function AssemblyInterview() {
     const token = await fetchToken();
 
     const socket = new WebSocket(
-      `wss://streaming.assemblyai.com/v3/ws?sample_rate=16000&format_turns=true&token=${token}`
+      `wss://streaming.assemblyai.com/v3/ws?sample_rate=16000&format_turns=true&encoding=pcm_s16le&token=${token}`
     );
 
     socketRef.current = socket;
@@ -68,22 +107,35 @@ export default function AssemblyInterview() {
 
       streamRef.current = stream;
 
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const audioContext = new AudioContextClass();
+      audioContextRef.current = audioContext;
+      const sourceNode = audioContext.createMediaStreamSource(stream);
+      sourceNodeRef.current = sourceNode;
+      const processorNode = audioContext.createScriptProcessor(4096, 1, 1);
+      processorNodeRef.current = processorNode;
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0 && socket.readyState === 1) {
-          socket.send(event.data);
-        }
+      processorNode.onaudioprocess = (event) => {
+        if (socket.readyState !== WebSocket.OPEN) return;
+        const inputData = event.inputBuffer.getChannelData(0);
+        const downsampled = downsampleBuffer(
+          inputData,
+          audioContext.sampleRate,
+          16000
+        );
+        const payload = float32ToInt16Buffer(downsampled);
+        socket.send(payload);
       };
 
-      mediaRecorder.start(250);
+      sourceNode.connect(processorNode);
+      processorNode.connect(audioContext.destination);
+      await audioContext.resume();
     };
 
     socket.onmessage = (msg) => {
       const data = JSON.parse(msg.data);
 
-      if (data.type === "Turn" && data.transcript?.trim()) {
+      if (data.type === "Turn" && data.transcript?.trim() && data.end_of_turn) {
         currentAnswerRef.current +=
           (currentAnswerRef.current ? " " : "") + data.transcript;
       }
@@ -102,16 +154,27 @@ export default function AssemblyInterview() {
   /* ---------------- CLEANUP ---------------- */
 
   const cleanupAudio = (closeSocket = true) => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      mediaRecorderRef.current.stop();
+    if (processorNodeRef.current) {
+      processorNodeRef.current.disconnect();
+    }
+    if (sourceNodeRef.current) {
+      sourceNodeRef.current.disconnect();
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
     }
     streamRef.current?.getTracks().forEach((t) => t.stop());
     if (closeSocket && socketRef.current) {
+      if (socketRef.current.readyState === WebSocket.OPEN) {
+        socketRef.current.send(JSON.stringify({ type: "Terminate" }));
+      }
       socketRef.current.onclose = null;
       socketRef.current.close();
     }
 
-    mediaRecorderRef.current = null;
+    processorNodeRef.current = null;
+    sourceNodeRef.current = null;
+    audioContextRef.current = null;
     streamRef.current = null;
     socketRef.current = null;
   };

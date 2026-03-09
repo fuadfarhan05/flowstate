@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function DashboardPage() {
     const navigate = useNavigate();
-    const [displayName, setDisplayName] = useState("there");
+    const [displayName, setDisplayName] = useState("flowstate user");
 
     useEffect(() => {
         const savedName = localStorage.getItem("userName");
@@ -36,9 +36,6 @@ function DashboardPage() {
         <header className="dashboard-top">
           <div>
             <h1>Welcome back, {displayName}</h1>
-            <p className="dashboard-subtitle">
-                Enter your FlowState
-            </p>
           </div>
 
           <div className="dashboard-actions">
@@ -54,13 +51,38 @@ function DashboardPage() {
             <div className="hero-progress-ring">
               <span>82%</span>
             </div>
-            <p>Readiness Score</p>
+            <p>Recent Score</p>
           </div>
         </section>
 
         
 
-            <button className="dashboard-btn dashboard-btn-primary full-width" onClick={goFillerWords}>Reduce Filler Words Practice</button>
+          <section className="panel panel-side">
+            <h3>Focus Drills</h3>
+            <button
+              className="filler-drill-btn full-width"
+              onClick={goFillerWords}
+              type="button"
+            >
+              <span className="filler-drill-title">Reduce your filler words</span>
+
+              <span className="filler-drill-visual">
+                <span className="filler-drill-chip chip-um">( um )</span>
+                <span className="filler-drill-chip chip-like">( Like )</span>
+                <span className="filler-drill-chip chip-youknow">( you know )</span>
+                <span className="filler-drill-chip chip-pretty">( pretty much )</span>
+
+                <span className="filler-drill-bars" aria-hidden="true">
+                  <span className="bar bar-1" />
+                  <span className="bar bar-2" />
+                  <span className="bar bar-3" />
+                  <span className="bar bar-4" />
+                  <span className="bar bar-5" />
+                  <span className="bar bar-6" />
+                </span>
+              </span>
+            </button>
+          </section>
 
           <aside className="panel panel-side">
             <h3>Today’s Plan</h3>
