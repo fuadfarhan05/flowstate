@@ -2,44 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-/**
- * Allowed frontend origins
- */
-const allowedOrigins = new Set([
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-  "https://flowstatebetatesting.vercel.app",
-]);
-
-/**
- * Middleware
- */
+//middle ware here
 app.use(express.json());
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow server-to-server requests (Postman, curl, etc.)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.has(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true, // keep if you use cookies/auth
-  })
+    origin: "http://localhost:3000",
+  }),
 );
 
-// Express 5 no longer accepts bare "*" route strings; use a regex wildcard.
-app.options(/.*/, cors());
-
-/**
- * Routes
- */
+//Importing routes here as such
 const Airoute = require("./routes/AI.route.js");
 const interviewsimRoute = require("./routes/interviewsim.route.js");
 const GenerateQuestionsRoute = require("./routes/genquestions.route.js");
@@ -49,18 +20,13 @@ const googleOauth = require("./routes/googleoauth.route.js");
 const ExperienceQuestionRoute = require("./routes/experienceq.route.js");
 const AssemblyRoute = require("./routes/assembly.route.js");
 
-/**
- * Health check
- */
 app.get("/", (req, res) => {
   res.json({
-    server: "Successfully running",
+    Server: "Successfully running",
   });
 });
 
-/**
- * API routes
- */
+//Initialize the routes to be called.
 app.use("/api/v1/", Airoute);
 app.use("/api/v1/", interviewsimRoute);
 app.use("/api/v1/", GenerateQuestionsRoute);
