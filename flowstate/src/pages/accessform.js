@@ -15,7 +15,7 @@ function AccessPage({ hasAccess, onAccessGranted }) {
 
   useEffect(() => {
     if (hasAccess) {
-      navigate("/create", { replace: true });
+      navigate("/features", { replace: true });
     }
   }, [hasAccess, navigate]);
 
@@ -45,7 +45,7 @@ function AccessPage({ hasAccess, onAccessGranted }) {
       }
 
       onAccessGranted();
-      navigate("/create", { replace: true });
+      navigate("/features", { replace: true });
     } catch (err) {
       setError("Validation Error");
       console.error("Error submitting access code:", err);
