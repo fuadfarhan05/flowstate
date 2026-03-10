@@ -2,13 +2,39 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+const configuredOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = new Set([
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://flowstatebetatesting.vercel.app",
+  ...configuredOrigins,
+]);
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow non-browser requests (curl/postman/server-to-server)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200,
+};
+
 //middle ware here
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  }),
-);
+app.use(cors(corsOptions));
 
 //Importing routes here as such
 const Airoute = require("./routes/AI.route.js");
