@@ -130,8 +130,12 @@ export default function InterviewTranscriber({
     setIsConnected(false);
   };
 
+  const API_BASE_URL =
+  process.env.REACT_APP_BACKEND_URL ||
+  "http://localhost:5434";
+
   async function fetchTokenFromServer() {
-    const res = await fetch("http://localhost:5434/api/v1/assembly-token");
+    const res = await fetch(`${API_BASE_URL}/api/v1/assembly-token`);
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.details || body.error || "Failed to fetch AssemblyAI token");

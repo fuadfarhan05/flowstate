@@ -12,6 +12,8 @@ function FillerWordsPage() {
   const analysisDebounceRef = useRef(null);
   const speechStartedAtRef = useRef(null);
 
+  const API_BASE_URL = REACT_APP_PYTHON_URL 
+
   const navigate = useNavigate();
 
   const recentWindowDensity =
@@ -52,7 +54,7 @@ function FillerWordsPage() {
           Math.round((Date.now() - speechStartedAtRef.current) / 1000),
         );
 
-        const response = await fetch("http://localhost:8000/analyze-filler-words", {
+        const response = await fetch(`${API_BASE_URL}/analyze-filler-words`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
