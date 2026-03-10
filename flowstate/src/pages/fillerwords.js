@@ -12,7 +12,7 @@ function FillerWordsPage() {
   const analysisDebounceRef = useRef(null);
   const speechStartedAtRef = useRef(null);
 
-  const API_BASE_URL = REACT_APP_PYTHON_URL 
+  const API_BASE_URL = process.env.REACT_APP_PYTHON_URL 
 
   const navigate = useNavigate();
 
