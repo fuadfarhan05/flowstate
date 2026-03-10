@@ -1,28 +1,31 @@
 
-const CODE = process.env.ACCESS_CODE;
+const CODE = process.env.ACCESS_CODE || "";
 
 const accessController = (req, res) => { 
-    const { accessCode } = req.body; 
+    const submittedCode = typeof req.body?.accessCode === "string"
+      ? req.body.accessCode.trim()
+      : "";
+    const expectedCode = CODE.trim();
 
-    if (!accessCode || accessCode === "") { 
+    if (!submittedCode) { 
        return res.status(400).json({ 
         validation: "Error, not a valid access code please enter a valid code"
        }); 
     } 
 
     try {  
-        if (accessCode === CODE) { 
+        if (submittedCode === expectedCode) { 
             res.status(200).json({ 
-                Validation: 'Access Code valid user allowed for beta testing'
+                validation: "Access code valid. User allowed for beta testing."
             }); 
         } else { 
             return res.status(401).json({
-                  Validation: "Failed, Invalid Access Code entered"
+                  validation: "Failed, invalid access code entered."
             });
         }
     } catch(error) { 
         res.status(500).json({ 
-            Validation: "Server Error"
+            validation: "Server error"
         }); 
     }
 }; 
