@@ -3,9 +3,35 @@ const client = new OpenAi({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const analyzeFillerWords = async (transcript, elapsedSeconds) => {
+  try {
+    const response = await fetch("http://localhost:8000/analyze-filler-words", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        transcript,
+        window_size_words: 20,
+        step_words: 5,
+        elapsed_seconds: elapsedSeconds,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Filler analysis failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Filler analysis error:", error.message);
+    return null;
+  }
+};
+
 const GradeAnswer = async (req, res) => {
   try {
-    const { transcriptlog } = req.body;
+    const { transcriptlog, fullTranscript = "", elapsedSeconds = null } = req.body;
     if (!transcriptlog?.trim()) {
       return res.status(400).json({
         error: "No Transcript Log has been provided",
@@ -126,6 +152,16 @@ const GradeAnswer = async (req, res) => {
     } catch (err) {
       console.error("Failed to parse AI JSON:", content);
       return res.status(500).json({ error: "AI returned invalid JSON" });
+    }
+
+    const fillerAnalysisTranscript = fullTranscript.trim() || transcriptlog;
+    const fillerAnalysis = await analyzeFillerWords(
+      fillerAnalysisTranscript,
+      elapsedSeconds,
+    );
+
+    if (fillerAnalysis) {
+      parsed.filler_analysis = fillerAnalysis;
     }
 
     return res.status(200).json({ evaluation: parsed });

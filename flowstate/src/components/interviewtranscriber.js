@@ -6,10 +6,12 @@ export default function InterviewTranscriber({
   title = "reduce filler words",
   prompt = "Speak freely about anything you want.",
   onTranscriptChange,
+  onStop,
   maxDurationSeconds = null,
   fillerDensityPercent = 0,
+  topics = null,
 }) {
-  const practiceTopics = [
+  const defaultTopics = [
     "Describe a mistake you made and what you learned from it.",
     "Explain a hobby you enjoy to someone who has never tried it.",
     "Talk about a goal you want to achieve this year.",
@@ -21,7 +23,9 @@ export default function InterviewTranscriber({
     "Explain a daily habit that helps you stay productive.",
     "Talk about a project you are proud of.",
   ];
+  const practiceTopics = topics || defaultTopics;
 
+  const [transcriptHidden, setTranscriptHidden] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState("");
@@ -144,6 +148,9 @@ export default function InterviewTranscriber({
     if (isConnecting || isConnected || socketRef.current) return;
 
     setError("");
+    committedTranscriptRef.current = "";
+    setCommittedTranscript("");
+    setPartialTranscript("");
     if (hasTimer) {
       setSecondsLeft(effectiveMaxDurationSeconds);
     }
@@ -248,6 +255,7 @@ export default function InterviewTranscriber({
 
   const handleStop = () => {
     cleanupAudio();
+    if (typeof onStop === "function") onStop();
   };
 
   const handleClear = () => {
@@ -438,14 +446,25 @@ export default function InterviewTranscriber({
       <section className="fillerwords-transcript-box">
         <div className="fillerwords-transcript-header">
           <h4>Live Transcript</h4>
-          <button className="end-btn fillerwords-clear-btn" onClick={handleClear}>
-            Clear
-          </button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              className="end-btn fillerwords-clear-btn"
+              onClick={() => setTranscriptHidden((h) => !h)}
+              type="button"
+            >
+              {transcriptHidden ? "Show" : "Hide"}
+            </button>
+            <button className="end-btn fillerwords-clear-btn" onClick={handleClear}>
+              Clear
+            </button>
+          </div>
         </div>
-        <p>
-          {liveTranscript ||
-            "Your words will appear here when you start speaking"}
-        </p>
+        {!transcriptHidden && (
+          <p>
+            {liveTranscript ||
+              "Your words will appear here when you start speaking"}
+          </p>
+        )}
       </section>
 
       {error && <p className="fillerwords-error">{error}</p>}

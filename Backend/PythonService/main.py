@@ -1,11 +1,18 @@
 from collections import Counter
 from typing import Any
+import json
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel, Field
 import pdfplumber
 import re
+from openai import AsyncOpenAI
 
 app = FastAPI()
 
@@ -213,6 +220,79 @@ async def analyze_filler_words(payload: FillerAnalysisRequest):
         "speaking_speed_wpm": speaking_speed_wpm,
         "filler_rate_per_minute": filler_rate_per_minute,
     }
+
+
+EXTRACTION_SYSTEM_PROMPT = """
+You are an expert interview coach extracting STAR components from candidate transcripts.
+
+Here is a labeled example:
+
+TRANSCRIPT:
+"At my internship at Google, our team's API was timing out under load.
+I was responsible for diagnosing the bottleneck. I profiled the service
+using py-spy, found a blocking DB call in a hot path, and replaced it
+with an async query. Response time dropped from 800ms to 120ms."
+
+EXTRACTION:
+{
+  "situation": {
+    "state": "FILLED",
+    "quote": "our team's API was timing out under load",
+    "note": "Specific technical context established."
+  },
+  "task": {
+    "state": "FILLED",
+    "quote": "I was responsible for diagnosing the bottleneck",
+    "note": "Clear personal ownership stated."
+  },
+  "action": {
+    "state": "FILLED",
+    "quote": "I profiled the service using py-spy, found a blocking DB call, replaced it with an async query",
+    "note": "Personal, specific, technical — no 'we'."
+  },
+  "result": {
+    "state": "FILLED",
+    "quote": "Response time dropped from 800ms to 120ms",
+    "note": "Quantified, measurable outcome."
+  }
+}
+
+---
+
+Now extract from the transcript the user provides using the same shape.
+Respond ONLY with valid JSON.
+"""
+
+openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+class StarAnalysisRequest(BaseModel):
+    transcript: str
+
+
+@app.post("/analyze-star")
+async def analyze_star(payload: StarAnalysisRequest):
+    transcript = payload.transcript.strip()
+    if not transcript:
+        raise HTTPException(status_code=400, detail="Transcript is empty")
+
+    response = await openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
+            {"role": "user", "content": transcript},
+        ],
+        temperature=0,
+        response_format={"type": "json_object"},
+    )
+
+    raw = response.choices[0].message.content
+    try:
+        result = json.loads(raw)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Failed to parse model response as JSON")
+
+    return result
 
 
 # ----------------------------

@@ -72,29 +72,58 @@
 }
 
 .dashboard-btn {
-  border: none;
+  border: 1.5px solid transparent;
   border-radius: 15px;
   padding: 10px 16px;
   color: rgb(255, 254, 254);
   font-size: 14px;
   font-weight: 1000;
   cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.dashboard-btn-primary {
   background: linear-gradient(
     135deg,
     rgba(77, 97, 250, 0.829),
     rgba(39, 111, 255, 0.939)
   );
-  backdrop-filter: blur(10px);
+  border-color: rgba(100, 150, 255, 0.45);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 0 12px rgba(50, 110, 255, 0.45),
+    0 0 32px rgba(30, 90, 220, 0.25),
+    inset 0 0 0 1px rgba(160, 200, 255, 0.15),
     0 6px 20px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.dashboard-btn:hover {
+.dashboard-btn-primary:hover {
   transform: translateY(-1px);
+  border-color: rgba(140, 190, 255, 0.7);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 20px rgba(50, 110, 255, 0.65),
+    0 0 50px rgba(30, 90, 220, 0.35),
+    inset 0 0 0 1px rgba(180, 220, 255, 0.2),
+    0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-btn-logout {
+  background: linear-gradient(135deg, rgba(180, 30, 50, 0.75), rgba(220, 50, 70, 0.85));
+  border-color: rgba(255, 80, 100, 0.45);
+  box-shadow:
+    0 0 12px rgba(220, 40, 60, 0.4),
+    0 0 32px rgba(180, 20, 40, 0.2),
+    inset 0 0 0 1px rgba(255, 150, 160, 0.15),
+    0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-btn-logout:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 120, 135, 0.7);
+  box-shadow:
+    0 0 20px rgba(220, 40, 60, 0.6),
+    0 0 50px rgba(180, 20, 40, 0.3),
+    inset 0 0 0 1px rgba(255, 170, 180, 0.2),
     0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
@@ -105,19 +134,28 @@
     rgba(220, 230, 249, 0.939)
   );
   color: black;
+  border-color: rgba(180, 195, 255, 0.5);
+  box-shadow:
+    0 0 10px rgba(180, 200, 255, 0.3),
+    0 0 28px rgba(160, 180, 240, 0.15),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-btn-primary {
-  background: linear-gradient(
-    135deg,
-    rgba(77, 97, 250, 0.829),
-    rgba(39, 111, 255, 0.939)
-  );
+.dashboard-btn-muted:hover {
+  transform: translateY(-1px);
+  border-color: rgba(200, 215, 255, 0.8);
+  box-shadow:
+    0 0 18px rgba(180, 200, 255, 0.5),
+    0 0 44px rgba(160, 180, 240, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+    0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .dashboard-hero-card {
   display: grid;
   grid-template-columns: 1fr auto;
+  margin-top: 18px;
   align-items: center;
   gap: 26px;
   padding: 26px;
@@ -315,29 +353,80 @@
 .filler-drill-btn {
   width: 100%;
   margin-top: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.36);
+  border: 1.5px solid rgba(99, 160, 255, 0.45);
   border-radius: 22px;
   padding: 14px 18px;
   cursor: pointer;
   text-align: left;
-  background: #042e66;
+  background: linear-gradient(135deg, #0a2a6e 0%, #0d3a99 40%, #1254c4 75%, #1a6be0 100%);
   color: #f6f8ff;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 18px;
   align-items: center;
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.34);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(30, 100, 255, 0.45),
+    0 0 48px rgba(20, 80, 220, 0.25),
+    inset 0 0 0 1px rgba(120, 180, 255, 0.12),
     0 18px 34px rgba(0, 0, 0, 0.34);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .filler-drill-btn:hover {
   transform: translateY(-2px);
+  border-color: rgba(120, 180, 255, 0.7);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 0 28px rgba(30, 100, 255, 0.65),
+    0 0 70px rgba(20, 80, 220, 0.35),
+    inset 0 0 0 1px rgba(160, 210, 255, 0.18),
     0 22px 42px rgba(0, 0, 0, 0.38);
+}
+
+.star-drill-btn {
+  background: linear-gradient(135deg, #2a0a5e 0%, #3d0f85 40%, #5a1ab8 75%, #7b28e0 100%);
+  border-color: rgba(170, 100, 255, 0.45);
+  box-shadow:
+    0 0 18px rgba(130, 50, 255, 0.45),
+    0 0 48px rgba(100, 30, 220, 0.25),
+    inset 0 0 0 1px rgba(200, 150, 255, 0.12),
+    0 18px 34px rgba(0, 0, 0, 0.34);
+}
+
+.star-drill-btn:hover {
+  border-color: rgba(200, 150, 255, 0.7);
+  box-shadow:
+    0 0 28px rgba(140, 60, 255, 0.65),
+    0 0 70px rgba(110, 30, 220, 0.35),
+    inset 0 0 0 1px rgba(210, 170, 255, 0.18),
+    0 22px 42px rgba(0, 0, 0, 0.38);
+}
+
+.star-drill-visual {
+  position: relative;
+  width: 100px;
+  height: 96px;
+}
+
+.star-chip {
+  position: absolute;
+  font-size: 22px;
+  font-weight: 900;
+  color: rgba(230, 200, 255, 0.9);
+  text-shadow: 0 0 12px rgba(180, 120, 255, 0.7);
+}
+
+.star-chip-s { top: 2px;  left: 10px; }
+.star-chip-t { top: 22px; left: 42px; }
+.star-chip-a { top: 44px; left: 16px; }
+.star-chip-r { top: 64px; left: 48px; }
+
+.star-sparkle {
+  position: absolute;
+  top: 28px;
+  right: 4px;
+  font-size: 28px;
+  color: rgba(210, 170, 255, 0.55);
+  text-shadow: 0 0 16px rgba(160, 100, 255, 0.6);
 }
 
 .filler-drill-title {
@@ -355,25 +444,15 @@
 
 .filler-drill-chip {
   position: absolute;
-  color: #eff5ff;
+  color: rgba(220, 235, 255, 0.92);
   font-size: 14px;
   font-style: italic;
+  font-weight: 600;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  text-shadow: 0 0 10px rgba(160, 200, 255, 0.5);
 }
 
-.filler-drill-chip::before,
-.filler-drill-chip::after {
-  content: "((";
-  color: #f02f55;
-  font-size: 14px;
-  font-style: normal;
-  margin: 0 4px;
-}
-
-.filler-drill-chip::after {
-  content: "))";
-}
 
 .chip-um {
   top: 0;
@@ -390,10 +469,6 @@
   left: 0;
 }
 
-.chip-pretty {
-  top: 38px;
-  right: -10px;
-}
 
 .filler-drill-bars {
   position: absolute;
@@ -408,7 +483,10 @@
   display: inline-block;
   width: 12px;
   border-radius: 999px;
-  background: #f4cf57;
+  background: linear-gradient(to top, #e8a800, #ffe566);
+  box-shadow:
+    0 0 6px rgba(255, 210, 50, 0.8),
+    0 0 18px rgba(255, 190, 20, 0.45);
 }
 
 .filler-drill-bars .bar-1 {
@@ -426,6 +504,10 @@
 
 .filler-drill-bars .bar-4 {
   height: 58px;
+  background: linear-gradient(to top, #c97a00, #ffd700);
+  box-shadow:
+    0 0 8px rgba(255, 200, 30, 0.9),
+    0 0 24px rgba(255, 170, 0, 0.5);
 }
 
 .filler-drill-bars .bar-5 {
@@ -435,7 +517,10 @@
 .filler-drill-bars .bar-6 {
   width: 14px;
   height: 14px;
-  background: #f1d48e;
+  background: linear-gradient(to top, #e8a800, #fff0a0);
+  box-shadow:
+    0 0 6px rgba(255, 230, 100, 0.7),
+    0 0 16px rgba(255, 200, 50, 0.4);
 }
 
 .panel-side ul {

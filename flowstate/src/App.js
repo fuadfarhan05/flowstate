@@ -5,13 +5,14 @@ import AnalysisPreview from "./pages/analysishome";
 import Landing from "./pages/landingpage";
 import GradeArchives from "./pages/gradearchives";
 import CreatePage from "./pages/createpage";
-import ElevenLabs from "./components/elevenlabcomp";
+import AssemblyInterview from "./components/assemblyinterview";
 
 import Results from "./pages/resultspage";
 import LoginPage from "./pages/loginpage";
 import SignUpPage from "./pages/signuppage";
 import DashboardPage from "./pages/dashboardpage";
 import FillerWordsPage from "./pages/fillerwords";
+import StarMethodPage from "./pages/starmethod";
 
 function isAuthenticated() {
   const token = localStorage.getItem("authToken");
@@ -89,7 +90,7 @@ function App() {
             path="/interview"
             element={
               <ProtectedRoute>
-                <ElevenLabs />
+                <AssemblyInterview />
               </ProtectedRoute>
             }
           />
@@ -122,6 +123,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <FillerWordsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/starmethod"
+            element={
+              <ProtectedRoute>
+                <StarMethodPage />
               </ProtectedRoute>
             }
           />

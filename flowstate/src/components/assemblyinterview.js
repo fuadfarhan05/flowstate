@@ -8,12 +8,10 @@ export default function AssemblyInterview() {
   const { questions, maxFollowUps } = location.state;
   const navigate = useNavigate();
 
-  // Interview flow refs
   const experienceIndexRef = useRef(0);
   const followUpCountRef = useRef(0);
   const MAX_FOLLOWUPS = maxFollowUps ?? 2;
 
-  // Audio / transcript refs
   const socketRef = useRef(null);
   const streamRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -22,8 +20,8 @@ export default function AssemblyInterview() {
   const currentAnswerRef = useRef("");
   const qaBufferRef = useRef([]);
   const sessionIdRef = useRef(null);
+  const interviewStartedAtRef = useRef(null);
 
-  // UI state
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -61,97 +59,26 @@ export default function AssemblyInterview() {
   const float32ToInt16Buffer = (floatBuffer) => {
     const int16 = new Int16Array(floatBuffer.length);
     for (let i = 0; i < floatBuffer.length; i += 1) {
-      const s = Math.max(-1, Math.min(1, floatBuffer[i]));
-      int16[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+      const sample = Math.max(-1, Math.min(1, floatBuffer[i]));
+      int16[i] = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
     }
     return int16.buffer;
   };
 
-  /* ---------------- PRODUCTION TOKEN FETCH ---------------- */
-
   async function fetchToken() {
-    const res = await fetch(
-      `http://localhost:5434/api/v1/assembly-token`,
-      { credentials: "include" }
-    );
+    const response = await fetch("http://localhost:5434/api/v1/assembly-token", {
+      credentials: "include",
+    });
 
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
       throw new Error(body.details || body.error || "Token fetch failed");
     }
 
-    const data = await res.json();
+    const data = await response.json();
     sessionIdRef.current = data.sessionId;
     return data.token;
   }
-
-  /* ---------------- START RECORDING ---------------- */
-
-  const handleStart = async () => {
-    if (socketRef.current) return;
-
-    const token = await fetchToken();
-
-    const socket = new WebSocket(
-      `wss://streaming.assemblyai.com/v3/ws?sample_rate=16000&format_turns=true&encoding=pcm_s16le&token=${token}`
-    );
-
-    socketRef.current = socket;
-
-    socket.onopen = async () => {
-      setIsConnected(true);
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-
-      streamRef.current = stream;
-
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      const audioContext = new AudioContextClass();
-      audioContextRef.current = audioContext;
-      const sourceNode = audioContext.createMediaStreamSource(stream);
-      sourceNodeRef.current = sourceNode;
-      const processorNode = audioContext.createScriptProcessor(4096, 1, 1);
-      processorNodeRef.current = processorNode;
-
-      processorNode.onaudioprocess = (event) => {
-        if (socket.readyState !== WebSocket.OPEN) return;
-        const inputData = event.inputBuffer.getChannelData(0);
-        const downsampled = downsampleBuffer(
-          inputData,
-          audioContext.sampleRate,
-          16000
-        );
-        const payload = float32ToInt16Buffer(downsampled);
-        socket.send(payload);
-      };
-
-      sourceNode.connect(processorNode);
-      processorNode.connect(audioContext.destination);
-      await audioContext.resume();
-    };
-
-    socket.onmessage = (msg) => {
-      const data = JSON.parse(msg.data);
-
-      if (data.type === "Turn" && data.transcript?.trim() && data.end_of_turn) {
-        currentAnswerRef.current +=
-          (currentAnswerRef.current ? " " : "") + data.transcript;
-      }
-    };
-
-    socket.onerror = (err) => {
-      console.error("AssemblyAI error:", err);
-    };
-
-    socket.onclose = () => {
-      setIsConnected(false);
-      cleanupAudio(false);
-    };
-  };
-
-  /* ---------------- CLEANUP ---------------- */
 
   const cleanupAudio = (closeSocket = true) => {
     if (processorNodeRef.current) {
@@ -163,7 +90,8 @@ export default function AssemblyInterview() {
     if (audioContextRef.current) {
       audioContextRef.current.close();
     }
-    streamRef.current?.getTracks().forEach((t) => t.stop());
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
     if (closeSocket && socketRef.current) {
       if (socketRef.current.readyState === WebSocket.OPEN) {
         socketRef.current.send(JSON.stringify({ type: "Terminate" }));
@@ -179,7 +107,65 @@ export default function AssemblyInterview() {
     socketRef.current = null;
   };
 
-  /* ---------------- SAVE ANSWER ---------------- */
+  const handleStart = async () => {
+    if (socketRef.current) return;
+
+    if (!interviewStartedAtRef.current) {
+      interviewStartedAtRef.current = Date.now();
+    }
+
+    const token = await fetchToken();
+    const socket = new WebSocket(
+      `wss://streaming.assemblyai.com/v3/ws?sample_rate=16000&format_turns=true&encoding=pcm_s16le&token=${token}`,
+    );
+
+    socketRef.current = socket;
+
+    socket.onopen = async () => {
+      setIsConnected(true);
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const audioContext = new AudioContextClass();
+      audioContextRef.current = audioContext;
+      const sourceNode = audioContext.createMediaStreamSource(stream);
+      sourceNodeRef.current = sourceNode;
+      const processorNode = audioContext.createScriptProcessor(4096, 1, 1);
+      processorNodeRef.current = processorNode;
+
+      processorNode.onaudioprocess = (event) => {
+        if (socket.readyState !== WebSocket.OPEN) return;
+        const inputData = event.inputBuffer.getChannelData(0);
+        const downsampled = downsampleBuffer(inputData, audioContext.sampleRate, 16000);
+        const payload = float32ToInt16Buffer(downsampled);
+        socket.send(payload);
+      };
+
+      sourceNode.connect(processorNode);
+      processorNode.connect(audioContext.destination);
+      await audioContext.resume();
+    };
+
+    socket.onmessage = (message) => {
+      const data = JSON.parse(message.data);
+
+      if (data.type === "Turn" && data.transcript?.trim() && data.end_of_turn) {
+        currentAnswerRef.current +=
+          (currentAnswerRef.current ? " " : "") + data.transcript;
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error("AssemblyAI error:", error);
+    };
+
+    socket.onclose = () => {
+      setIsConnected(false);
+      cleanupAudio(false);
+    };
+  };
 
   const handleSaveAnswer = async (answerText) => {
     if (!answerText.trim()) return;
@@ -190,17 +176,13 @@ export default function AssemblyInterview() {
     });
 
     if (followUpCountRef.current < MAX_FOLLOWUPS) {
-      const res = await fetch(
-        `http://localhost:5434/api/v1/generate-questions`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ answer: answerText }),
-          //in here we will also pass in question along with answer from now on from now
-        }
-      );
+      const response = await fetch("http://localhost:5434/api/v1/generate-questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answer: answerText }),
+      });
 
-      const data = await res.json();
+      const data = await response.json();
       followUpCountRef.current += 1;
       setCurrentQuestion(data.question);
       return;
@@ -216,8 +198,6 @@ export default function AssemblyInterview() {
     }
   };
 
-  /* ---------------- NEXT QUESTION ---------------- */
-
   const handleNextQuestion = async () => {
     if (isProcessing || isFinished || isFinalizing) return;
 
@@ -225,7 +205,7 @@ export default function AssemblyInterview() {
 
     try {
       cleanupAudio();
-      await new Promise((r) => setTimeout(r, 400));
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
       const fullAnswer = currentAnswerRef.current.trim();
 
@@ -245,23 +225,22 @@ export default function AssemblyInterview() {
     }
   };
 
-  /* ---------------- FINALIZE ---------------- */
-
   const handleEnd = async () => {
     const transcriptlog = qaBufferRef.current
       .map((qa) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`)
       .join("\n\n");
+    const fullTranscript = qaBufferRef.current.map((qa) => qa.answer).join(" ");
+    const elapsedSeconds = interviewStartedAtRef.current
+      ? Math.max(1, Math.round((Date.now() - interviewStartedAtRef.current) / 1000))
+      : null;
 
-    const res = await fetch(
-      `http://localhost:5434/api/v1/grade-answer`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcriptlog }),
-      }
-    );
+    const response = await fetch("http://localhost:5434/api/v1/grade-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcriptlog, fullTranscript, elapsedSeconds }),
+    });
 
-    const data = await res.json();
+    const data = await response.json();
     return data.evaluation;
   };
 
@@ -273,13 +252,11 @@ export default function AssemblyInterview() {
       cleanupAudio();
       const evaluation = await handleEnd();
       navigate("/results", { state: { evaluation } });
-    } catch (err) {
-      console.error("Finalization error:", err);
+    } catch (error) {
+      console.error("Finalization error:", error);
       setIsFinalizing(false);
     }
   };
-
-  /* ---------------- LIFECYCLE ---------------- */
 
   useEffect(() => {
     if (!questions?.length) return;
@@ -294,14 +271,10 @@ export default function AssemblyInterview() {
     if (isFinished) finalizeInterview();
   }, [isFinished]);
 
-  /* ---------------- UI ---------------- */
-
   return (
     <div style={{ padding: 20 }}>
       <div className="question-card">
-        <h3 style={{ color: "white", fontSize: "30px" }}>
-          {currentQuestion}
-        </h3>
+        <h3 style={{ color: "white", fontSize: "30px" }}>{currentQuestion}</h3>
       </div>
 
       <button
@@ -312,10 +285,10 @@ export default function AssemblyInterview() {
         {isFinalizing
           ? "Finalizing..."
           : isFinished
-          ? "Interview Complete"
-          : isProcessing
-          ? "Processing..."
-          : "Next Question"}
+            ? "Interview Complete"
+            : isProcessing
+              ? "Processing..."
+              : "Next Question"}
       </button>
 
       <div style={{ marginTop: "100px" }}>

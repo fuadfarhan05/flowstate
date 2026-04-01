@@ -4,6 +4,11 @@ import "../styles/results.css";
 function Results() {
   const location = useLocation();
   const { evaluation } = location.state || {};
+  const fillerAnalysis = evaluation?.filler_analysis;
+  const topFillers = Object.entries(fillerAnalysis?.filler_counts || {})
+    .slice(0, 5)
+    .map(([word, count]) => `${word} (${count})`)
+    .join(", ");
 
   if (!evaluation) {
     return <h1 style={{ color: "white", fontSize: '19px'}}>No results available</h1>;
@@ -45,6 +50,18 @@ function Results() {
               Filler Words Used
             </h2>
             <p>{evaluation.filler_words}</p>
+
+            {fillerAnalysis && (
+              <div className="fillerwords-summary">
+                <p>
+                  <strong>{fillerAnalysis.filler_density_percent}%</strong> | Speed:{" "}
+                  <strong>{fillerAnalysis.speaking_speed_wpm ?? "N/A"} WPM</strong>
+                </p>
+                <p>
+                  Top filler words: <strong>{topFillers || "none yet"}</strong>
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="glass-line" />
