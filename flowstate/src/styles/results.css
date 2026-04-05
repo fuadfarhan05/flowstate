@@ -65,6 +65,77 @@ h2 {
   overflow-wrap: break-word;
 }
 
+/* STAR Breakdown */
+.star-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.star-row {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border-left: 3px solid transparent;
+}
+
+.star-row--filled {
+  background: rgba(72, 199, 142, 0.1);
+  border-left-color: #48c78e;
+}
+
+.star-row--missing {
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: rgba(255, 255, 255, 0.15);
+}
+
+.star-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.star-row-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.star-row-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.star-row-badge--filled {
+  background: rgba(72, 199, 142, 0.2);
+  color: #48c78e;
+}
+
+.star-row-badge--missing {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.star-row-quote {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+}
+
+.star-row-note {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+}
+
 .fillerwords-summary {
   margin-top: 12px;
   color: white;

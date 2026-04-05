@@ -5,13 +5,24 @@ function Results() {
   const location = useLocation();
   const { evaluation } = location.state || {};
   const fillerAnalysis = evaluation?.filler_analysis;
+  const starAnalysis = evaluation?.star_analysis;
   const topFillers = Object.entries(fillerAnalysis?.filler_counts || {})
     .slice(0, 5)
     .map(([word, count]) => `${word} (${count})`)
     .join(", ");
 
+  const STAR_COMPONENTS = [
+    { key: "situation", label: "Situation" },
+    { key: "task",      label: "Task" },
+    { key: "action",    label: "Action" },
+    { key: "result",    label: "Result" },
+  ];
+
+  console.log("evaluation:", evaluation);
+  console.log("star_analysis:", starAnalysis);
+
   if (!evaluation) {
-    return <h1 style={{ color: "white", fontSize: '19px'}}>No results available</h1>;
+    return <h1 style={{ color: "white", fontSize: '19px'}}>There was an issue.No results available</h1>;
   }
 
   return (
@@ -41,42 +52,58 @@ function Results() {
             <p>{evaluation.clarity_feedback}</p>
 
             <h2 style={{ marginTop: "20px" }}>Structure</h2>
-            <p>{evaluation.structure_feedback}</p>
+            {starAnalysis ? (
+              <div className="star-breakdown">
+                {STAR_COMPONENTS.map(({ key, label }) => {
+                  const component = starAnalysis[key];
+                  const filled = component?.state === "FILLED";
+                  return (
+                    <div key={key} className={`star-row ${filled ? "star-row--filled" : "star-row--missing"}`}>
+                      <div className="star-row-header">
+                        <span className="star-row-label">{label}</span>
+                        <span className={`star-row-badge ${filled ? "star-row-badge--filled" : "star-row-badge--missing"}`}>
+                          {filled ? "✓ Filled" : "Missing"}
+                        </span>
+                      </div>
+                      {filled && component.quote && (
+                        <p className="star-row-quote">"{component.quote}"</p>
+                      )}
+                      {component?.note && (
+                        <p className="star-row-note">{component.note}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p>there was an issue. No data available.</p>
+            )}
 
-            <h2 style={{ marginTop: "20px" }}>Relevance</h2>
-            <p>{evaluation.relevance_feedback}</p>
-
-            <h2 style={{ color: "#fffeb1", marginTop: "20px" }}>
+            <h2 style={{ marginTop: "20px" }}>
               Filler Words Used
             </h2>
-            <p>{evaluation.filler_words}</p>
 
             {fillerAnalysis && (
               <div className="fillerwords-summary">
                 <p>
-                  <strong>{fillerAnalysis.filler_density_percent}%</strong> | Speed:{" "}
-                  <strong>{fillerAnalysis.speaking_speed_wpm ?? "N/A"} WPM</strong>
+                  {" "}Speaking pace: <strong>{fillerAnalysis.speaking_speed_wpm ?? "N/A"} WPM</strong>
                 </p>
                 <p>
-                  Top filler words: <strong>{topFillers || "none yet"}</strong>
+                  Top filler words: <strong>{topFillers || "none"}</strong>
                 </p>
               </div>
             )}
+
+            <h2 style={{ marginTop: "20px" }}>Job Mapping</h2>
+            <p>{evaluation.relevance_feedback}</p>
+
+            
           </div>
 
           <div className="glass-line" />
 
           {/* Improvements */}
-          <h2 style={{ textAlign: "center" }}>
-            Actionable Improvements
-          </h2>
-
-          <ul style={{color: 'white'}}>
-            {evaluation.improvements?.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-
+          
           <button className="save-btn">
             Save Grade
           </button>

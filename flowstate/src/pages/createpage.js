@@ -7,7 +7,13 @@ import "../styles/createpage.css";
 function CreatePage() {
   const navigate = useNavigate();
   const [upload, setUpload] = useState(null);
-  const [questionsPerExperience, setQuestionsPerExperience] = useState(2);
+  const [jobMappingOpen, setJobMappingOpen] = useState(false);
+  const [mappingRole, setMappingRole] = useState("");
+  const [mappingCompany, setMappingCompany] = useState("");
+  const [mappingPosting, setMappingPosting] = useState("");
+  const [mappingLoading, setMappingLoading] = useState(false);
+  const [mappingInferences, setMappingInferences] = useState(null);
+  const [loadingStep, setLoadingStep] = useState(null); // null | "parsing" | "generating"
 
   const fileInputRef = useRef(null);
 
@@ -20,6 +26,28 @@ function CreatePage() {
     fileInputRef.current.click();
   }
 
+  const handleGenerateSuggestions = async () => {
+    if (!mappingPosting.trim()) return;
+    setMappingLoading(true);
+    setMappingInferences(null);
+    try {
+      const res = await fetch("http://localhost:5434/api/v1/job-mapping", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jobPosting: mappingPosting,
+          targetRole: mappingRole && mappingCompany ? `${mappingRole} at ${mappingCompany}` : undefined,
+        }),
+      });
+      const data = await res.json();
+      setMappingInferences(data.inferences);
+    } catch (error) {
+      console.error("Failed to generate job mapping:", error);
+    } finally {
+      setMappingLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!upload) return;
 
@@ -27,6 +55,8 @@ function CreatePage() {
     formData.append("upload", upload);
 
     try {
+      setLoadingStep("parsing");
+
       // 1️⃣ Parse resume
       const response = await fetch("http://localhost:8000/parse-resume", {
         method: "POST",
@@ -34,20 +64,20 @@ function CreatePage() {
       });
 
       const data = await response.json();
-
       const normalizedExperiences = Object.keys(data.experiences);
 
-      // 2️⃣ Generate interview questions
+      setLoadingStep("generating");
+
+      // 2️⃣ Generate opener questions (one per experience)
       const genResponse = await fetch(
         "http://localhost:5434/api/v1/generate-experiencequestions",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             experiences: normalizedExperiences,
-            questionsPerExperience,
+            experienceDetails: data.experiences,
+            targetRole: mappingRole && mappingCompany ? `${mappingRole} at ${mappingCompany}` : undefined,
           }),
         }
       );
@@ -57,46 +87,62 @@ function CreatePage() {
       navigate("/interview", {
         state: {
           questions: genData.questions,
-          maxFollowUps: questionsPerExperience,
+          experiences: normalizedExperiences,
         },
-
       });
     } catch (error) {
       console.error("Failed to create interview session:", error);
+      setLoadingStep(null);
     }
   };
 
+  if (loadingStep) {
+    return (
+      <div className="create-container">
+        <div className="main-card loading-card">
+          <div className="loader-orb">
+            <div className="loader-ring loader-ring--1" />
+            <div className="loader-ring loader-ring--2" />
+            <div className="loader-ring loader-ring--3" />
+            <div className="loader-core" />
+          </div>
+
+          <div className="loader-steps">
+            <div className={`loader-step ${loadingStep === "parsing" || loadingStep === "generating" ? "loader-step--active" : ""} ${loadingStep === "generating" ? "loader-step--done" : ""}`}>
+              <span className="loader-step-dot" />
+              <span className="loader-step-text">Scanning resume</span>
+            </div>
+            <div className={`loader-step ${loadingStep === "generating" ? "loader-step--active" : ""}`}>
+              <span className="loader-step-dot" />
+              <span className="loader-step-text">Building your interview</span>
+              <span className="loader-step-text">Get ready! your interview is about to start</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="create-container">
-
       <div className="main-card">
+
         <div className="header">
           <h3>Create Interview Session</h3>
+          <p>Upload your resume to get started</p>
         </div>
 
         {/* Upload Section */}
         <div className="section">
-          <label>Upload your resume</label>
+          <label>Resume</label>
 
-          <div className="upload-box">
-            <button
-              style={{
-                color: "white",
-                background: "none",
-                border: "none",
-                fontSize: "80px",
-                cursor: "pointer",
-              }}
-              onClick={triggerUpload}
-            >
-              <FaSheetPlastic />
-              <p>click here to upload</p>
-            </button>
-
-            {upload && (
-              <p className="upload-name">🔗 {upload.name}</p>
+          <div className={`upload-box ${upload ? "upload-box--filled" : ""}`} onClick={triggerUpload}>
+            <FaSheetPlastic className="upload-icon" />
+            {upload ? (
+              <p className="upload-name">{upload.name}</p>
+            ) : (
+              <p className="upload-hint">Click to upload your resume</p>
             )}
-
             <input
               type="file"
               ref={fileInputRef}
@@ -106,41 +152,81 @@ function CreatePage() {
           </div>
         </div>
 
-        {/* Questions Per Experience */}
-        <div className="section">
-          <label style={{marginTop: '100px'}}>FlowState asks your question about your work experience, how many FOLLOW UP questions do you want to be asked about each experience on your resume?</label>
+        {/* Job Mapping */}
+        <button className="job-mapping-btn" onClick={() => setJobMappingOpen(true)}>
+          FlowState Exclusive Job Mapping
+        </button>
 
-          <select
-            value={questionsPerExperience}
-            onChange={(e) =>
-              setQuestionsPerExperience(Number(e.target.value))
-            }
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "10px",
-              background: "rgba(255,255,255,0.1)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.3)",
-              fontSize: "16px",
-              marginTop: "10px",
-            }}
-          >
-            <option value={1}>1 question(easy)</option>
-            <option value={2}>2 questions(Normal)</option>
-            <option value={3}>3 questions(Advanced)</option>
-          </select>
-        </div>
+        {/* Job Mapping Modal */}
+        {jobMappingOpen && (
+          <div className="modal-overlay" onClick={() => setJobMappingOpen(false)}>
+            <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>FlowState Exclusive</h3>
+                <button className="modal-close" onClick={() => setJobMappingOpen(false)}>✕</button>
+              </div>
+              {mappingInferences ? (
+                <>
+                  <div className="modal-inferences">
+                    {mappingInferences.map((item, i) => (
+                      <div key={i} className="modal-inference-card">
+                        <p className="modal-inference-title">{item.title}</p>
+                        <p className="modal-inference-desc">{item.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="modal-generate-btn" onClick={() => setMappingInferences(null)}>
+                    Back
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="modal-body">Instead of researching for long hours about the company's needs, FlowState's Job Mapping System will analyzing the Job posting for you and teach you how to speak about your experiences in a way that is relevant to the job potentially increasing your chances of getting hired!</p>
+
+                  <div className="modal-fields">
+                    <div className="modal-role-row">
+                      <input
+                        className="modal-input-sm"
+                        type="text"
+                        placeholder="Role"
+                        value={mappingRole}
+                        onChange={(e) => setMappingRole(e.target.value)}
+                      />
+                      <span className="modal-role-at">at</span>
+                      <input
+                        className="modal-input-sm"
+                        type="text"
+                        placeholder="Company"
+                        value={mappingCompany}
+                        onChange={(e) => setMappingCompany(e.target.value)}
+                      />
+                    </div>
+                    <textarea
+                      className="modal-textarea"
+                      placeholder="Paste the job posting here..."
+                      value={mappingPosting}
+                      onChange={(e) => setMappingPosting(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    className={`modal-generate-btn ${mappingLoading ? "modal-generate-btn--loading" : ""}`}
+                    onClick={handleGenerateSuggestions}
+                    disabled={mappingLoading || !mappingPosting.trim()}
+                  >
+                    {mappingLoading ? "Analyzing..." : "Generate Suggestions"}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Start Button */}
         <button
-          className="start-btn"
+          className={`start-btn ${!upload ? "start-btn--disabled" : ""}`}
           onClick={handleSubmit}
           disabled={!upload}
-          style={{
-            opacity: upload ? 1 : 0.6,
-            cursor: upload ? "pointer" : "not-allowed",
-          }}
         >
           Start Session
         </button>

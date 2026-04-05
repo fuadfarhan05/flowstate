@@ -20,6 +20,7 @@ const userRoute = require("./routes/user.route.js");
 const googleOauth = require("./routes/googleoauth.route.js");
 const ExperienceQuestionRoute = require("./routes/experienceq.route.js");
 const AssemblyRoute = require("./routes/assembly.route.js");
+const JobMapping = require("./routes/jobmapping.route.js");
 
 app.get("/", (req, res) => {
   res.json({
@@ -35,6 +36,7 @@ app.use("/api/v1/", GradeAnswerRoute);
 app.use("/api/v1/", ExperienceQuestionRoute);
 app.use("/api/v1/", userRoute);
 app.use("/api/v1/", AssemblyRoute);
+app.use("/api/v1/", JobMapping);
 app.use("/", googleOauth);
 
 module.exports = app;
