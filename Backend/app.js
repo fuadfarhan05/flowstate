@@ -52,7 +52,7 @@ const googleOauth = require("./routes/googleoauth.route.js");
 const ExperienceQuestionRoute = require("./routes/experienceq.route.js");
 const AssemblyRoute = require("./routes/assembly.route.js");
 const AccessRoute = require("./routes/access.route.js");
-//const ElevenLabsRoute = require("./routes/scribeToken.route.js");
+const ElevenLabsRoute = require("./routes/scribeToken.route.js");
 
 /**
  * Health check
@@ -73,7 +73,7 @@ app.use("/api/v1/", GradeAnswerRoute);
 app.use("/api/v1/", ExperienceQuestionRoute);
 app.use("/api/v1/", userRoute);
 app.use("/api/v1/", AssemblyRoute);
-//app.use("/api/v1/", ElevenLabsRoute);
+app.use("/api/v1/", ElevenLabsRoute);
 app.use("/api/v1/", AccessRoute);
 
 // OAuth routes (intentionally not under /api/v1)
