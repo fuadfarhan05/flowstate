@@ -60,8 +60,7 @@ function DashboardPage() {
             <h2>You’re improving fast.</h2>
             <p>Your last session showed strong structure. Focus on cutting filler words to push past 90%.</p>
             <div className="hero-tags">
-              <span>Speech Clarity</span>
-              <span>Reduced filler words</span>
+              <span>Reduce Filler Words</span>
               <span>STAR Method</span>
               <span>Job Mapping</span>
             </div>

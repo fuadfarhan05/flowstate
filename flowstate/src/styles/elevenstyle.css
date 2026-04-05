@@ -4,6 +4,89 @@
   }
 }
 
+/* Finalizing screen */
+.finalizing-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+
+  background-color: #0b132d;
+  background-image:
+    linear-gradient(rgba(142, 170, 255, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(142, 170, 255, 0.11) 1px, transparent 1px),
+    radial-gradient(circle at 18% 10%, rgba(47, 107, 255, 0.2), transparent 44%),
+    radial-gradient(circle at 82% 88%, rgba(30, 200, 177, 0.16), transparent 42%);
+  background-size: 36px 36px, 36px 36px, auto, auto;
+
+  animation: screen-fade-in 0.5s ease;
+}
+
+@keyframes screen-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.finalizing-orb {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.finalizing-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(77, 130, 255, 0.5);
+  width: 110px;
+  height: 110px;
+  animation: ring-expand 2.4s ease-out infinite;
+}
+
+.finalizing-ring--1 { animation-delay: 0s; }
+.finalizing-ring--2 { animation-delay: 0.8s; }
+.finalizing-ring--3 { animation-delay: 1.6s; }
+
+@keyframes ring-expand {
+  0%   { transform: scale(0.4); opacity: 0.9; border-color: rgba(77, 130, 255, 0.7); }
+  100% { transform: scale(2.4); opacity: 0;   border-color: rgba(77, 130, 255, 0); }
+}
+
+.finalizing-core {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(77, 97, 250, 0.9), rgba(39, 111, 255, 0.95));
+  box-shadow:
+    0 0 20px rgba(77, 130, 255, 0.7),
+    0 0 48px rgba(39, 111, 255, 0.4);
+  animation: core-breathe 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes core-breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 20px rgba(77, 130, 255, 0.7), 0 0 48px rgba(39, 111, 255, 0.4); }
+  50%       { transform: scale(1.14); box-shadow: 0 0 32px rgba(77, 130, 255, 0.9), 0 0 68px rgba(39, 111, 255, 0.6); }
+}
+
+.finalizing-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f7f9ff;
+  letter-spacing: -0.01em;
+}
+
+.finalizing-sub {
+  margin: -16px 0 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
 
 
 .listening-tag {

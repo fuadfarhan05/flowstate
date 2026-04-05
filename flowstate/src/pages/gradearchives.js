@@ -2,53 +2,52 @@ import "../styles/archivestyle.css";
 
 function GradeArchives() {
   return (
-    <div className="body">
-      <button className="start-btn">Create New Session</button>
+    <div className="archive-page">
+      <div className="archive-shell">
 
-      <div className="archive-list">
-        <div className="glass-container">
-          <div className="container-content">
-            <div className="grade-circle blue">90</div>
-            <div className="feedback-text">
-              <p>
-                Great Accuracy and Fluency. Next steps for you is to reducing
-                filler words like “um”, “uh”, and “you know”.
+        <div className="archive-top">
+          <div>
+            <h1 className="archive-title">Grade Archives</h1>
+          </div>
+          <button className="archive-new-btn">+ New Session</button>
+        </div>
+
+        <div className="archive-list">
+
+          <div className="archive-card">
+            <div className="grade-badge grade-badge--blue">90</div>
+            <div className="archive-card-body">
+              <p className="archive-feedback">
+                Great accuracy and fluency. Next steps for you is to reduce
+                filler words like "um", "uh", and "you know".
               </p>
-            </div>
-            <div className="date">
-              <p>Apr 13, 2026</p>
+              <span className="archive-date">Apr 13, 2026</span>
             </div>
           </div>
-        </div>
-        <div className="glass-container">
-          <div className="container-content">
-            <div className="grade-circle green">88</div>
-            <div className="feedback-text">
-              <p>
-                Good job on being specific and detailed. Don’t forget to include
+
+          <div className="archive-card">
+            <div className="grade-badge grade-badge--green">88</div>
+            <div className="archive-card-body">
+              <p className="archive-feedback">
+                Good job on being specific and detailed. Don't forget to include
                 the impact you made for the experience you speak about.
               </p>
-            </div>
-            <div className="date">
-              <p>Mar 23, 2026</p>
+              <span className="archive-date">Mar 23, 2026</span>
             </div>
           </div>
-        </div>
-        <div className="glass-container">
-          <div className="container-content">
-            <div className="grade-circle">74</div>
-            <div className="feedback-text">
-              <p>
+
+          <div className="archive-card">
+            <div className="grade-badge grade-badge--yellow">74</div>
+            <div className="archive-card-body">
+              <p className="archive-feedback">
                 Missing an opening line which causes some confusion on which
-                experience you are talking about. Try to keep you answers
-                concise and reduce filler words like “um” and “uh” and “you
-                know”.
+                experience you are talking about. Try to keep your answers
+                concise and reduce filler words like "um", "uh", and "you know".
               </p>
-            </div>
-            <div className="date">
-              <p>Jan 1, 2026</p>
+              <span className="archive-date">Jan 1, 2026</span>
             </div>
           </div>
+
         </div>
       </div>
     </div>

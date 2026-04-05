@@ -5,12 +5,12 @@ import BarVisualizer from "./barvisualizer";
 
 export default function AssemblyInterview() {
   const location = useLocation();
-  const { questions, maxFollowUps } = location.state;
+  const { questions, experiences } = location.state;
   const navigate = useNavigate();
 
+  // 0 = opener, 1 = probe, 2 = closer
   const experienceIndexRef = useRef(0);
-  const followUpCountRef = useRef(0);
-  const MAX_FOLLOWUPS = maxFollowUps ?? 2;
+  const phaseRef = useRef(0);
 
   const socketRef = useRef(null);
   const streamRef = useRef(null);
@@ -170,26 +170,41 @@ export default function AssemblyInterview() {
   const handleSaveAnswer = async (answerText) => {
     if (!answerText.trim()) return;
 
+    const phase = phaseRef.current;
+
     qaBufferRef.current.push({
       question: currentQuestion,
       answer: answerText,
+      phase,
     });
+    const expIdx = experienceIndexRef.current;
 
-    if (followUpCountRef.current < MAX_FOLLOWUPS) {
+    if (phase === 0) {
+      // Generate one probing follow-up based on their answer
       const response = await fetch("http://localhost:5434/api/v1/generate-questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answer: answerText }),
       });
-
       const data = await response.json();
-      followUpCountRef.current += 1;
+      phaseRef.current = 1;
       setCurrentQuestion(data.question);
       return;
     }
 
+    if (phase === 1) {
+      // Move to the closing question for this experience
+      const expName = experiences[expIdx];
+      phaseRef.current = 2;
+      setCurrentQuestion(
+        `How will your work at ${expName} make you a good candidate for this role?`
+      );
+      return;
+    }
+
+    // phase === 2: done with this experience, move to next
     experienceIndexRef.current += 1;
-    followUpCountRef.current = 0;
+    phaseRef.current = 0;
 
     if (experienceIndexRef.current < questions.length) {
       setCurrentQuestion(questions[experienceIndexRef.current]);
@@ -230,18 +245,38 @@ export default function AssemblyInterview() {
       .map((qa) => `Interviewer: ${qa.question}\nCandidate: ${qa.answer}`)
       .join("\n\n");
     const fullTranscript = qaBufferRef.current.map((qa) => qa.answer).join(" ");
+    const openerTranscript = qaBufferRef.current
+      .filter((qa) => qa.phase === 0)
+      .map((qa) => qa.answer)
+      .join(" ");
     const elapsedSeconds = interviewStartedAtRef.current
       ? Math.max(1, Math.round((Date.now() - interviewStartedAtRef.current) / 1000))
       : null;
 
-    const response = await fetch("http://localhost:5434/api/v1/grade-answer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ transcriptlog, fullTranscript, elapsedSeconds }),
-    });
+    const [gradeResponse, starResponse] = await Promise.all([
+      fetch("http://localhost:5434/api/v1/grade-answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcriptlog, fullTranscript, openerTranscript, elapsedSeconds }),
+      }),
+      fetch("http://localhost:8000/analyze-star", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: openerTranscript || fullTranscript }),
+      }),
+    ]);
 
-    const data = await response.json();
-    return data.evaluation;
+    const data = await gradeResponse.json();
+    const evaluation = data.evaluation;
+
+    try {
+      const starData = await starResponse.json();
+      evaluation.star_analysis = starData;
+    } catch {
+      // star analysis is best-effort
+    }
+
+    return evaluation;
   };
 
   const finalizeInterview = async () => {
@@ -270,6 +305,21 @@ export default function AssemblyInterview() {
   useEffect(() => {
     if (isFinished) finalizeInterview();
   }, [isFinished]);
+
+  if (isFinalizing) {
+    return (
+      <div className="finalizing-screen">
+        <div className="finalizing-orb">
+          <div className="finalizing-ring finalizing-ring--1" />
+          <div className="finalizing-ring finalizing-ring--2" />
+          <div className="finalizing-ring finalizing-ring--3" />
+          <div className="finalizing-core" />
+        </div>
+        <p className="finalizing-title">Grading your interview</p>
+        <p className="finalizing-sub">Analyzing your answers...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: 20 }}>

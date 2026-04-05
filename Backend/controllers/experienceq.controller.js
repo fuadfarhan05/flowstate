@@ -5,7 +5,7 @@ const openai = new OpenAI({
 });
 
 const ExperienceqController = async (req, res) => {
-  const { experiences } = req.body;
+  const { experiences, experienceDetails } = req.body;
 
   // 🔒 Hard validation
   if (
@@ -19,15 +19,25 @@ const ExperienceqController = async (req, res) => {
   }
 
   try {
-    const formattedExperiences = JSON.stringify(experiences, null, 2);
+    // Build a richer context string using bullet points when available
+    const formattedExperiences = experiences
+      .map((exp, i) => {
+        const bullets = experienceDetails?.[exp];
+        const bulletText =
+          Array.isArray(bullets) && bullets.length > 0
+            ? "\n" + bullets.filter((b) => b.trim()).map((b) => `  ${b}`).join("\n")
+            : "";
+        return `${i + 1}. ${exp}${bulletText}`;
+      })
+      .join("\n\n");
 
     const prompt = `
-You are given an array of candidate experiences.
+You are given a list of candidate work experiences, each with their resume bullet points.
 
-Array length: ${experiences.length}
+Total experiences: ${experiences.length}
 
-For EACH experience, generate EXACTLY ONE concise behavioral interview question.
-Each question must clearly relate to the corresponding experience.
+For EACH experience, generate EXACTLY ONE concise behavioral interview opener question.
+Use the bullet points to make the question specific and relevant to what the candidate actually did.
 
 Return ONLY valid JSON in this exact shape:
 

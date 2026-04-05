@@ -3,6 +3,7 @@ const client = new OpenAi({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+
 const analyzeFillerWords = async (transcript, elapsedSeconds) => {
   try {
     const response = await fetch("http://localhost:8000/analyze-filler-words", {
@@ -155,10 +156,7 @@ const GradeAnswer = async (req, res) => {
     }
 
     const fillerAnalysisTranscript = fullTranscript.trim() || transcriptlog;
-    const fillerAnalysis = await analyzeFillerWords(
-      fillerAnalysisTranscript,
-      elapsedSeconds,
-    );
+    const fillerAnalysis = await analyzeFillerWords(fillerAnalysisTranscript, elapsedSeconds);
 
     if (fillerAnalysis) {
       parsed.filler_analysis = fillerAnalysis;

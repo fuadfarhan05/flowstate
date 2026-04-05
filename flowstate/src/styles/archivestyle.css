@@ -1,128 +1,169 @@
-.body {
-  background-color: black;
+/* ── Page background (matches dashboard/create) ── */
+.archive-page {
+  min-height: 100vh;
+  padding: 40px 22px;
+
+  background-color: #0b132d;
+  background-image:
+    linear-gradient(rgba(142, 170, 255, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(142, 170, 255, 0.11) 1px, transparent 1px),
+    radial-gradient(circle at 18% 10%, rgba(47, 107, 255, 0.2), transparent 44%),
+    radial-gradient(circle at 82% 88%, rgba(30, 200, 177, 0.16), transparent 42%);
+  background-size:
+    36px 36px,
+    36px 36px,
+    auto,
+    auto;
 }
 
-.start-btn {
-  margin-top: 60px;
-  background-color: rgb(250, 53, 53);
-  color: white;
-  padding: 10px;
-  font-size: 18px;
-  border: none;
-  border-radius: 10px;
-}
-
-.archive-list {
-  margin-top: 100px;
-}
-
-.glass-container {
+/* ── Outer shell ── */
+.archive-shell {
+  max-width: 860px;
   margin: 0 auto;
-  margin-bottom: 20px;
-  width: 80%;
-  height: 80px;
-  padding: 24px 28px;
-  border-radius: 35px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  background: rgba(17, 28, 58, 0.72);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+  color: #f7f9ff;
+}
 
-  /* Glass effect */
+/* ── Header row ── */
+.archive-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.archive-eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #1ec8b1;
+  text-transform: uppercase;
+}
+
+.archive-title {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 38px);
+  color: #f7f9ff;
+}
+
+/* ── New Session button (matches dashboard-btn-primary) ── */
+.archive-new-btn {
+  padding: 10px 18px;
+  border-radius: 15px;
+  border: 1.5px solid rgba(100, 150, 255, 0.45);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.15),
-    rgba(255, 255, 255, 0.05)
+    rgba(77, 97, 250, 0.829),
+    rgba(39, 111, 255, 0.939)
   );
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
 
-  /* Border + glow */
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
   box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 0 12px rgba(50, 110, 255, 0.45),
+    0 0 32px rgba(30, 90, 220, 0.25),
+    inset 0 0 0 1px rgba(160, 200, 255, 0.15),
+    0 6px 20px rgba(0, 0, 0, 0.15);
 
-  color: #fff;
-  position: relative;
-  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.container-content {
+.archive-new-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(140, 190, 255, 0.7);
+  box-shadow:
+    0 0 20px rgba(50, 110, 255, 0.65),
+    0 0 50px rgba(30, 90, 220, 0.35),
+    inset 0 0 0 1px rgba(180, 220, 255, 0.2),
+    0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Archive list ── */
+.archive-list {
   display: flex;
-  flex-direction: row; /* default, but explicit */
-  margin: 10px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.grade-circle {
-  width: 60px;
-  height: 60px;
-  padding: 15px;
-  margin-top: -15px;
-  margin-left: -15px;
+/* ── Individual card ── */
+.archive-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 20px 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
 
+.archive-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Grade badge ── */
+.grade-badge {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 50px;
-  font-weight: bold;
-  color: rgb(252, 253, 191);
-
-  /* Glass base using your color */
-  background: linear-gradient(
-    135deg,
-    rgba(109, 114, 75, 0.45),
-    rgba(109, 114, 75, 0.25)
-  );
-
-  backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
-
-  border-radius: 50%;
-
-  /* Glass edge + depth */
-  border: 1px solid rgba(252, 253, 191, 0.35);
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(252, 253, 191, 0.4);
+  font-size: 22px;
+  font-weight: 800;
 }
 
-.grade-circle.blue {
+.grade-badge--blue {
   color: rgb(210, 230, 255);
-
-  background: linear-gradient(
-    135deg,
-    rgba(80, 140, 255, 0.45),
-    rgba(80, 140, 255, 0.25)
-  );
-
-  border: 1px solid rgba(200, 220, 255, 0.45);
-
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(80, 140, 255, 0.35),
-    inset 0 1px 0 rgba(220, 235, 255, 0.45);
+  background: linear-gradient(135deg, rgba(80, 140, 255, 0.45), rgba(80, 140, 255, 0.2));
+  border: 1px solid rgba(200, 220, 255, 0.4);
+  box-shadow: 0 0 18px rgba(80, 140, 255, 0.35), inset 0 1px 0 rgba(220, 235, 255, 0.3);
 }
 
-.grade-circle.green {
-  color: rgb(220, 255, 235);
-
-  background: linear-gradient(
-    135deg,
-    rgba(80, 200, 140, 0.45),
-    rgba(80, 200, 140, 0.25)
-  );
-
-  border: 1px solid rgba(180, 240, 210, 0.45);
-
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(80, 200, 140, 0.35),
-    inset 0 1px 0 rgba(220, 255, 235, 0.45);
+.grade-badge--green {
+  color: rgb(210, 255, 235);
+  background: linear-gradient(135deg, rgba(80, 200, 140, 0.45), rgba(80, 200, 140, 0.2));
+  border: 1px solid rgba(180, 240, 210, 0.4);
+  box-shadow: 0 0 18px rgba(80, 200, 140, 0.35), inset 0 1px 0 rgba(210, 255, 230, 0.3);
 }
 
-.feedback-text {
-  margin: 0 auto;
-  width: 750px;
+.grade-badge--yellow {
+  color: rgb(255, 245, 190);
+  background: linear-gradient(135deg, rgba(220, 170, 30, 0.45), rgba(220, 170, 30, 0.2));
+  border: 1px solid rgba(255, 230, 120, 0.4);
+  box-shadow: 0 0 18px rgba(220, 170, 30, 0.35), inset 0 1px 0 rgba(255, 240, 160, 0.3);
 }
 
-.date {
-  margin-top: 15px;
-  color: rgb(137, 139, 137);
+/* ── Card body ── */
+.archive-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.archive-feedback {
+  margin: 0;
+  font-size: 14px;
+  color: #b6bfd9;
+  line-height: 1.6;
+}
+
+.archive-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.04em;
 }
