@@ -6,6 +6,10 @@ import CreatePage from "./pages/createpage";
 import ElevenLabs from "./components/elevenlabcomp";
 import Results from "./pages/resultspage";
 import AccessPage from "./pages/accessform";
+import FillerWordsPage from "./pages/fillerwords";
+import FeaturesPage from "./pages/Features";
+
+
 
 function ProtectedRoute({ children, hasAccess }) {
   if (!hasAccess) {
@@ -47,7 +51,26 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/fillerwords"
+            element={
+              <ProtectedRoute hasAccess={hasAccess}>
+                <FillerWordsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+              path="/features"
+              element={
+                <ProtectedRoute hasAccess={hasAccess}>
+                  <FeaturesPage />
+                </ProtectedRoute>
+              }
+            />
         </Routes>
+
+    
       </Router>
     </div>
   );
