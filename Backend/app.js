@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
+/**
+ * CORS Configuration
+ */
 const configuredOrigins = (process.env.CORS_ORIGINS || "")
   .split(",")
   .map((origin) => origin.trim())
@@ -16,7 +19,6 @@ const allowedOrigins = new Set([
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow non-browser requests (curl/postman/server-to-server)
     if (!origin) {
       return callback(null, true);
     }
@@ -32,12 +34,11 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-//middle ware here
+/**
+ * Middleware
+ */
 app.use(express.json());
-app.use(cors(corsOptions));
-
-// Optional: handle preflight requests explicitly
-app.options("*", cors());
+app.use(cors(corsOptions)); 
 
 /**
  * Routes
@@ -51,7 +52,7 @@ const googleOauth = require("./routes/googleoauth.route.js");
 const ExperienceQuestionRoute = require("./routes/experienceq.route.js");
 const AssemblyRoute = require("./routes/assembly.route.js");
 const AccessRoute = require("./routes/access.route.js");
-const ElevenLabsRoute = require("./routes/scribeToken.route.js");
+//const ElevenLabsRoute = require("./routes/scribeToken.route.js");
 
 /**
  * Health check
@@ -72,10 +73,13 @@ app.use("/api/v1/", GradeAnswerRoute);
 app.use("/api/v1/", ExperienceQuestionRoute);
 app.use("/api/v1/", userRoute);
 app.use("/api/v1/", AssemblyRoute);
-app.use("/api/v1/", ElevenLabsRoute);
+//app.use("/api/v1/", ElevenLabsRoute);
 app.use("/api/v1/", AccessRoute);
 
 // OAuth routes (intentionally not under /api/v1)
 app.use("/", googleOauth);
 
+/**
+ * Export app
+ */
 module.exports = app;
