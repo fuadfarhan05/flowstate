@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { FaMicrophone } from "react-icons/fa";
+import { FaVolumeXmark, FaStar } from "react-icons/fa6";
 import "../styles/elevenstyle.css";
 import BarVisualizer from "./barvisualizer";
 
@@ -27,6 +29,7 @@ export default function AssemblyInterview() {
   const [isFinished, setIsFinished] = useState(false);
   const [isFinalizing, setIsFinalizing] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [showPrepModal, setShowPrepModal] = useState(true);
 
   const downsampleBuffer = (buffer, inputSampleRate, outputSampleRate) => {
     if (outputSampleRate >= inputSampleRate) {
@@ -293,12 +296,14 @@ export default function AssemblyInterview() {
     }
   };
 
+  const handlePrepConfirm = async () => {
+    setShowPrepModal(false);
+    await handleStart();
+  };
+
   useEffect(() => {
     if (!questions?.length) return;
-
     setCurrentQuestion(questions[0]);
-    handleStart();
-
     return () => cleanupAudio();
   }, []);
 
@@ -323,6 +328,54 @@ export default function AssemblyInterview() {
 
   return (
     <div style={{ padding: 20 }}>
+      {showPrepModal && (
+        <div className="prep-modal-overlay">
+          <div className="prep-modal-card">
+            <div className="prep-modal-header">
+              <span className="prep-modal-eyebrow">You&apos;re almost in</span>
+              <h2 className="prep-modal-title">Before you begin</h2>
+              <p className="prep-modal-subtitle">A few things to set you up for success</p>
+            </div>
+
+            <div className="prep-tips">
+              <div className="prep-tip">
+                <div className="prep-tip-icon prep-tip-icon--blue">
+                  <FaMicrophone />
+                </div>
+                <div className="prep-tip-body">
+                  <span className="prep-tip-label">Microphone</span>
+                  <p className="prep-tip-text">Make sure your microphone is on — FlowState listens to your spoken answers in real time.</p>
+                </div>
+              </div>
+
+              <div className="prep-tip">
+                <div className="prep-tip-icon prep-tip-icon--gold">
+                  <FaVolumeXmark />
+                </div>
+                <div className="prep-tip-body">
+                  <span className="prep-tip-label">Quiet environment</span>
+                  <p className="prep-tip-text">Find a quiet space so your voice is captured clearly and you can stay focused.</p>
+                </div>
+              </div>
+
+              <div className="prep-tip">
+                <div className="prep-tip-icon prep-tip-icon--purple">
+                  <FaStar />
+                </div>
+                <div className="prep-tip-body">
+                  <span className="prep-tip-label">Give it your best</span>
+                  <p className="prep-tip-text">Answer every question as fully as you can. This is practice — no pressure, just progress.</p>
+                </div>
+              </div>
+            </div>
+
+            <button className="prep-confirm-btn" onClick={handlePrepConfirm}>
+              Let&apos;s go
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="question-card">
         <h3 style={{ color: "white", fontSize: "30px" }}>{currentQuestion}</h3>
       </div>

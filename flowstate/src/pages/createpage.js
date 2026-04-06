@@ -157,71 +157,6 @@ function CreatePage() {
           FlowState Exclusive Job Mapping
         </button>
 
-        {/* Job Mapping Modal */}
-        {jobMappingOpen && (
-          <div className="modal-overlay" onClick={() => setJobMappingOpen(false)}>
-            <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>FlowState Exclusive</h3>
-                <button className="modal-close" onClick={() => setJobMappingOpen(false)}>✕</button>
-              </div>
-              {mappingInferences ? (
-                <>
-                  <div className="modal-inferences">
-                    {mappingInferences.map((item, i) => (
-                      <div key={i} className="modal-inference-card">
-                        <p className="modal-inference-title">{item.title}</p>
-                        <p className="modal-inference-desc">{item.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <button className="modal-generate-btn" onClick={() => setMappingInferences(null)}>
-                    Back
-                  </button>
-                </>
-              ) : (
-                <>
-                  <p className="modal-body">Instead of researching for long hours about the company's needs, FlowState's Job Mapping System will analyzing the Job posting for you and teach you how to speak about your experiences in a way that is relevant to the job potentially increasing your chances of getting hired!</p>
-
-                  <div className="modal-fields">
-                    <div className="modal-role-row">
-                      <input
-                        className="modal-input-sm"
-                        type="text"
-                        placeholder="Role"
-                        value={mappingRole}
-                        onChange={(e) => setMappingRole(e.target.value)}
-                      />
-                      <span className="modal-role-at">at</span>
-                      <input
-                        className="modal-input-sm"
-                        type="text"
-                        placeholder="Company"
-                        value={mappingCompany}
-                        onChange={(e) => setMappingCompany(e.target.value)}
-                      />
-                    </div>
-                    <textarea
-                      className="modal-textarea"
-                      placeholder="Paste the job posting here..."
-                      value={mappingPosting}
-                      onChange={(e) => setMappingPosting(e.target.value)}
-                    />
-                  </div>
-
-                  <button
-                    className={`modal-generate-btn ${mappingLoading ? "modal-generate-btn--loading" : ""}`}
-                    onClick={handleGenerateSuggestions}
-                    disabled={mappingLoading || !mappingPosting.trim()}
-                  >
-                    {mappingLoading ? "Analyzing..." : "Generate Suggestions"}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
         {/* Start Button */}
         <button
           className={`start-btn ${!upload ? "start-btn--disabled" : ""}`}
@@ -231,6 +166,71 @@ function CreatePage() {
           Start Session
         </button>
       </div>
+
+      {/* Job Mapping Modal — outside main-card so backdrop-filter doesn't trap fixed positioning */}
+      {jobMappingOpen && (
+        <div className="modal-overlay" onClick={() => setJobMappingOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>FlowState Exclusive</h3>
+              <button className="modal-close" onClick={() => setJobMappingOpen(false)}>✕</button>
+            </div>
+            {mappingInferences ? (
+              <>
+                <div className="modal-inferences">
+                  {mappingInferences.map((item, i) => (
+                    <div key={i} className="modal-inference-card">
+                      <p className="modal-inference-title">{item.title}</p>
+                      <p className="modal-inference-desc">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+                <button className="modal-generate-btn" onClick={() => setMappingInferences(null)}>
+                  Back
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="modal-body">Instead of researching for long hours about the company's needs, FlowState's Job Mapping System will analyzing the Job posting for you and teach you how to speak about your experiences in a way that is relevant to the job potentially increasing your chances of getting hired!</p>
+
+                <div className="modal-fields">
+                  <div className="modal-role-row">
+                    <input
+                      className="modal-input-sm"
+                      type="text"
+                      placeholder="Role"
+                      value={mappingRole}
+                      onChange={(e) => setMappingRole(e.target.value)}
+                    />
+                    <span className="modal-role-at">at</span>
+                    <input
+                      className="modal-input-sm"
+                      type="text"
+                      placeholder="Company"
+                      value={mappingCompany}
+                      onChange={(e) => setMappingCompany(e.target.value)}
+                    />
+                  </div>
+                  <textarea
+                    className="modal-textarea"
+                    placeholder="Paste the job posting here..."
+                    value={mappingPosting}
+                    onChange={(e) => setMappingPosting(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  className={`modal-generate-btn ${mappingLoading ? "modal-generate-btn--loading" : ""}`}
+                  onClick={handleGenerateSuggestions}
+                  disabled={mappingLoading || !mappingPosting.trim()}
+                >
+                  {mappingLoading ? "Analyzing..." : "Generate Suggestions"}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
