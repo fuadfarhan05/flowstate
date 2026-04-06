@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSheetPlastic } from "react-icons/fa6";
+import { FaMicrophone, FaVolumeXmark, FaStar } from "react-icons/fa6";
 
 import "../styles/createpage.css";
 
@@ -169,48 +170,46 @@ function CreatePage() {
       {showPrepModal && (
         <div className="prep-modal-overlay">
           <div className="prep-modal-card">
-            <div className="prep-row">
-              <div className="prep-icon prep-icon-white" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
-              </div>
-              <p>
-                Have your microphone on. FlowState will not be able to hear your responses otherwise.
-              </p>
+            <div className="prep-modal-header">
+              <span className="prep-modal-eyebrow">You&apos;re almost in</span>
+              <h2 className="prep-modal-title">Before you begin</h2>
+              <p className="prep-modal-subtitle">A few things to set you up for success</p>
             </div>
 
-            <div className="prep-row">
-              <div className="prep-icon prep-icon-gold" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
+            <div className="prep-tips">
+              <div className="prep-tip">
+                <div className="prep-tip-icon prep-tip-icon--blue">
+                  <FaMicrophone />
+                </div>
+                <div className="prep-tip-body">
+                  <span className="prep-tip-label">Microphone</span>
+                  <p className="prep-tip-text">Make sure your microphone is on — FlowState listens to your spoken answers in real time.</p>
+                </div>
               </div>
-              <p>
-                Be in an environment that is quiet so that your voice is heard clearly and to boost your focus.
-              </p>
-            </div>
 
-            <div className="prep-row">
-              <div className="prep-icon prep-icon-blue" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <span />
-                <span />
+              <div className="prep-tip">
+                <div className="prep-tip-icon prep-tip-icon--gold">
+                  <FaVolumeXmark />
+                </div>
+                <div className="prep-tip-body">
+                  <span className="prep-tip-label">Quiet environment</span>
+                  <p className="prep-tip-text">Find a quiet space so your voice is captured clearly and you can stay focused.</p>
+                </div>
               </div>
-              <p>
-                Try your best! Answer all questions to the best of your ability. Don&apos;t worry or stress as this is
-                just a practice interview.
-              </p>
+
+              <div className="prep-tip">
+                <div className="prep-tip-icon prep-tip-icon--purple">
+                  <FaStar />
+                </div>
+                <div className="prep-tip-body">
+                  <span className="prep-tip-label">Give it your best</span>
+                  <p className="prep-tip-text">Answer every question as fully as you can. This is practice — no pressure, just progress.</p>
+                </div>
+              </div>
             </div>
 
             <button className="prep-confirm-btn" onClick={handlePrepConfirm}>
-              Sounds good
+              Let&apos;s go
             </button>
           </div>
         </div>

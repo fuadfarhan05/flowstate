@@ -243,18 +243,6 @@ export default function ElevenLabs() {
         />
       </div>
 
-      <button
-        className="end-btn"
-        onClick={finalizeInterview}
-        disabled={isFinalizing}
-        style={{
-          marginTop: "20px",
-          opacity: isFinalizing ? 0.6 : 1,
-        }}
-      >
-        Finish Here
-      </button>
-
       {isFinalizing && (
         <div
           style={{
