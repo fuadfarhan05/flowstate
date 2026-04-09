@@ -5,7 +5,7 @@ const client = new OpenAi({
 
 const analyzeFillerWords = async (transcript, elapsedSeconds) => {
   try {
-    const response = await fetch("http://localhost:8000/analyze-filler-words", {
+    const response = await fetch(`${process.env.PYTHON_SERVICE_URL || "http://pythonservice:8000"}/analyze-filler-words`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
